@@ -1,0 +1,94 @@
+body.reflex-col-resize {
+  cursor: col-resize;
+}
+
+body.reflex-row-resize {
+  cursor: row-resize;
+}
+
+.reflex-container {
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: stretch;
+  display: flex;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.reflex-container>.reflex-splitter {
+  position: relative;
+}
+
+.reflex-container.horizontal {
+  flex-direction: column;
+  min-height: 1px;
+}
+
+.reflex-container.vertical {
+  flex-direction: row;
+  min-width: 1px;
+}
+
+.reflex-container>.reflex-element {
+  position: relative;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+}
+
+.reflex-container.reflex-resizing>.reflex-element {
+  pointer-events: none;
+  user-select: none;
+}
+
+.reflex-container>.reflex-element>.reflex-size-aware {
+  height: 100%;
+  width: 100%;
+}
+
+.reflex-container>.reflex-splitter {
+  background-color: var(--primary-light-color);
+}
+
+.vertical>.reflex-splitter {
+  cursor: col-resize;
+  height: 100%;
+  width: 0.25rem;
+}
+
+.horizontal>.reflex-splitter {
+  cursor: row-resize;
+  width: 100%;
+  height: 0.25rem;
+}
+
+.reflex-container>.reflex-splitter::before {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  background-color: var(--accent-light-color);
+  opacity: 0;
+  content: "";
+}
+
+.reflex-container>.reflex-splitter:hover::before,
+.reflex-container>.reflex-splitter.active::before {
+  opacity: 1;
+}
+
+.reflex-container.horizontal>.reflex-splitter:hover::before,
+.reflex-container.horizontal>.reflex-splitter.active::before {
+  top: -0.125rem;
+  bottom: -0.125rem;
+  width: 100%;
+}
+
+.reflex-container.vertical>.reflex-splitter:hover::before,
+.reflex-container.vertical>.reflex-splitter.active::before {
+  left: -0.125rem;
+  right: -0.125rem;
+  height: 100%;
+}
