@@ -1,0 +1,39 @@
+.container {
+  height: auto;
+  width: 100%;
+  overflow: hidden;
+
+  color: var(--secondary-light-color);
+  background-color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-light-color);
+}
+
+.header {
+  display: flex;
+  flex: 1 1 0%;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+
+  a.brand {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    letter-spacing: 0.075em;
+    color: var(--secondary-dark-color);
+    font-weight: 700;
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+  }
+
+  a.brand:hover {
+    background-color: var(--primary-dark-color);
+    border-radius: 0.25rem;
+  }
+}

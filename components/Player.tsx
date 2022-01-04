@@ -1,9 +1,8 @@
-// import styles from "../styles/components/Something.module.css";
-
-import { ClassAttributes, useCallback, useEffect, useRef } from "react";
+import { createRef, useCallback, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { playerProgressState } from "../store/player";
+import styles from "../styles/components/Player.module.scss";
 
 type ProgressEvent = {
   playedSeconds: number;
@@ -11,6 +10,8 @@ type ProgressEvent = {
   loadedSeconds: number;
   loaded: number;
 };
+
+const VIDEO_ELEMENT_ID = "myvideo";
 
 type Props = {
   path: string | undefined;
@@ -20,13 +21,10 @@ const Player: React.FC<Props> = (props: Props) => {
   const playerProgress = useRecoilValue(playerProgressState);
   const setPlayerProgress = useSetRecoilState(playerProgressState);
   const playerRef = useCallback((node: ReactPlayer) => {
-    console.log("here");
-    console.log(node);
-    // if (node !== null) {
-    //   console.log(node.getInternalPlayer());
-    // }
+    if (node !== null) {
+      console.log(node.getInternalPlayer());
+    }
   }, []);
-  // const playerRef = useRef<ReactPlayer>(null);
 
   return props.path ? (
     <ReactPlayer
@@ -35,9 +33,16 @@ const Player: React.FC<Props> = (props: Props) => {
       pip={false}
       controls
       progressInterval={100}
-      height={"100%"}
+      height={"auto"}
       width={"100%"}
       onProgress={(e: ProgressEvent) => setPlayerProgress(e.playedSeconds)}
+      config={{
+        file: {
+          attributes: {
+            id: VIDEO_ELEMENT_ID,
+          },
+        },
+      }}
     />
   ) : (
     <></>

@@ -1,0 +1,51 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    position: sticky;
+    top: 0;
+    background-color: var(--primary-color);
+  }
+
+  tr {
+    line-height: 2;
+    display: "flex";
+    flex: 1 1 0%;
+  }
+
+  tr.active {
+    background-color: var(--primary-light-color);
+  }
+
+  tr.comment {
+    // background-color: rgba(255, 255, 224, 0.5);
+    text-align: center;
+
+    td > span {
+      color: var(--secondary-dark-color);
+    }
+  }
+
+  td,
+  th {
+    border: 1px solid var(--divider-light-color);
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+.input {
+  width: 100%;
+  color: var(--secondary-dark-color);
+  border: none;
+  outline: none;
+  background: none;
+  display: "flex";
+  flex: 1 1 0%;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  // line-height: 2;
+}

@@ -1,0 +1,20 @@
+.container {
+  height: auto;
+  width: 100%;
+  overflow: hidden;
+
+  color: var(--secondary-light-color);
+  background-color: var(--primary-color);
+  border-top: 2px solid var(--primary-light-color);
+}
+
+.footer {
+  display: flex;
+  flex: 1 1 0%;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+}
