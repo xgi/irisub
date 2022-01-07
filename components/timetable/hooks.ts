@@ -1,7 +1,5 @@
 import { useCallback, useRef } from "react";
-import { SetterOrUpdater, useRecoilValue } from "recoil";
-import { DB_STORES } from "../../store/db";
-import { databaseState } from "../../store/states";
+import { SetterOrUpdater } from "recoil";
 
 // TODO: refactor
 // also has logic for if controls can be reordered, which has been removed here
@@ -29,8 +27,7 @@ export const useFocusNext = (setCurrentEventIndex: SetterOrUpdater<number>) => {
 
     if (newControl) {
       const newActiveIndex = newControl.getAttribute("data-index");
-      console.log(`newActiveIndex: ${newActiveIndex}`);
-      if (newActiveIndex) setCurrentEventIndex(parseInt(newActiveIndex));
+      if (newActiveIndex !== null) setCurrentEventIndex(parseInt(newActiveIndex));
       newControl.focus();
     }
   };

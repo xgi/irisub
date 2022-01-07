@@ -1,11 +1,8 @@
-import { KeyboardEvent, useState } from "react";
+import { KeyboardEvent } from "react";
 import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
-// import { highlight, languages } from "prismjs/components/prism-core";
-import "prismjs/components/prism-clike";
-import "prismjs/components/prism-javascript";
 import "prismjs/themes/prism.css"; //Example style, you can use another
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { currentEventIndexState, currentEventListState } from "../store/states";
 
 type Props = {};
@@ -18,7 +15,7 @@ const TextEditor: React.FC<Props> = (props: Props) => {
   );
 
   const setCurrentData = (text: string) => {
-    if (currentEventIndex && currentEventList) {
+    if (currentEventList && currentEventList[currentEventIndex]) {
       const _temp = [...currentEventList];
       _temp[currentEventIndex] = { ..._temp[currentEventIndex], text: text };
       setCurrentEventList(_temp);
@@ -27,7 +24,7 @@ const TextEditor: React.FC<Props> = (props: Props) => {
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter" && !event.shiftKey) {
-      // TODO: set current event to the next event in the list
+      setCurrentEventIndex(currentEventIndex + 1);
       event.preventDefault();
       event.stopPropagation();
     }
@@ -37,7 +34,7 @@ const TextEditor: React.FC<Props> = (props: Props) => {
     <Editor
       placeholder="Edit text..."
       value={
-        currentEventIndex && currentEventList
+        currentEventList && currentEventList[currentEventIndex]
           ? currentEventList[currentEventIndex].text
           : ""
       }
@@ -49,7 +46,6 @@ const TextEditor: React.FC<Props> = (props: Props) => {
       padding={10}
       style={{
         fontFamily: '"Fira code", "Fira Mono", monospace',
-        // fontSize: 12,
       }}
     />
   );
