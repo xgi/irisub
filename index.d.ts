@@ -1,42 +1,47 @@
 export as namespace Irisub;
 
 export type Project = {
+  id: string;
   title?: string;
 };
 
 export type Track = {
+  id: string;
   name?: string;
   language?: string;
-}
+};
 
 export type Event = {
-  project_key: string;
-  track_key: string;
-  name?: string;
+  id: string;
+  // project_id: string;
+  // track_id: string;
+  // name?: string;
   text: string;
-  actor: string;
-  start_ms: number;
-  end_ms: number;
-  settings?: {
-    vertical?: string;
-    line?: string;
-    position?: string;
-    size?: string;
-    align?: string;
-  };
+  // actor: string;
+  // start_ms: number;
+  // end_ms: number;
+  // settings?: {
+  //   vertical?: string;
+  //   line?: string;
+  //   position?: string;
+  //   size?: string;
+  //   align?: string;
+  // };
 };
 
 export type Comment = {
-  project_key: string;
-  track_key: string;
-  previous_event_key: string | null;
-  next_event_key: string | null;
+  id: string;
+  project_id: string;
+  track_id: string;
+  previous_event_id: string | null;
+  next_event_id: string | null;
   text: string;
 };
 
 export type StyleSheet = {
-  project_key: string | null;
-  track_key: string | null;
+  id: string;
+  project_id: string | null;
+  track_id: string | null;
   name?: string;
   styleGroups: {
     selectors: string[];

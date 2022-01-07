@@ -3,9 +3,13 @@ import { DBSchema } from "idb";
 export interface IrisubDBSchema extends DBSchema {
   project: {
     key: string;
-    value: {
-      title: string;
-    };
+    value: Irisub.Project;
+  };
+
+  track: {
+    key: string;
+    value: Irisub.Track;
+    indexes: { "by-project": string };
   };
 
   event: {

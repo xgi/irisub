@@ -1,10 +1,12 @@
 import { useCallback, useRef } from "react";
-import { SetterOrUpdater } from "recoil";
+import { SetterOrUpdater, useRecoilValue } from "recoil";
+import { DB_STORES } from "../../store/db";
+import { databaseState } from "../../store/states";
 
 // TODO: refactor
 // also has logic for if controls can be reordered, which has been removed here
 // https://stackoverflow.com/questions/38577224/focus-on-next-field-when-pressing-enter-react-js
-export const useFocusNext = (setActiveRow: SetterOrUpdater<number>) => {
+export const useFocusNext = (setCurrentEventIndex: SetterOrUpdater<number>) => {
   const controls = useRef<HTMLElement[]>([]);
 
   /**
@@ -13,6 +15,7 @@ export const useFocusNext = (setActiveRow: SetterOrUpdater<number>) => {
    * Does nothing if there is no control at the new index.
    * This also performs setActiveRow on the focused control, if there is one.
    *
+   * // TODO: change this description
    * Note: retrieves the row number from the control's data-row-number attribute in case
    * the indices of the controls don't align with the actual timetable indices (e.g. if the list
    * of controls is virtualized).
@@ -25,8 +28,9 @@ export const useFocusNext = (setActiveRow: SetterOrUpdater<number>) => {
     const newControl = controls.current[index + indexDelta];
 
     if (newControl) {
-      const newActiveRowNum = newControl.getAttribute("data-row-number");
-      if (newActiveRowNum) setActiveRow(parseInt(newActiveRowNum));
+      const newActiveIndex = newControl.getAttribute("data-index");
+      console.log(`newActiveIndex: ${newActiveIndex}`);
+      if (newActiveIndex) setCurrentEventIndex(parseInt(newActiveIndex));
       newControl.focus();
     }
   };

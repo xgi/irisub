@@ -6,24 +6,28 @@ import "prismjs/components/prism-clike";
 import "prismjs/components/prism-javascript";
 import "prismjs/themes/prism.css"; //Example style, you can use another
 import { useRecoilState, useRecoilValue } from "recoil";
-import { timetableActiveRowState, timetableDataState } from "../store/player";
+import { currentEventIndexState, currentEventListState } from "../store/states";
 
 type Props = {};
 const TextEditor: React.FC<Props> = (props: Props) => {
-  const [timetableData, setTimetableData] = useRecoilState(timetableDataState);
-  const [timetableActiveRow, setTimetableActiveRow] = useRecoilState(
-    timetableActiveRowState
+  const [currentEventIndex, setCurrentEventIndex] = useRecoilState(
+    currentEventIndexState
+  );
+  const [currentEventList, setCurrentEventList] = useRecoilState(
+    currentEventListState
   );
 
   const setCurrentData = (text: string) => {
-    const _temp: string[] = Object.assign([], timetableData);
-    _temp[timetableActiveRow] = text;
-    setTimetableData(_temp);
+    if (currentEventIndex && currentEventList) {
+      const _temp = [...currentEventList];
+      _temp[currentEventIndex] = { ..._temp[currentEventIndex], text: text };
+      setCurrentEventList(_temp);
+    }
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter" && !event.shiftKey) {
-      setTimetableActiveRow(timetableActiveRow + 1);
+      // TODO: set current event to the next event in the list
       event.preventDefault();
       event.stopPropagation();
     }
@@ -32,7 +36,11 @@ const TextEditor: React.FC<Props> = (props: Props) => {
   return (
     <Editor
       placeholder="Edit text..."
-      value={timetableData[timetableActiveRow] || ""}
+      value={
+        currentEventIndex && currentEventList
+          ? currentEventList[currentEventIndex].text
+          : ""
+      }
       onValueChange={(value: string) => setCurrentData(value)}
       highlight={(value: string) =>
         Prism.highlight(value || "", Prism.languages.html, "html")
