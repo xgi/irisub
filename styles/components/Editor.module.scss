@@ -26,21 +26,28 @@
 
 .horizontalSlider {
   width: 100%;
-  max-width: 300px;
+  max-width: 500px;
   height: 24px;
-  // border: 1px solid green;
+
+  .thumb {
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    background-color: var(--secondary-color);
+    border-radius: 20%;
+  }
+
+  .track {
+    top: 6px;
+    height: 12px;
+    background-color: var(--secondary-light-color);
+  }
+
+  .track:first-child {
+    background-color: var(--accent-color);
+  }
 }
 
-.thumb {
-  top: 4px;
-  width: 16px;
-  height: 16px;
-  // line-height: 38px;
-  background-color: blue;
-}
-
-.track {
-  top: 6px;
-  height: 12px;
-  background-color: orange;
+.horizontalSlider:hover .thumb {
+  background-color: var(--accent-dark-color);
 }
