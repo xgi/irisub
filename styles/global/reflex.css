@@ -72,6 +72,7 @@ body.reflex-row-resize {
   background-color: var(--accent-light-color);
   opacity: 0;
   content: "";
+  z-index: 100;
 }
 
 .reflex-container>.reflex-splitter:hover::before,
