@@ -259,7 +259,14 @@
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.4.tgz"
   integrity sha512-rZ5drC/jWjrArrS8BR6SIr4cWpW09RNTYt9AMZo3Jwwif+iacXAqgVjm0B0Bv/S1jhDXKHqRVNCbACkJ89RAnQ==
 
-"@types/react@17.0.38":
+"@types/react-slider@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@types/react-slider/-/react-slider-1.3.1.tgz#a3816989eb4fc172e7df316930f242fec90690fc"
+  integrity sha512-4X2yK7RyCIy643YCFL+bc6XNmcnBtt8n88uuyihvcn5G7Lut23eNQU3q3KmwF7MWIfKfsW5NxCjw0SeDZRtgaA==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react@*", "@types/react@17.0.38":
   version "17.0.38"
   resolved "https://registry.npmjs.org/@types/react/-/react-17.0.38.tgz"
   integrity sha512-SI92X1IA+FMnP3qM5m4QReluXzhcmovhZnLNm3pyeQlooi02qI7sLiepEYqT678uNiyc25XfCqxREFpy3W7YhQ==
@@ -2470,6 +2477,11 @@ react-simple-code-editor@^0.11.0:
   version "0.11.0"
   resolved "https://registry.npmjs.org/react-simple-code-editor/-/react-simple-code-editor-0.11.0.tgz"
   integrity sha512-xGfX7wAzspl113ocfKQAR8lWPhavGWHL3xSzNLeseDRHysT+jzRBi/ExdUqevSMos+7ZtdfeuBOXtgk9HTwsrw==
+
+react-slider@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/react-slider/-/react-slider-1.3.1.tgz#41dd88f7c67520811a4114d6f8f49d186268d9da"
+  integrity sha512-bD8hHJJUgAHI8g1F6PY6432l+Dmcs2fqzUwDhd+0HWDdvfjwNoXRNC2cL9OWyGTjYlJM92A8nF/w1X4pyHfytQ==
 
 react@17.0.2:
   version "17.0.2"

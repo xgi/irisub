@@ -23,3 +23,24 @@
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
+
+.horizontalSlider {
+  width: 100%;
+  max-width: 300px;
+  height: 24px;
+  // border: 1px solid green;
+}
+
+.thumb {
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  // line-height: 38px;
+  background-color: blue;
+}
+
+.track {
+  top: 6px;
+  height: 12px;
+  background-color: orange;
+}

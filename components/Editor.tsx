@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { v4 as uuidv4 } from "uuid";
-import { playerProgressState } from "../store/player";
+import { playerDurationState, playerProgressState } from "../store/player";
 import styles from "../styles/components/Editor.module.scss";
 import Player from "./Player";
 import TextEditor from "./TextEditor";
@@ -14,6 +14,8 @@ import {
   databaseState,
 } from "../store/states";
 import { DB_STORES, initDb } from "../store/db";
+import ReactSlider from "react-slider";
+import ReactPlayer from "react-player";
 
 type Props = {};
 
@@ -22,10 +24,13 @@ const Something: React.FC<Props> = (props: Props) => {
   const [currentEventList, setCurrentEventList] = useRecoilState(
     currentEventListState
   );
-  const playerProgress = useRecoilValue(playerProgressState);
+  const [playerProgress, setPlayerProgress] =
+    useRecoilState(playerProgressState);
+  const playerDuration = useRecoilValue(playerDurationState);
   const [currentProject, setCurrentProject] =
     useRecoilState(currentProjectState);
   const [videoPath, setVideoPath] = useState<string | undefined>();
+  const playerRef = useRef<ReactPlayer>();
 
   useEffect(() => {
     if (database) {
@@ -57,17 +62,51 @@ const Something: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const handleSeek = (value: number) => {
+    setPlayerProgress(value);
+
+    if (playerRef.current) {
+      playerRef.current.seekTo(value);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.controlBar}>
-        <span>Control bar</span>
+        <div style={{ display: "flex" }}>
+          <a>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 0 24 24"
+              width="24px"
+              fill="currentColor"
+            >
+              <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" />
+            </svg>
+          </a>
+          <ReactSlider
+            className={styles.horizontalSlider}
+            thumbClassName={styles.thumb}
+            trackClassName={styles.track}
+            min={0}
+            max={playerDuration}
+            value={playerProgress}
+            onAfterChange={handleSeek}
+          />
+          <span style={{ paddingLeft: "16px" }}>
+            {new Date(playerProgress * 1000).toISOString().substring(12, 23)} /{" "}
+            {new Date(playerDuration * 1000).toISOString().substring(12, 23)}
+          </span>
+        </div>
       </div>
       <ReflexContainer orientation="horizontal">
         <ReflexElement>
           <ReflexContainer orientation="vertical">
             <ReflexElement>
               <div className={styles.pane}>
-                <Player path={videoPath} />
+                {/* @ts-expect-error */}
+                <Player path={videoPath} ref={playerRef} />
               </div>
             </ReflexElement>
             <ReflexSplitter />
