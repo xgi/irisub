@@ -1,7 +1,7 @@
-import "../styles/global/general.css";
-import "../styles/global/colors.css";
-import "../styles/global/reflex.css";
-import "../styles/global/player.css";
+import "../styles/global/general.scss";
+import "../styles/global/colors.scss";
+import "../styles/global/reflex.scss";
+import "../styles/global/player.scss";
 import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
 
