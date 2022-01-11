@@ -1,5 +1,6 @@
 import { IDBPDatabase } from "idb";
-import { atom } from "recoil";
+import { atom, DefaultValue } from "recoil";
+import { shallowEqual } from "../util/comparison";
 import { DB_STORES } from "./db";
 import { IrisubDBSchema } from "./types";
 
@@ -52,19 +53,34 @@ export const currentEventListState = atom<Irisub.Event[]>({
   default: [],
   effects_UNSTABLE: [
     ({ onSet, getPromise }) => {
-      onSet(async (newValue, _oldValue) => {
+      onSet(async (newValue, oldValue) => {
         if (!newValue) {
           return;
         }
 
-        // TODO: only put changed events
-        getPromise(databaseState).then((database) => {
-          if (database) {
-            newValue.forEach((event) => {
-              database.put(DB_STORES.EVENT, event);
-            });
-          }
-        });
+        let changedEvents: Irisub.Event[] = [];
+        if (!(oldValue instanceof DefaultValue) && oldValue.length > 0) {
+          newValue.forEach((event) => {
+            const existingEvent = oldValue.find((e) => e.id === event.id);
+            if (existingEvent) {
+              if (!shallowEqual(event, existingEvent)) {
+                changedEvents.push(event);
+              }
+            }
+          });
+        } else {
+          changedEvents = newValue;
+        }
+
+        if (changedEvents.length > 0) {
+          getPromise(databaseState).then((database) => {
+            if (database) {
+              newValue.forEach((event) => {
+                database.put(DB_STORES.EVENT, event);
+              });
+            }
+          });
+        }
       });
     },
   ],
