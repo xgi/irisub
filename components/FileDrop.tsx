@@ -1,4 +1,9 @@
-import { DragEventHandler, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  DragEventHandler,
+  useRef,
+  useState,
+} from "react";
 import { useSetRecoilState } from "recoil";
 import { playerPathState } from "../store/player";
 import styles from "../styles/components/FileDrop.module.scss";
@@ -9,12 +14,17 @@ type Props = {};
 const FileDrop: React.FC<Props> = (props: Props) => {
   const [dragover, setDragover] = useState(false);
   const setPlayerPath = useSetRecoilState(playerPathState);
-  const pickerRef = useRef<HTMLInputElement>();
+  const pickerRef = useRef<HTMLInputElement | null>(null);
 
   const handleClick = () => {
     if (pickerRef.current) {
       pickerRef.current.click();
     }
+  };
+
+  const handlePickerChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e && e.target && e.target.files)
+      setPlayerPath(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleDrop: DragEventHandler<HTMLDivElement> = (e) => {
@@ -55,7 +65,12 @@ const FileDrop: React.FC<Props> = (props: Props) => {
           </span>
           <span>Select video file</span>
         </div>
-        <input className={styles.picker} type="file" ref={pickerRef} />
+        <input
+          className={styles.picker}
+          type="file"
+          ref={pickerRef}
+          onChange={handlePickerChange}
+        />
       </div>
     </div>
   );
