@@ -14,27 +14,92 @@
 }
 
 .controlBar {
-  color: var(--secondary-light-color);
+  display: flex;
+
   background-color: var(--primary-color);
   border-bottom: 2px solid var(--primary-light-color);
 
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+
+  .controlsGroup {
+    display: flex;
+    flex: 1 1 0%;
+    align-items: center;
+    gap: 0.2rem;
+
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    color: var(--secondary-light-color);
+
+    a {
+      line-height: 0;
+    }
+
+    a:hover {
+      color: var(--secondary-dark-color);
+      cursor: pointer;
+    }
+  }
+
+  .optionsGroup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      font-weight: 600;
+      background-color: var(--primary-light-color);
+      color: var(--secondary-color);
+
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+
+      border: none;
+      border-radius: 0.2rem;
+
+      span {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+
+        line-height: var(--line-height-body);
+        gap: 0.3rem;
+
+        svg {
+          width: var(--line-height-body);
+          height: var(--line-height-body);
+        }
+      }
+    }
+
+    button:hover {
+      cursor: pointer;
+      background-color: var(--primary-dark-color);
+      color: var(--secondary-dark-color);
+    }
+  }
 }
 
 .horizontalSlider {
   width: 100%;
   max-width: 500px;
   height: 24px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 
   .thumb {
     top: 4px;
-    width: 16px;
+    width: 12px;
     height: 16px;
     background-color: var(--secondary-color);
-    border-radius: 20%;
   }
 
   .track {

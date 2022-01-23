@@ -1,8 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
 import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { v4 as uuidv4 } from "uuid";
-import { playerDurationState, playerProgressState } from "../store/player";
+import {
+  playerDurationState,
+  playerPathState,
+  playerPlayingState,
+  playerProgressState,
+} from "../store/player";
 import styles from "../styles/components/Editor.module.scss";
 import Player from "./Player";
 import TextEditor from "./TextEditor";
@@ -16,21 +21,31 @@ import {
 import { DB_STORES, initDb } from "../store/db";
 import ReactSlider from "react-slider";
 import ReactPlayer from "react-player";
+import FileDrop from "./FileDrop";
+import {
+  Icon10Left,
+  Icon10Right,
+  IconFileUpload,
+  IconPause,
+  IconPlay,
+} from "./Icons";
 
 type Props = {};
 
-const Something: React.FC<Props> = (props: Props) => {
+const Editor: React.FC<Props> = (props: Props) => {
   const database = useRecoilValue(databaseState);
   const [currentEventList, setCurrentEventList] = useRecoilState(
     currentEventListState
   );
   const [playerProgress, setPlayerProgress] =
     useRecoilState(playerProgressState);
+  const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
   const playerDuration = useRecoilValue(playerDurationState);
   const [currentProject, setCurrentProject] =
     useRecoilState(currentProjectState);
-  const [videoPath, setVideoPath] = useState<string | undefined>();
-  const playerRef = useRef<ReactPlayer>();
+  const [playerPath, setPlayerPath] = useRecoilState(playerPathState);
+  const playerRef = useRef<ReactPlayer | null>(null);
+  const pickerRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (database) {
@@ -41,8 +56,15 @@ const Something: React.FC<Props> = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [database]);
 
-  const handleUploadVideo = (event: any) => {
-    setVideoPath(URL.createObjectURL(event.target.files[0]));
+  const handlePickerClick = () => {
+    if (pickerRef.current) {
+      pickerRef.current.click();
+    }
+  };
+
+  const handlePickerChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e && e.target && e.target.files)
+      setPlayerPath(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleConnect = () => {
@@ -73,17 +95,15 @@ const Something: React.FC<Props> = (props: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.controlBar}>
-        <div style={{ display: "flex" }}>
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 0 24 24"
-              width="24px"
-              fill="currentColor"
-            >
-              <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" />
-            </svg>
+        <div className={styles.controlsGroup}>
+          <a onClick={() => setPlayerPlaying(!playerPlaying)}>
+            {playerPlaying ? <IconPause /> : <IconPlay />}
+          </a>
+          <a onClick={() => handleSeek(playerProgress - 10)}>
+            <Icon10Left />
+          </a>
+          <a onClick={() => handleSeek(playerProgress + 10)}>
+            <Icon10Right />
           </a>
           <ReactSlider
             className={styles.horizontalSlider}
@@ -92,12 +112,26 @@ const Something: React.FC<Props> = (props: Props) => {
             min={0}
             max={playerDuration}
             value={playerProgress}
-            onAfterChange={handleSeek}
+            onChange={handleSeek}
           />
-          <span style={{ paddingLeft: "16px" }}>
+          <span style={{ fontFamily: "monospace", fontWeight: "600" }}>
             {new Date(playerProgress * 1000).toISOString().substring(12, 23)} /{" "}
             {new Date(playerDuration * 1000).toISOString().substring(12, 23)}
           </span>
+        </div>
+        <div className={styles.optionsGroup}>
+          <button onClick={handlePickerClick}>
+            <span>
+              <IconFileUpload />
+              Select Video
+            </span>
+            <input
+              style={{ display: "none" }}
+              type="file"
+              ref={pickerRef}
+              onChange={handlePickerChange}
+            />
+          </button>
         </div>
       </div>
       <ReflexContainer orientation="horizontal">
@@ -105,8 +139,11 @@ const Something: React.FC<Props> = (props: Props) => {
           <ReflexContainer orientation="vertical">
             <ReflexElement>
               <div className={styles.pane}>
-                {/* @ts-expect-error */}
-                <Player path={videoPath} ref={playerRef} />
+                {playerPath ? (
+                  <Player path={playerPath} ref={playerRef} />
+                ) : (
+                  <FileDrop />
+                )}
               </div>
             </ReflexElement>
             <ReflexSplitter />
@@ -114,8 +151,6 @@ const Something: React.FC<Props> = (props: Props) => {
               <ReflexContainer orientation="horizontal">
                 <ReflexElement>
                   <div className={styles.pane}>
-                    <p>video:</p>
-                    <input type="file" onChange={handleUploadVideo} />
                     <button onClick={handleConnect}>connect</button>
                     <p>
                       progress:{" "}
@@ -211,4 +246,4 @@ const Something: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default Something;
+export default Editor;

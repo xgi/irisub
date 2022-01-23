@@ -14,3 +14,8 @@ export const playerDurationState = atom({
   key: "playerDurationState",
   default: 0,
 });
+
+export const playerPlayingState = atom({
+  key: "playerPlayingState",
+  default: false,
+});
