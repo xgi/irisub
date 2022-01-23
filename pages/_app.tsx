@@ -1,5 +1,5 @@
-import "../styles/global/general.scss";
 import "../styles/global/colors.scss";
+import "../styles/global/general.scss";
 import "../styles/global/reflex.scss";
 import "../styles/global/player.scss";
 import type { AppProps } from "next/app";

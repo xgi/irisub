@@ -3,6 +3,11 @@
   --line-height-body: 1rem;
 }
 
+::selection {
+  background-color: var(--accent-dark-color);
+  color: white;
+}
+
 html,
 body {
   padding: 0;
