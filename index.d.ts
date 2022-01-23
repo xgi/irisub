@@ -19,7 +19,7 @@ export type Event = {
   text: string;
   // actor: string;
   // start_ms: number;
-  // end_ms: number;
+  end_ms: number;
   // settings?: {
   //   vertical?: string;
   //   line?: string;

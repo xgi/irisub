@@ -4,8 +4,11 @@ import { SetterOrUpdater } from "recoil";
 // TODO: refactor
 // also has logic for if controls can be reordered, which has been removed here
 // https://stackoverflow.com/questions/38577224/focus-on-next-field-when-pressing-enter-react-js
-export const useFocusNext = (setCurrentEventIndex: SetterOrUpdater<number>) => {
-  const controls = useRef<HTMLElement[]>([]);
+export const useFocusNext = (
+  setCurrentEventIndex: SetterOrUpdater<number>,
+  matchCursorPosition: boolean = false
+) => {
+  const controls = useRef<HTMLInputElement[]>([]);
 
   /**
    * Focus a control relative to another control's index.
@@ -21,13 +24,25 @@ export const useFocusNext = (setCurrentEventIndex: SetterOrUpdater<number>) => {
    * @param control pivot control (usually the current one)
    * @param indexDelta relative index to focus
    */
-  const _focusRelativeControl = (control: HTMLElement, indexDelta: number) => {
+  const _focusRelativeControl = (
+    control: HTMLInputElement,
+    indexDelta: number
+  ) => {
     const index = controls.current.indexOf(control);
     const newControl = controls.current[index + indexDelta];
 
     if (newControl) {
       const newActiveIndex = newControl.getAttribute("data-index");
-      if (newActiveIndex !== null) setCurrentEventIndex(parseInt(newActiveIndex));
+      if (newActiveIndex !== null) {
+        setCurrentEventIndex(parseInt(newActiveIndex));
+      }
+
+      if (matchCursorPosition) {
+        newControl.setSelectionRange(
+          control.selectionStart,
+          control.selectionStart
+        );
+      }
       newControl.focus();
     }
   };
@@ -38,13 +53,13 @@ export const useFocusNext = (setCurrentEventIndex: SetterOrUpdater<number>) => {
       (event.key === "Tab" && !event.shiftKey) ||
       event.key === "ArrowDown"
     ) {
-      _focusRelativeControl(event.target as HTMLElement, 1);
+      _focusRelativeControl(event.target as HTMLInputElement, 1);
       event.preventDefault();
     } else if (
       event.key === "ArrowUp" ||
       (event.key === "Tab" && event.shiftKey)
     ) {
-      _focusRelativeControl(event.target as HTMLElement, -1);
+      _focusRelativeControl(event.target as HTMLInputElement, -1);
       event.preventDefault();
     }
   };
