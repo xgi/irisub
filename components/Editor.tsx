@@ -217,7 +217,8 @@ const Editor: React.FC<Props> = (props: Props) => {
                             id: uuidv4(),
                             index: idx,
                             text: "",
-                            end_ms: 100,
+                            start_ms: idx * 2000,
+                            end_ms: idx * 2 * 1000 + 2000,
                           });
                           console.log(result);
                         });
