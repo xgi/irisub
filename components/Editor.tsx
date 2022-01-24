@@ -29,6 +29,7 @@ import {
   IconPause,
   IconPlay,
 } from "./Icons";
+import TimeInput from "./TimeInput";
 
 type Props = {};
 
@@ -116,10 +117,19 @@ const Editor: React.FC<Props> = (props: Props) => {
             value={playerProgress}
             onChange={handleSeek}
           />
-          <span style={{ fontFamily: "monospace", fontWeight: "600" }}>
-            {new Date(playerProgress * 1000).toISOString().substring(12, 23)} /{" "}
-            {new Date(playerDuration * 1000).toISOString().substring(12, 23)}
-          </span>
+          <TimeInput
+            className={styles.inputCurrent}
+            valueMs={playerProgress * 1000}
+            callback={(value: number) => handleSeek(value / 1000)}
+          />
+          <span className={styles.timeDivider}>/</span>
+          <input
+            className={styles.inputEnd}
+            disabled
+            value={new Date(playerDuration * 1000)
+              .toISOString()
+              .substring(12, 23)}
+          />
         </div>
         <div className={styles.optionsGroup}>
           <button onClick={handlePickerClick}>

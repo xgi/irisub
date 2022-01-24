@@ -41,6 +41,34 @@
       color: var(--secondary-dark-color);
       cursor: pointer;
     }
+
+    span.timeDivider {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      font-size: 1.3rem;
+    }
+
+    input {
+      text-align: center;
+      width: 6rem;
+      outline: none;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .inputCurrent {
+      border: 0.5px solid var(--secondary-light-color);
+      color: var(--secondary-dark-color);
+      background: none;
+    }
+
+    .inputEnd {
+      border: 0.5px solid var(--primary-dark-color);
+      background-color: var(--primary-dark-color);
+      color: var(--secondary-dark-color);
+    }
   }
 
   .optionsGroup {

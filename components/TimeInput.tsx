@@ -76,7 +76,7 @@ const TimeInput: React.FC<Props> = (props: Props) => {
       {...props}
       ref={props.inputRef}
       value={new Date(props.valueMs).toISOString().substring(12, 23)}
-      onKeyPress={(keyboardEvent) => handleKeyPress(keyboardEvent)}
+      onKeyPress={handleKeyPress}
       onChange={() => true}
     />
   );
