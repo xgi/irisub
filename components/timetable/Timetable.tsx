@@ -7,7 +7,6 @@ import {
 import styles from "../../styles/components/Timetable.module.scss";
 import { MAX_TIMESTAMP_MS } from "../../util/constants";
 import { classNames } from "../../util/layout";
-import { isPositiveInt } from "../../util/numeracy";
 import { useFocusNext } from "./hooks";
 
 type Props = {};
@@ -123,53 +122,54 @@ const Timetable: React.FC<Props> = (props: Props) => {
               <span>something here</span>
             </td>
           </tr> */}
-          {currentEventList
-            .map((event, idx) => {
-              // TODO: avoid re-renders
-              // https://alexsidorenko.com/blog/react-list-rerender/
-              return (
-                <tr
-                  key={event.id}
-                  className={classNames(
-                    currentEventIndex === idx ? styles.active : ""
-                  )}
-                  onClick={() => handleRowClick(idx)}
-                  tabIndex={idx + 1}
-                >
-                  <td>{idx + 1}</td>
-                  <td></td>
-                  <td>00:00:00.000</td>
-                  <td>
-                    <input
-                      ref={endFocusNextRef}
-                      className={styles.input}
-                      data-index={idx}
-                      style={{ minWidth: "8em", textAlign: "center" }}
-                      value={new Date(event.end_ms)
-                        .toISOString()
-                        .substring(12, 23)}
-                      onKeyPress={(event) => handleChangeEndTime(idx, event)}
-                      onChange={() => true}
-                    />
-                  </td>
-                  <td>23</td>
-                  <td>Default</td>
-                  <td>Steve</td>
-                  <td style={{ width: "100%" }}>
-                    <input
-                      ref={textFocusNextRef}
-                      className={styles.input}
-                      data-index={idx}
-                      placeholder=""
-                      value={event.text.replaceAll("\n", "|")}
-                      onChange={(changeEvent: any) =>
-                        handleChangeText(idx, changeEvent.target.value)
-                      }
-                    />
-                  </td>
-                </tr>
-              );
-            })}
+          {currentEventList.map((event) => {
+            // TODO: avoid re-renders
+            // https://alexsidorenko.com/blog/react-list-rerender/
+            return (
+              <tr
+                key={event.id}
+                className={classNames(
+                  currentEventIndex === event.index ? styles.active : ""
+                )}
+                onClick={() => handleRowClick(event.index)}
+                tabIndex={event.index + 1}
+              >
+                <td>{event.index + 1}</td>
+                <td></td>
+                <td>00:00:00.000</td>
+                <td>
+                  <input
+                    ref={endFocusNextRef}
+                    className={styles.input}
+                    data-index={event.index}
+                    style={{ minWidth: "8em", textAlign: "center" }}
+                    value={new Date(event.end_ms)
+                      .toISOString()
+                      .substring(12, 23)}
+                    onKeyPress={(keyboardEvent) =>
+                      handleChangeEndTime(event.index, keyboardEvent)
+                    }
+                    onChange={() => true}
+                  />
+                </td>
+                <td>23</td>
+                <td>Default</td>
+                <td>Steve</td>
+                <td style={{ width: "100%" }}>
+                  <input
+                    ref={textFocusNextRef}
+                    className={styles.input}
+                    data-index={event.index}
+                    placeholder=""
+                    value={event.text.replaceAll("\n", "|")}
+                    onChange={(changeEvent: any) =>
+                      handleChangeText(event.index, changeEvent.target.value)
+                    }
+                  />
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

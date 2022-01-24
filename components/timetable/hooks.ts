@@ -28,8 +28,9 @@ export const useFocusNext = (
     control: HTMLInputElement,
     indexDelta: number
   ) => {
-    const index = controls.current.indexOf(control);
-    const newControl = controls.current[index + indexDelta];
+    const index = control.getAttribute("data-index");
+    if (index === null) return;
+    const newControl = controls.current[parseInt(index) + indexDelta];
 
     if (newControl) {
       const newActiveIndex = newControl.getAttribute("data-index");

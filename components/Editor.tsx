@@ -51,7 +51,9 @@ const Editor: React.FC<Props> = (props: Props) => {
     if (database) {
       database
         .getAll(DB_STORES.EVENT)
-        .then((events) => setCurrentEventList(events));
+        .then((events) =>
+          setCurrentEventList(events.sort((a, b) => a.index - b.index))
+        );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [database]);
@@ -210,18 +212,26 @@ const Editor: React.FC<Props> = (props: Props) => {
                     <button
                       onClick={async () => {
                         const database = await initDb();
-                        Array(32)
-                          .fill(null)
-                          .forEach(async () => {
-                            const result = await database.put(DB_STORES.EVENT, {
-                              id: uuidv4(),
-                              text: "",
-                            });
-                            console.log(result);
+                        Array.from(Array(10).keys()).forEach(async (idx) => {
+                          const result = await database.put(DB_STORES.EVENT, {
+                            id: uuidv4(),
+                            index: idx,
+                            text: "",
+                            end_ms: 100,
                           });
+                          console.log(result);
+                        });
                       }}
                     >
                       add some events
+                    </button>
+                    <button
+                      onClick={async () => {
+                        const database = await initDb();
+                        database.clear("event");
+                      }}
+                    >
+                      remove all events
                     </button>
                   </div>
                 </ReflexElement>

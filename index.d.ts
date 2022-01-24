@@ -15,6 +15,7 @@ export type Event = {
   id: string;
   // project_id: string;
   // track_id: string;
+  index: number;
   // name?: string;
   text: string;
   // actor: string;
