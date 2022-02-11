@@ -49,22 +49,19 @@
     }
 
     input {
+      font-size: 1rem;
       text-align: center;
-      width: 6rem;
+      width: 7.25rem;
       outline: none;
-      padding-top: 1px;
-      padding-bottom: 1px;
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
-    }
+      padding-top: 2px;
+      padding-bottom: 2px;
 
-    .inputCurrent {
       border: 0.5px solid var(--secondary-light-color);
       color: var(--secondary-dark-color);
       background: none;
     }
 
-    .inputEnd {
+    input:disabled {
       border: 0.5px solid var(--primary-dark-color);
       background-color: var(--primary-dark-color);
       color: var(--secondary-dark-color);

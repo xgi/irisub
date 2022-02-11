@@ -98,6 +98,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.controlBar}>
+        {/* TODO: move to ControlBar.tsx */}
         <div className={styles.controlsGroup}>
           <a onClick={() => setPlayerPlaying(!playerPlaying)}>
             {playerPlaying ? <IconPause /> : <IconPlay />}
@@ -118,13 +119,12 @@ const Editor: React.FC<Props> = (props: Props) => {
             onChange={handleSeek}
           />
           <TimeInput
-            className={styles.inputCurrent}
+            disabled={playerPath ? false : true}
             valueMs={playerProgress * 1000}
             callback={(value: number) => handleSeek(value / 1000)}
           />
           <span className={styles.timeDivider}>/</span>
           <input
-            className={styles.inputEnd}
             disabled
             value={new Date(playerDuration * 1000)
               .toISOString()
