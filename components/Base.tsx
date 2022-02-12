@@ -18,11 +18,25 @@ const Base: React.FC<Props> = (props: Props) => {
         <Header />
         <div className={styles.middle}>
           <Sidebar />
-          {currentNavPage === NavPage.Editor ? (
-            <Editor />
-          ) : (
-            <p>Not on the editor page</p>
-          )}
+          {/* 
+            Opting to render all pages with display:none for inactive ones in order to reduce
+            render times when switching pages (especially when going to the editor) and dealing
+            with triggers when component are first rendered -- e.g. when the <video> component
+            is generated.
+          */}
+          <Editor hidden={currentNavPage !== NavPage.Editor} />
+          <p
+            style={currentNavPage !== NavPage.Styles ? { display: "none" } : {}}
+          >
+            styles page
+          </p>
+          <p
+            style={
+              currentNavPage !== NavPage.Settings ? { display: "none" } : {}
+            }
+          >
+            settings page
+          </p>
         </div>
         <Footer />
       </div>

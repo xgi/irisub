@@ -32,7 +32,9 @@ import {
 import TimeInput from "./TimeInput";
 import { classNames } from "../util/layout";
 
-type Props = {};
+type Props = {
+  hidden?: boolean;
+};
 
 const Editor: React.FC<Props> = (props: Props) => {
   const database = useRecoilValue(databaseState);
@@ -97,7 +99,10 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={props.hidden ? { display: "none" } : {}}
+    >
       <div className={styles.controlBar}>
         {/* TODO: move to ControlBar.tsx */}
         <div className={styles.controlsGroup}>

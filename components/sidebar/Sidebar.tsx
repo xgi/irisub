@@ -1,4 +1,5 @@
 import { useRecoilState } from "recoil";
+import { playerPlayingState } from "../../store/player";
 import { currentNavPageState } from "../../store/states";
 import styles from "../../styles/components/Sidebar.module.scss";
 import { NavPage } from "../../util/constants";
@@ -9,6 +10,12 @@ type Props = {};
 const Sidebar: React.FC<Props> = (props: Props) => {
   const [currentNavPage, setCurrentNavPage] =
     useRecoilState(currentNavPageState);
+  const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
+
+  const goToPage = (navPage: NavPage) => {
+    setCurrentNavPage(navPage);
+    if (playerPlaying) setPlayerPlaying(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -18,7 +25,7 @@ const Sidebar: React.FC<Props> = (props: Props) => {
             className={classNames(
               currentNavPage === NavPage.Editor ? styles.active : ""
             )}
-            onClick={() => setCurrentNavPage(NavPage.Editor)}
+            onClick={() => goToPage(NavPage.Editor)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +48,7 @@ const Sidebar: React.FC<Props> = (props: Props) => {
             className={classNames(
               currentNavPage === NavPage.Styles ? styles.active : ""
             )}
-            onClick={() => setCurrentNavPage(NavPage.Styles)}
+            onClick={() => goToPage(NavPage.Styles)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +71,7 @@ const Sidebar: React.FC<Props> = (props: Props) => {
             className={classNames(
               currentNavPage === NavPage.Settings ? styles.active : ""
             )}
-            onClick={() => setCurrentNavPage(NavPage.Settings)}
+            onClick={() => goToPage(NavPage.Settings)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
