@@ -141,3 +141,13 @@
 .horizontalSlider:hover .thumb {
   background-color: var(--accent-dark-color);
 }
+
+.horizontalSlider.disabled {
+  .track {
+    background-color: var(--primary-dark-color);
+  }
+
+  .thumb {
+    display: none;
+  }
+}

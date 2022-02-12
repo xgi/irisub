@@ -30,6 +30,7 @@ import {
   IconPlay,
 } from "./Icons";
 import TimeInput from "./TimeInput";
+import { classNames } from "../util/layout";
 
 type Props = {};
 
@@ -110,7 +111,10 @@ const Editor: React.FC<Props> = (props: Props) => {
             <Icon10Right />
           </a>
           <ReactSlider
-            className={styles.horizontalSlider}
+            className={classNames(
+              styles.horizontalSlider,
+              playerPath ? "" : styles.disabled
+            )}
             thumbClassName={styles.thumb}
             trackClassName={styles.track}
             min={0}
