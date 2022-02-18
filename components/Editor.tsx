@@ -31,6 +31,7 @@ import {
 } from "./Icons";
 import TimeInput from "./TimeInput";
 import { classNames } from "../util/layout";
+import EditorPanel from "./EditorPanel";
 
 type Props = {
   hidden?: boolean;
@@ -258,7 +259,7 @@ const Editor: React.FC<Props> = (props: Props) => {
                 <ReflexSplitter />
                 <ReflexElement>
                   <div className={styles.pane}>
-                    <TextEditor />
+                    <EditorPanel />
                   </div>
                 </ReflexElement>
               </ReflexContainer>

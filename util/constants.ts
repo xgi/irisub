@@ -6,3 +6,8 @@ export enum NavPage {
   Styles = "Styles",
   Settings = "Settings",
 }
+
+export enum EditorPanelTab {
+  Text = "Text",
+  Styles = "Styles",
+}

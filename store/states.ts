@@ -1,13 +1,18 @@
 import { IDBPDatabase } from "idb";
 import { atom, DefaultValue } from "recoil";
 import { shallowEqual } from "../util/comparison";
-import { NavPage } from "../util/constants";
+import { NavPage, EditorPanelTab } from "../util/constants";
 import { DB_STORES } from "./db";
 import { IrisubDBSchema } from "./types";
 
 export const currentNavPageState = atom<NavPage>({
   key: "currentNavPageState",
   default: NavPage.Editor,
+});
+
+export const currentEditorPanelTabState = atom<EditorPanelTab>({
+  key: "currentEditorPanelTabState",
+  default: EditorPanelTab.Text,
 });
 
 export const databaseState = atom<IDBPDatabase<IrisubDBSchema> | null>({
