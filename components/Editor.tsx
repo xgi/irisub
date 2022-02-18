@@ -46,8 +46,6 @@ const Editor: React.FC<Props> = (props: Props) => {
     useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
   const playerDuration = useRecoilValue(playerDurationState);
-  const [currentProject, setCurrentProject] =
-    useRecoilState(currentProjectState);
   const [playerPath, setPlayerPath] = useRecoilState(playerPathState);
   const playerRef = useRef<ReactPlayer | null>(null);
   const pickerRef = useRef<HTMLInputElement | null>(null);
@@ -74,22 +72,23 @@ const Editor: React.FC<Props> = (props: Props) => {
       setPlayerPath(URL.createObjectURL(e.target.files[0]));
   };
 
-  const handleConnect = () => {
-    const vid = document.getElementById("myvideo");
+  // TODO: deprecate
+  // const handleConnect = () => {
+  //   const vid = document.getElementById("myvideo");
 
-    if (vid) {
-      const subobj = new Blob([subsvtt], { type: "text/vtt" });
-      const url = (URL || webkitURL).createObjectURL(subobj);
-      const track = document.createElement("track");
-      console.log(subobj);
-      track.kind = "captions";
-      track.label = "English";
-      track.srclang = "en";
-      track.src = url;
-      track.default = true;
-      vid.appendChild(track);
-    }
-  };
+  //   if (vid) {
+  //     const subobj = new Blob([subsvtt], { type: "text/vtt" });
+  //     const url = (URL || webkitURL).createObjectURL(subobj);
+  //     const track = document.createElement("track");
+  //     console.log(subobj);
+  //     track.kind = "captions";
+  //     track.label = "English";
+  //     track.srclang = "en";
+  //     track.src = url;
+  //     track.default = true;
+  //     vid.appendChild(track);
+  //   }
+  // };
 
   const handleSeek = (value: number) => {
     setPlayerProgress(value);
@@ -170,99 +169,9 @@ const Editor: React.FC<Props> = (props: Props) => {
             </ReflexElement>
             <ReflexSplitter />
             <ReflexElement>
-              <ReflexContainer orientation="horizontal">
-                <ReflexElement>
-                  <div className={styles.pane}>
-                    <button onClick={handleConnect}>connect</button>
-                    <p>
-                      progress:{" "}
-                      {new Date(playerProgress * 1000)
-                        .toISOString()
-                        .substring(12, 23)}
-                    </p>
-                    <button
-                      onClick={() => {
-                        const myNewProject: Irisub.Project = {
-                          id: uuidv4(),
-                          title: "my new project",
-                        };
-                        setCurrentProject(myNewProject);
-                      }}
-                    >
-                      create project
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (currentProject) {
-                          setCurrentProject({
-                            ...currentProject,
-                            title: "some different title",
-                          });
-                        }
-                      }}
-                    >
-                      modify project
-                    </button>
-                    <button
-                      onClick={async () => {
-                        const database = await initDb();
-                        database.getAll(DB_STORES.PROJECT).then((projects) => {
-                          console.log(
-                            `Found ${projects.length} projects in persistant store:`
-                          );
-                          projects.forEach((project) => console.log(project));
-                        });
-                      }}
-                    >
-                      list all projects
-                    </button>
-                    <button
-                      onClick={async () => {
-                        const database = await initDb();
-                        database.getAll(DB_STORES.EVENT).then((events) => {
-                          console.log(
-                            `Found ${events.length} events in persistant store:`
-                          );
-                          events.forEach((event) => console.log(event));
-                        });
-                      }}
-                    >
-                      list all events
-                    </button>
-                    <button
-                      onClick={async () => {
-                        const database = await initDb();
-                        Array.from(Array(10).keys()).forEach(async (idx) => {
-                          const result = await database.put(DB_STORES.EVENT, {
-                            id: uuidv4(),
-                            index: idx,
-                            text: "",
-                            start_ms: idx * 2000,
-                            end_ms: idx * 2 * 1000 + 2000,
-                          });
-                          console.log(result);
-                        });
-                      }}
-                    >
-                      add some events
-                    </button>
-                    <button
-                      onClick={async () => {
-                        const database = await initDb();
-                        database.clear("event");
-                      }}
-                    >
-                      remove all events
-                    </button>
-                  </div>
-                </ReflexElement>
-                <ReflexSplitter />
-                <ReflexElement>
-                  <div className={styles.pane}>
-                    <EditorPanel />
-                  </div>
-                </ReflexElement>
-              </ReflexContainer>
+              <div className={styles.pane}>
+                <EditorPanel />
+              </div>
             </ReflexElement>
           </ReflexContainer>
         </ReflexElement>

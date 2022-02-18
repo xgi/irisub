@@ -10,4 +10,5 @@ export enum NavPage {
 export enum EditorPanelTab {
   Text = "Text",
   Styles = "Styles",
+  Debug = "Debug",
 }

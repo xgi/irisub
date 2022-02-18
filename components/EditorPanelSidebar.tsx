@@ -61,6 +61,16 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
               />
             </svg>
           </a>
+          <a
+            className={classNames(
+              currentEditorPanelTab === EditorPanelTab.Debug
+                ? styles.active
+                : ""
+            )}
+            onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Debug)}
+          >
+            D
+          </a>
         </nav>
       </aside>
     </div>
