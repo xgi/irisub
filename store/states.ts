@@ -18,7 +18,7 @@ export const databaseState = atom<IDBPDatabase<IrisubDBSchema> | null>({
 export const currentProjectState = atom<Irisub.Project | null>({
   key: "currentProjectState",
   default: null,
-  effects_UNSTABLE: [
+  effects: [
     ({ onSet, getPromise }) => {
       onSet(async (newValue, _oldValue, isReset: boolean) => {
         getPromise(databaseState).then((database) => {
@@ -41,7 +41,7 @@ const currentTrackState = atom<string | null>({
 export const currentEventIndexState = atom<number>({
   key: "currentEventIndexState",
   default: 0,
-  effects_UNSTABLE: [
+  effects: [
     ({ onSet, setSelf, getPromise }) => {
       onSet(async (newValue, oldValue) => {
         if (newValue < 0) setSelf(oldValue);
@@ -57,7 +57,7 @@ export const currentEventIndexState = atom<number>({
 export const currentEventListState = atom<Irisub.Event[]>({
   key: "currentEventListState",
   default: [],
-  effects_UNSTABLE: [
+  effects: [
     ({ onSet, getPromise }) => {
       onSet(async (newValue, oldValue) => {
         if (!newValue) {
