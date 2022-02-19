@@ -1,7 +1,6 @@
 import { ChangeEvent, useEffect, useRef } from "react";
 import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { v4 as uuidv4 } from "uuid";
 import {
   playerDurationState,
   playerPathState,
@@ -10,15 +9,9 @@ import {
 } from "../store/player";
 import styles from "../styles/components/Editor.module.scss";
 import Player from "./Player";
-import TextEditor from "./TextEditor";
 import Timetable from "./timetable/Timetable";
-import subsvtt from "../lib/subsvtt";
-import {
-  currentEventListState,
-  currentProjectState,
-  databaseState,
-} from "../store/states";
-import { DB_STORES, initDb } from "../store/db";
+import { currentEventListState, databaseState } from "../store/states";
+import { DB_STORES } from "../store/db";
 import ReactSlider from "react-slider";
 import ReactPlayer from "react-player";
 import FileDrop from "./FileDrop";
@@ -158,7 +151,7 @@ const Editor: React.FC<Props> = (props: Props) => {
       <ReflexContainer orientation="horizontal">
         <ReflexElement>
           <ReflexContainer orientation="vertical">
-            <ReflexElement>
+            <ReflexElement flex={0.55}>
               <div className={styles.pane}>
                 {playerPath ? (
                   <Player path={playerPath} ref={playerRef} />
@@ -176,7 +169,13 @@ const Editor: React.FC<Props> = (props: Props) => {
           </ReflexContainer>
         </ReflexElement>
         <ReflexSplitter />
-        <ReflexElement>
+        <ReflexElement flex={0.125}>
+          <div className={styles.pane}>
+            <p style={{ textAlign: "center" }}>Timeline</p>
+          </div>
+        </ReflexElement>
+        <ReflexSplitter />
+        <ReflexElement flex={0.3}>
           <div className={styles.pane} style={{ overflowY: "auto" }}>
             <Timetable />
           </div>
