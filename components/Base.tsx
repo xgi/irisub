@@ -26,9 +26,11 @@ const Base: React.FC<Props> = (props: Props) => {
           */}
           <Editor hidden={currentNavPage !== NavPage.Editor} />
           <p
-            style={currentNavPage !== NavPage.Styles ? { display: "none" } : {}}
+            style={
+              currentNavPage !== NavPage.Projects ? { display: "none" } : {}
+            }
           >
-            styles page
+            projects page
           </p>
           <p
             style={
