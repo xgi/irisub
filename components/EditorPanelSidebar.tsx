@@ -1,3 +1,4 @@
+import ReactTooltip from "react-tooltip";
 import { useRecoilState } from "recoil";
 import { currentEditorPanelTabState } from "../store/states";
 import styles from "../styles/components/EditorPanelSidebar.module.scss";
@@ -20,6 +21,8 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
               currentEditorPanelTab === EditorPanelTab.Text ? styles.active : ""
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Text)}
+            data-tip
+            data-for="tooltipText"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -37,6 +40,15 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
               />
             </svg>
           </a>
+          <ReactTooltip
+            id="tooltipText"
+            className="tooltip"
+            effect="solid"
+            place="left"
+            arrowColor="transparent"
+          >
+            <span>Edit Text</span>
+          </ReactTooltip>
           <a
             className={classNames(
               currentEditorPanelTab === EditorPanelTab.Styles
@@ -44,6 +56,8 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
                 : ""
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Styles)}
+            data-tip
+            data-for="tooltipStyles"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -61,6 +75,15 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
               />
             </svg>
           </a>
+          <ReactTooltip
+            id="tooltipStyles"
+            className="tooltip"
+            effect="solid"
+            place="left"
+            arrowColor="transparent"
+          >
+            <span>Styles</span>
+          </ReactTooltip>
           <a
             className={classNames(
               currentEditorPanelTab === EditorPanelTab.Debug
