@@ -65,7 +65,7 @@ export const useFocusNext = (
     }
   };
 
-  return useCallback((element) => {
+  return useCallback((element: any) => {
     if (element && !controls.current.includes(element)) {
       controls.current.push(element);
       element.addEventListener("keydown", handler);

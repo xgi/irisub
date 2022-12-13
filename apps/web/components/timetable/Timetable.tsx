@@ -1,9 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import {
-  currentEventIndexState,
-  currentEventListState,
-} from "../../store/states";
+import { currentEventIndexState, currentEventListState } from "../../store/states";
 import styles from "../../styles/components/Timetable.module.scss";
 import { classNames } from "../../util/layout";
 import TimeInput from "../TimeInput";
@@ -12,12 +9,8 @@ import { useFocusNext } from "./hooks";
 type Props = {};
 
 const Timetable: React.FC<Props> = (props: Props) => {
-  const [currentEventList, setCurrentEventList] = useRecoilState(
-    currentEventListState
-  );
-  const [currentEventIndex, setCurrentEventIndex] = useRecoilState(
-    currentEventIndexState
-  );
+  const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
+  const [currentEventIndex, setCurrentEventIndex] = useRecoilState(currentEventIndexState);
   const textFocusNextRef = useFocusNext(setCurrentEventIndex);
   const startTimeFocusNextRef = useFocusNext(setCurrentEventIndex, true);
   const endTimeFocusNextRef = useFocusNext(setCurrentEventIndex, true);
@@ -67,9 +60,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
             return (
               <tr
                 key={event.id}
-                className={classNames(
-                  currentEventIndex === event.index ? styles.active : ""
-                )}
+                className={classNames(currentEventIndex === event.index ? styles.active : "")}
                 onClick={() => handleRowClick(event.index)}
                 tabIndex={event.index + 1}
               >
@@ -82,9 +73,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
                     data-index={event.index}
                     style={{ minWidth: "8em", textAlign: "center" }}
                     valueMs={event.start_ms}
-                    callback={(value: number) =>
-                      updateEvent(event.index, { start_ms: value })
-                    }
+                    callback={(value: number) => updateEvent(event.index, { start_ms: value })}
                   />
                 </td>
                 <td>
@@ -94,9 +83,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
                     data-index={event.index}
                     style={{ minWidth: "8em", textAlign: "center" }}
                     valueMs={event.end_ms}
-                    callback={(value: number) =>
-                      updateEvent(event.index, { end_ms: value })
-                    }
+                    callback={(value: number) => updateEvent(event.index, { end_ms: value })}
                   />
                 </td>
                 <td>23</td>
@@ -108,7 +95,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
                     className={styles.input}
                     data-index={event.index}
                     placeholder=""
-                    value={event.text.replaceAll("\n", "|")}
+                    value={event.text.replaceAll("\n", "␤")}
                     onChange={(changeEvent: any) =>
                       updateEvent(event.index, {
                         text: changeEvent.target.value,

@@ -8,10 +8,8 @@ const Header: React.FC<Props> = (props: Props) => {
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.group}>
-          <Link href="/">
-            <a className={styles.brand}>
-              <span>IRISUB</span>
-            </a>
+          <Link href="/" className={styles.brand}>
+            <span>IRISUB</span>
           </Link>
         </div>
         <div className={styles.group}>top right</div>
