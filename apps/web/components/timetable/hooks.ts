@@ -24,10 +24,7 @@ export const useFocusNext = (
    * @param control pivot control (usually the current one)
    * @param indexDelta relative index to focus
    */
-  const _focusRelativeControl = (
-    control: HTMLInputElement,
-    indexDelta: number
-  ) => {
+  const _focusRelativeControl = (control: HTMLInputElement, indexDelta: number) => {
     const index = control.getAttribute("data-index");
     if (index === null) return;
     const newControl = controls.current[parseInt(index) + indexDelta];
@@ -39,10 +36,7 @@ export const useFocusNext = (
       }
 
       if (matchCursorPosition) {
-        newControl.setSelectionRange(
-          control.selectionStart,
-          control.selectionStart
-        );
+        newControl.setSelectionRange(control.selectionStart, control.selectionStart);
       }
       newControl.focus();
     }
@@ -56,10 +50,7 @@ export const useFocusNext = (
     ) {
       _focusRelativeControl(event.target as HTMLInputElement, 1);
       event.preventDefault();
-    } else if (
-      event.key === "ArrowUp" ||
-      (event.key === "Tab" && event.shiftKey)
-    ) {
+    } else if (event.key === "ArrowUp" || (event.key === "Tab" && event.shiftKey)) {
       _focusRelativeControl(event.target as HTMLInputElement, -1);
       event.preventDefault();
     }

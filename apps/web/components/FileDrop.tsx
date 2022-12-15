@@ -1,9 +1,4 @@
-import {
-  ChangeEvent,
-  DragEventHandler,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, DragEventHandler, useRef, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { playerPathState } from "../store/player";
 import styles from "../styles/components/FileDrop.module.scss";
@@ -23,8 +18,7 @@ const FileDrop: React.FC<Props> = (props: Props) => {
   };
 
   const handlePickerChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e && e.target && e.target.files)
-      setPlayerPath(URL.createObjectURL(e.target.files[0]));
+    if (e && e.target && e.target.files) setPlayerPath(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleDrop: DragEventHandler<HTMLDivElement> = (e) => {
@@ -38,10 +32,7 @@ const FileDrop: React.FC<Props> = (props: Props) => {
       <div className={styles.zone}>
         <div
           onClick={handleClick}
-          className={classNames(
-            styles.droparea,
-            dragover ? styles.dragover : ""
-          )}
+          className={classNames(styles.droparea, dragover ? styles.dragover : "")}
           onDragOver={(e) => {
             setDragover(true);
             e.preventDefault();

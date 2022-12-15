@@ -16,7 +16,7 @@ body.reflex-row-resize {
   width: 100%;
 }
 
-.reflex-container>.reflex-splitter {
+.reflex-container > .reflex-splitter {
   position: relative;
 }
 
@@ -30,40 +30,40 @@ body.reflex-row-resize {
   min-width: 1px;
 }
 
-.reflex-container>.reflex-element {
+.reflex-container > .reflex-element {
   position: relative;
   overflow: auto;
   height: 100%;
   width: 100%;
 }
 
-.reflex-container.reflex-resizing>.reflex-element {
+.reflex-container.reflex-resizing > .reflex-element {
   pointer-events: none;
   user-select: none;
 }
 
-.reflex-container>.reflex-element>.reflex-size-aware {
+.reflex-container > .reflex-element > .reflex-size-aware {
   height: 100%;
   width: 100%;
 }
 
-.reflex-container>.reflex-splitter {
+.reflex-container > .reflex-splitter {
   background-color: var(--primary-light-color);
 }
 
-.vertical>.reflex-splitter {
+.vertical > .reflex-splitter {
   cursor: col-resize;
   height: 100%;
   width: 0.25rem;
 }
 
-.horizontal>.reflex-splitter {
+.horizontal > .reflex-splitter {
   cursor: row-resize;
   width: 100%;
   height: 0.25rem;
 }
 
-.reflex-container>.reflex-splitter::before {
+.reflex-container > .reflex-splitter::before {
   position: absolute;
   top: 0px;
   right: 0px;
@@ -75,20 +75,20 @@ body.reflex-row-resize {
   z-index: 100;
 }
 
-.reflex-container>.reflex-splitter:hover::before,
-.reflex-container>.reflex-splitter.active::before {
+.reflex-container > .reflex-splitter:hover::before,
+.reflex-container > .reflex-splitter.active::before {
   opacity: 1;
 }
 
-.reflex-container.horizontal>.reflex-splitter:hover::before,
-.reflex-container.horizontal>.reflex-splitter.active::before {
+.reflex-container.horizontal > .reflex-splitter:hover::before,
+.reflex-container.horizontal > .reflex-splitter.active::before {
   top: -0.125rem;
   bottom: -0.125rem;
   width: 100%;
 }
 
-.reflex-container.vertical>.reflex-splitter:hover::before,
-.reflex-container.vertical>.reflex-splitter.active::before {
+.reflex-container.vertical > .reflex-splitter:hover::before,
+.reflex-container.vertical > .reflex-splitter.active::before {
   left: -0.125rem;
   right: -0.125rem;
   height: 100%;

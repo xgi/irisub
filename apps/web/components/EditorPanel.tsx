@@ -1,9 +1,6 @@
 import { useRecoilState } from "recoil";
 import { DB_STORES, initDb } from "../store/db";
-import {
-  currentEditorPanelTabState,
-  currentProjectState,
-} from "../store/states";
+import { currentEditorPanelTabState, currentProjectState } from "../store/states";
 import styles from "../styles/components/EditorPanel.module.scss";
 import { EditorPanelTab } from "../util/constants";
 import EditorPanelSidebar from "./EditorPanelSidebar";
@@ -15,8 +12,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
   const [currentEditorPanelTab, setCurrentEditorPanelTab] = useRecoilState(
     currentEditorPanelTabState
   );
-  const [currentProject, setCurrentProject] =
-    useRecoilState(currentProjectState);
+  const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
 
   return (
     <div className={styles.container}>
@@ -51,9 +47,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
               onClick={async () => {
                 const database = await initDb();
                 database.getAll(DB_STORES.PROJECT).then((projects) => {
-                  console.log(
-                    `Found ${projects.length} projects in persistant store:`
-                  );
+                  console.log(`Found ${projects.length} projects in persistant store:`);
                   projects.forEach((project) => console.log(project));
                 });
               }}
@@ -64,9 +58,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
               onClick={async () => {
                 const database = await initDb();
                 database.getAll(DB_STORES.EVENT).then((events) => {
-                  console.log(
-                    `Found ${events.length} events in persistant store:`
-                  );
+                  console.log(`Found ${events.length} events in persistant store:`);
                   events.forEach((event) => console.log(event));
                 });
               }}

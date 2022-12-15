@@ -8,8 +8,7 @@ import { classNames } from "../../util/layout";
 type Props = {};
 
 const Sidebar: React.FC<Props> = (props: Props) => {
-  const [currentNavPage, setCurrentNavPage] =
-    useRecoilState(currentNavPageState);
+  const [currentNavPage, setCurrentNavPage] = useRecoilState(currentNavPageState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
 
   const goToPage = (navPage: NavPage) => {
@@ -22,9 +21,7 @@ const Sidebar: React.FC<Props> = (props: Props) => {
       <aside className={styles.aside}>
         <nav>
           <a
-            className={classNames(
-              currentNavPage === NavPage.Editor ? styles.active : ""
-            )}
+            className={classNames(currentNavPage === NavPage.Editor ? styles.active : "")}
             onClick={() => goToPage(NavPage.Editor)}
           >
             <svg
@@ -45,9 +42,7 @@ const Sidebar: React.FC<Props> = (props: Props) => {
             <span>Editor</span>
           </a>
           <a
-            className={classNames(
-              currentNavPage === NavPage.Projects ? styles.active : ""
-            )}
+            className={classNames(currentNavPage === NavPage.Projects ? styles.active : "")}
             onClick={() => goToPage(NavPage.Projects)}
           >
             <svg
@@ -68,9 +63,7 @@ const Sidebar: React.FC<Props> = (props: Props) => {
             <span>Projects</span>
           </a>
           <a
-            className={classNames(
-              currentNavPage === NavPage.Settings ? styles.active : ""
-            )}
+            className={classNames(currentNavPage === NavPage.Settings ? styles.active : "")}
             onClick={() => goToPage(NavPage.Settings)}
           >
             <svg

@@ -7,12 +7,8 @@ import { currentEventIndexState, currentEventListState } from "../store/states";
 
 type Props = {};
 const TextEditor: React.FC<Props> = (props: Props) => {
-  const [currentEventIndex, setCurrentEventIndex] = useRecoilState(
-    currentEventIndexState
-  );
-  const [currentEventList, setCurrentEventList] = useRecoilState(
-    currentEventListState
-  );
+  const [currentEventIndex, setCurrentEventIndex] = useRecoilState(currentEventIndexState);
+  const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
 
   const setCurrentData = (text: string) => {
     if (currentEventList && currentEventList[currentEventIndex]) {
@@ -39,9 +35,7 @@ const TextEditor: React.FC<Props> = (props: Props) => {
           : ""
       }
       onValueChange={(value: string) => setCurrentData(value)}
-      highlight={(value: string) =>
-        Prism.highlight(value || "", Prism.languages.html, "html")
-      }
+      highlight={(value: string) => Prism.highlight(value || "", Prism.languages.html, "html")}
       onKeyDownCapture={handleKeyDown}
       padding={10}
       style={{

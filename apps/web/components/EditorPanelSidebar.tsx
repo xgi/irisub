@@ -51,9 +51,7 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
           </ReactTooltip>
           <a
             className={classNames(
-              currentEditorPanelTab === EditorPanelTab.Styles
-                ? styles.active
-                : ""
+              currentEditorPanelTab === EditorPanelTab.Styles ? styles.active : ""
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Styles)}
             data-tip
@@ -86,9 +84,7 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
           </ReactTooltip>
           <a
             className={classNames(
-              currentEditorPanelTab === EditorPanelTab.Debug
-                ? styles.active
-                : ""
+              currentEditorPanelTab === EditorPanelTab.Debug ? styles.active : ""
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Debug)}
           >

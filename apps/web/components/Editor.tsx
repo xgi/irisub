@@ -15,13 +15,7 @@ import { DB_STORES } from "../store/db";
 import ReactSlider from "react-slider";
 import ReactPlayer from "react-player";
 import FileDrop from "./FileDrop";
-import {
-  Icon10Left,
-  Icon10Right,
-  IconFileUpload,
-  IconPause,
-  IconPlay,
-} from "./Icons";
+import { Icon10Left, Icon10Right, IconFileUpload, IconPause, IconPlay } from "./Icons";
 import TimeInput from "./TimeInput";
 import { classNames } from "../util/layout";
 import EditorPanel from "./EditorPanel";
@@ -32,11 +26,8 @@ type Props = {
 
 const Editor: React.FC<Props> = (props: Props) => {
   const database = useRecoilValue(databaseState);
-  const [currentEventList, setCurrentEventList] = useRecoilState(
-    currentEventListState
-  );
-  const [playerProgress, setPlayerProgress] =
-    useRecoilState(playerProgressState);
+  const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
+  const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
   const playerDuration = useRecoilValue(playerDurationState);
   const [playerPath, setPlayerPath] = useRecoilState(playerPathState);
@@ -47,9 +38,7 @@ const Editor: React.FC<Props> = (props: Props) => {
     if (database) {
       database
         .getAll(DB_STORES.EVENT)
-        .then((events) =>
-          setCurrentEventList(events.sort((a, b) => a.index - b.index))
-        );
+        .then((events) => setCurrentEventList(events.sort((a, b) => a.index - b.index)));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [database]);
@@ -61,8 +50,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const handlePickerChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e && e.target && e.target.files)
-      setPlayerPath(URL.createObjectURL(e.target.files[0]));
+    if (e && e.target && e.target.files) setPlayerPath(URL.createObjectURL(e.target.files[0]));
   };
 
   // TODO: deprecate
@@ -92,10 +80,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div
-      className={styles.container}
-      style={props.hidden ? { display: "none" } : {}}
-    >
+    <div className={styles.container} style={props.hidden ? { display: "none" } : {}}>
       <div className={styles.controlBar}>
         {/* TODO: move to ControlBar.tsx */}
         <div className={styles.controlsGroup}>
@@ -109,10 +94,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             <Icon10Right />
           </a>
           <ReactSlider
-            className={classNames(
-              styles.horizontalSlider,
-              playerPath ? "" : styles.disabled
-            )}
+            className={classNames(styles.horizontalSlider, playerPath ? "" : styles.disabled)}
             thumbClassName={styles.thumb}
             trackClassName={styles.track}
             min={0}
@@ -126,12 +108,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             callback={(value: number) => handleSeek(value / 1000)}
           />
           <span className={styles.timeDivider}>/</span>
-          <input
-            disabled
-            value={new Date(playerDuration * 1000)
-              .toISOString()
-              .substring(12, 23)}
-          />
+          <input disabled value={new Date(playerDuration * 1000).toISOString().substring(12, 23)} />
         </div>
         <div className={styles.optionsGroup}>
           <button onClick={handlePickerClick}>
@@ -153,11 +130,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           <ReflexContainer orientation="vertical">
             <ReflexElement flex={0.55}>
               <div className={styles.pane}>
-                {playerPath ? (
-                  <Player path={playerPath} ref={playerRef} />
-                ) : (
-                  <FileDrop />
-                )}
+                {playerPath ? <Player path={playerPath} ref={playerRef} /> : <FileDrop />}
               </div>
             </ReflexElement>
             <ReflexSplitter />
