@@ -5,6 +5,7 @@ import styles from "../styles/components/EditorPanel.module.scss";
 import { EditorPanelTab } from "../util/constants";
 import EditorPanelSidebar from "./EditorPanelSidebar";
 import TextEditor from "./TextEditor";
+import { Irisub } from "irisub-common";
 
 type Props = {};
 

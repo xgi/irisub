@@ -1,4 +1,5 @@
 import { DBSchema } from "idb";
+import { Irisub } from "../../../packages/irisub-common";
 
 export interface IrisubDBSchema extends DBSchema {
   project: {

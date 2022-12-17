@@ -22,17 +22,17 @@ importers:
       '@types/react-dom': ^18.0.9
       eslint: 7.32.0
       eslint-config-custom: workspace:0.0.0
+      irisub-common: workspace:0.0.0
       next: 13.0.0
       react: 18.2.0
       react-dom: 18.2.0
       tsconfig: workspace:0.0.0
       typescript: ^4.9.4
-      ui: workspace:0.0.0
     dependencies:
+      irisub-common: link:../../packages/irisub-common
       next: 13.0.0_672uxklweod7ene3nqtsh262ca
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      ui: link:../../packages/ui
     devDependencies:
       '@babel/core': 7.20.5
       '@types/node': 17.0.45
@@ -55,6 +55,7 @@ importers:
       eslint: 7.32.0
       eslint-config-custom: workspace:0.0.0
       idb: ^7.1.1
+      irisub-common: workspace:0.0.0
       next: 13.0.0
       prismjs: ^1.29.0
       prop-types: ^15.8.1
@@ -69,10 +70,10 @@ importers:
       sass: ^1.56.2
       tsconfig: workspace:0.0.0
       typescript: ^4.9.4
-      ui: workspace:0.0.0
       uuid: ^8.3.2
     dependencies:
       idb: 7.1.1
+      irisub-common: link:../../packages/irisub-common
       next: 13.0.0_mz53pcrhrtbilczuivypd336dm
       prismjs: 1.29.0
       react: 18.2.0
@@ -84,7 +85,6 @@ importers:
       react-tooltip: 4.5.1_biqbaboplfbrettd7655fr4n2y
       recoil: 0.7.6_biqbaboplfbrettd7655fr4n2y
       sass: 1.56.2
-      ui: link:../../packages/ui
       uuid: 8.3.2
     devDependencies:
       '@babel/core': 7.20.5
@@ -117,10 +117,7 @@ importers:
     devDependencies:
       typescript: 4.9.4
 
-  packages/tsconfig:
-    specifiers: {}
-
-  packages/ui:
+  packages/irisub-common:
     specifiers:
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.6
@@ -137,6 +134,9 @@ importers:
       react: 18.2.0
       tsconfig: link:../tsconfig
       typescript: 4.9.4
+
+  packages/tsconfig:
+    specifiers: {}
 
 packages:
 

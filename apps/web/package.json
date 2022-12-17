@@ -21,7 +21,7 @@
     "react-tooltip": "^4.5.1",
     "recoil": "^0.7.6",
     "sass": "^1.56.2",
-    "ui": "workspace:0.0.0",
+    "irisub-common": "workspace:0.0.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

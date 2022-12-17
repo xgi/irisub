@@ -1,4 +1,5 @@
 import { IDBPDatabase } from "idb";
+import { Irisub } from "irisub-common";
 import { atom, DefaultValue } from "recoil";
 import { shallowEqual } from "../util/comparison";
 import { NavPage, EditorPanelTab } from "../util/constants";
