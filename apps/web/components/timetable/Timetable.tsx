@@ -1,6 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { currentEventIndexState, currentEventListState } from "../../store/states";
+import { currentEventIndexState, currentTrackState } from "../../store/states";
 import styles from "../../styles/components/Timetable.module.scss";
 import { classNames } from "../../util/layout";
 import TimeInput from "../TimeInput";
@@ -9,7 +9,7 @@ import { useFocusNext } from "./hooks";
 type Props = {};
 
 const Timetable: React.FC<Props> = (props: Props) => {
-  const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
+  const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
   const [currentEventIndex, setCurrentEventIndex] = useRecoilState(currentEventIndexState);
   const textFocusNextRef = useFocusNext(setCurrentEventIndex);
   const startTimeFocusNextRef = useFocusNext(setCurrentEventIndex, true);
@@ -23,15 +23,19 @@ const Timetable: React.FC<Props> = (props: Props) => {
     index: number,
     data: { text?: string; start_ms?: number; end_ms?: number }
   ) => {
-    const newEvent = { ...currentEventList[index] };
+    if (currentTrack === null) return;
+
+    const newEvent = { ...currentTrack.events[index] };
     if (data.text !== undefined) newEvent.text = data.text;
     if (data.start_ms !== undefined) newEvent.start_ms = data.start_ms;
     if (data.end_ms !== undefined) newEvent.end_ms = data.end_ms;
 
-    const _temp = [...currentEventList];
+    const _temp = [...currentTrack.events];
     _temp[index] = newEvent;
-    setCurrentEventList(_temp);
+    setCurrentTrack({ ...currentTrack, events: _temp });
   };
+
+  if (currentTrack === null) return <span>track is null</span>;
 
   return (
     <div style={{ width: "100%" }}>
@@ -54,12 +58,12 @@ const Timetable: React.FC<Props> = (props: Props) => {
               <span>something here</span>
             </td>
           </tr> */}
-          {currentEventList.map((event) => {
+          {currentTrack.events.map((event) => {
             // TODO: avoid re-renders
             // https://alexsidorenko.com/blog/react-list-rerender/
             return (
               <tr
-                key={event.id}
+                key={event.index}
                 className={classNames(currentEventIndex === event.index ? styles.active : "")}
                 onClick={() => handleRowClick(event.index)}
                 tabIndex={event.index + 1}

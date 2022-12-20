@@ -1,10 +1,6 @@
-import { IDBPDatabase } from "idb";
 import { Irisub } from "irisub-common";
-import { atom, DefaultValue } from "recoil";
-import { shallowEqual } from "../util/comparison";
+import { atom } from "recoil";
 import { NavPage, EditorPanelTab } from "../util/constants";
-import { DB_STORES } from "./db";
-import { IrisubDBSchema } from "./types";
 
 export const currentNavPageState = atom<NavPage>({
   key: "currentNavPageState",
@@ -16,30 +12,12 @@ export const currentEditorPanelTabState = atom<EditorPanelTab>({
   default: EditorPanelTab.Text,
 });
 
-export const databaseState = atom<IDBPDatabase<IrisubDBSchema> | null>({
-  key: "database",
-  default: null,
-});
-
 export const currentProjectState = atom<Irisub.Project | null>({
   key: "currentProjectState",
   default: null,
-  effects: [
-    ({ onSet, getPromise }) => {
-      onSet(async (newValue, _oldValue, isReset: boolean) => {
-        getPromise(databaseState).then((database) => {
-          if (database && newValue) {
-            isReset
-              ? database.delete(DB_STORES.PROJECT, newValue.id)
-              : database.put(DB_STORES.PROJECT, newValue);
-          }
-        });
-      });
-    },
-  ],
 });
 
-const currentTrackState = atom<string | null>({
+export const currentTrackState = atom<Irisub.Track | null>({
   key: "currentTrackState",
   default: null,
 });
@@ -52,58 +30,22 @@ export const currentEventIndexState = atom<number>({
       onSet(async (newValue, oldValue) => {
         if (newValue < 0) setSelf(oldValue);
 
-        const eventList = await getPromise(currentEventListState);
-        const lastIndex = eventList.length - 1;
-        if (newValue > lastIndex) setSelf(oldValue);
-      });
-    },
-  ],
-});
-
-export const currentEventListState = atom<Irisub.Event[]>({
-  key: "currentEventListState",
-  default: [],
-  effects: [
-    ({ onSet, getPromise }) => {
-      onSet(async (newValue, oldValue) => {
-        if (!newValue) {
-          return;
-        }
-
-        let changedEvents: Irisub.Event[] = [];
-        if (!(oldValue instanceof DefaultValue) && oldValue.length > 0) {
-          newValue.forEach((event) => {
-            const existingEvent = oldValue.find((e) => e.id === event.id);
-            if (existingEvent) {
-              if (!shallowEqual(event, existingEvent)) {
-                changedEvents.push(event);
-              }
-            }
-          });
-        } else {
-          changedEvents = newValue;
-        }
-
-        if (changedEvents.length > 0) {
-          getPromise(databaseState).then((database) => {
-            if (database) {
-              newValue.forEach((event) => {
-                database.put(DB_STORES.EVENT, event);
-              });
-            }
-          });
+        const currentTrack = await getPromise(currentTrackState);
+        if (currentTrack !== null) {
+          const lastIndex = currentTrack.events.length - 1;
+          if (newValue > lastIndex) setSelf(oldValue);
         }
       });
     },
   ],
 });
 
-const currentCommentListState = atom<Irisub.Comment[]>({
-  key: "currentCommentListState",
-  default: [],
-});
+// const currentCommentListState = atom<Irisub.Comment[]>({
+//   key: "currentCommentListState",
+//   default: [],
+// });
 
-const currentStyleSheetListState = atom<Irisub.StyleSheet[]>({
-  key: "currentStylesheetListState",
-  default: [],
-});
+// const currentStyleSheetListState = atom<Irisub.StyleSheet[]>({
+//   key: "currentStylesheetListState",
+//   default: [],
+// });

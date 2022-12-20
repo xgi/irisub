@@ -9,7 +9,7 @@
     "lint": "eslint **/*.ts*"
   },
   "dependencies": {
-    "idb": "^7.1.1",
+    "irisub-common": "workspace:0.0.0",
     "next": "13.0.0",
     "prismjs": "^1.29.0",
     "react": "18.2.0",
@@ -21,7 +21,6 @@
     "react-tooltip": "^4.5.1",
     "recoil": "^0.7.6",
     "sass": "^1.56.2",
-    "irisub-common": "workspace:0.0.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

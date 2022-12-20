@@ -1,20 +1,20 @@
 import { KeyboardEvent } from "react";
 import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
-import "prismjs/themes/prism.css"; //Example style, you can use another
+import "prismjs/themes/prism.css"; // TODO: update style
 import { useRecoilState } from "recoil";
-import { currentEventIndexState, currentEventListState } from "../store/states";
+import { currentEventIndexState, currentTrackState } from "../store/states";
 
 type Props = {};
 const TextEditor: React.FC<Props> = (props: Props) => {
   const [currentEventIndex, setCurrentEventIndex] = useRecoilState(currentEventIndexState);
-  const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
+  const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
 
   const setCurrentData = (text: string) => {
-    if (currentEventList && currentEventList[currentEventIndex]) {
-      const _temp = [...currentEventList];
+    if (currentTrack && currentTrack.events[currentEventIndex]) {
+      const _temp = [...currentTrack.events];
       _temp[currentEventIndex] = { ..._temp[currentEventIndex], text: text };
-      setCurrentEventList(_temp);
+      setCurrentTrack({ ...currentTrack, events: _temp });
     }
   };
 
@@ -30,8 +30,8 @@ const TextEditor: React.FC<Props> = (props: Props) => {
     <Editor
       placeholder="Edit text..."
       value={
-        currentEventList && currentEventList[currentEventIndex]
-          ? currentEventList[currentEventIndex].text
+        currentTrack && currentTrack.events[currentEventIndex]
+          ? currentTrack.events[currentEventIndex].text
           : ""
       }
       onValueChange={(value: string) => setCurrentData(value)}

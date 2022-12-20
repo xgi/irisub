@@ -54,7 +54,6 @@ importers:
       '@types/uuid': ^8.3.4
       eslint: 7.32.0
       eslint-config-custom: workspace:0.0.0
-      idb: ^7.1.1
       irisub-common: workspace:0.0.0
       next: 13.0.0
       prismjs: ^1.29.0
@@ -72,7 +71,6 @@ importers:
       typescript: ^4.9.4
       uuid: ^8.3.2
     dependencies:
-      idb: 7.1.1
       irisub-common: link:../../packages/irisub-common
       next: 13.0.0_mz53pcrhrtbilczuivypd336dm
       prismjs: 1.29.0
@@ -1539,10 +1537,6 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
-    dev: false
-
-  /idb/7.1.1:
-    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
     dev: false
 
   /ignore/4.0.6:

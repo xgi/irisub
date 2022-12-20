@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef } from "react";
+import { ChangeEvent, useRef } from "react";
 import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -10,8 +10,7 @@ import {
 import styles from "../styles/components/Editor.module.scss";
 import Player from "./Player";
 import Timetable from "./timetable/Timetable";
-import { currentEventListState, databaseState } from "../store/states";
-import { DB_STORES } from "../store/db";
+import { currentTrackState } from "../store/states";
 import ReactSlider from "react-slider";
 import ReactPlayer from "react-player";
 import FileDrop from "./FileDrop";
@@ -25,8 +24,7 @@ type Props = {
 };
 
 const Editor: React.FC<Props> = (props: Props) => {
-  const database = useRecoilValue(databaseState);
-  const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
+  const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
   const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
   const playerDuration = useRecoilValue(playerDurationState);
@@ -34,14 +32,14 @@ const Editor: React.FC<Props> = (props: Props) => {
   const playerRef = useRef<ReactPlayer | null>(null);
   const pickerRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    if (database) {
-      database
-        .getAll(DB_STORES.EVENT)
-        .then((events) => setCurrentEventList(events.sort((a, b) => a.index - b.index)));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [database]);
+  // useEffect(() => {
+  //   if (database) {
+  //     database
+  //       .getAll(DB_STORES.EVENT)
+  //       .then((events) => setCurrentEventList(events.sort((a, b) => a.index - b.index)));
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [database]);
 
   const handlePickerClick = () => {
     if (pickerRef.current) {

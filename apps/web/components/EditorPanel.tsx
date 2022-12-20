@@ -1,5 +1,4 @@
 import { useRecoilState } from "recoil";
-import { DB_STORES, initDb } from "../store/db";
 import { currentEditorPanelTabState, currentProjectState } from "../store/states";
 import styles from "../styles/components/EditorPanel.module.scss";
 import { EditorPanelTab } from "../util/constants";
@@ -45,49 +44,49 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
               modify project
             </button>
             <button
-              onClick={async () => {
-                const database = await initDb();
-                database.getAll(DB_STORES.PROJECT).then((projects) => {
-                  console.log(`Found ${projects.length} projects in persistant store:`);
-                  projects.forEach((project) => console.log(project));
-                });
-              }}
+            // onClick={async () => {
+            //   const database = await initDb();
+            //   database.getAll(DB_STORES.PROJECT).then((projects) => {
+            //     console.log(`Found ${projects.length} projects in persistant store:`);
+            //     projects.forEach((project) => console.log(project));
+            //   });
+            // }}
             >
               list all projects
             </button>
             <button
-              onClick={async () => {
-                const database = await initDb();
-                database.getAll(DB_STORES.EVENT).then((events) => {
-                  console.log(`Found ${events.length} events in persistant store:`);
-                  events.forEach((event) => console.log(event));
-                });
-              }}
+            // onClick={async () => {
+            //   const database = await initDb();
+            //   database.getAll(DB_STORES.EVENT).then((events) => {
+            //     console.log(`Found ${events.length} events in persistant store:`);
+            //     events.forEach((event) => console.log(event));
+            //   });
+            // }}
             >
               list all events
             </button>
             <button
-              onClick={async () => {
-                const database = await initDb();
-                Array.from(Array(10).keys()).forEach(async (idx) => {
-                  const result = await database.put(DB_STORES.EVENT, {
-                    id: uuidv4(),
-                    index: idx,
-                    text: "",
-                    start_ms: idx * 2000,
-                    end_ms: idx * 2 * 1000 + 2000,
-                  });
-                  console.log(result);
-                });
-              }}
+            // onClick={async () => {
+            //   const database = await initDb();
+            //   Array.from(Array(10).keys()).forEach(async (idx) => {
+            //     const result = await database.put(DB_STORES.EVENT, {
+            //       id: uuidv4(),
+            //       index: idx,
+            //       text: "",
+            //       start_ms: idx * 2000,
+            //       end_ms: idx * 2 * 1000 + 2000,
+            //     });
+            //     console.log(result);
+            //   });
+            // }}
             >
               add some events
             </button>
             <button
-              onClick={async () => {
-                const database = await initDb();
-                database.clear("event");
-              }}
+            // onClick={async () => {
+            //   const database = await initDb();
+            //   database.clear("event");
+            // }}
             >
               remove all events
             </button>
