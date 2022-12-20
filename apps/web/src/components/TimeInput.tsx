@@ -57,9 +57,7 @@ const TimeInput: React.FC<Props> = (props: Props) => {
         ms = Math.floor(ms / 10) * 10 + digit;
     }
 
-    let newValue = Math.floor(
-      ms + seconds * 1000 + minutes * 60 * 1000 + hours * 60 * 60 * 1000
-    );
+    let newValue = Math.floor(ms + seconds * 1000 + minutes * 60 * 1000 + hours * 60 * 60 * 1000);
     if (newValue > MAX_TIMESTAMP_MS) {
       newValue = MAX_TIMESTAMP_MS;
     }

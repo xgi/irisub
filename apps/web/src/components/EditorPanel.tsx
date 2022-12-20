@@ -1,10 +1,15 @@
 import { useRecoilState } from "recoil";
-import { currentEditorPanelTabState, currentProjectState } from "../store/states";
+import {
+  currentEditorPanelTabState,
+  currentProjectState,
+  currentTrackState,
+} from "../store/states";
 import styles from "../styles/components/EditorPanel.module.scss";
 import { EditorPanelTab } from "../util/constants";
 import EditorPanelSidebar from "./EditorPanelSidebar";
 import TextEditor from "./TextEditor";
 import { Irisub } from "irisub-common";
+import { v4 as uuidv4 } from "uuid";
 
 type Props = {};
 
@@ -13,6 +18,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
     currentEditorPanelTabState
   );
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
+  const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
 
   return (
     <div className={styles.container}>
@@ -30,6 +36,23 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
               }}
             >
               create project
+            </button>
+            <button
+              onClick={() => {
+                if (currentProject === null) {
+                  console.log("no current project");
+                  return;
+                }
+
+                const track: Irisub.Track = {
+                  id: uuidv4(),
+                  project_id: currentProject.id,
+                  events: [],
+                };
+                setCurrentTrack(track);
+              }}
+            >
+              create track
             </button>
             <button
               onClick={() => {
@@ -106,6 +129,3 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
 };
 
 export default EditorPanel;
-function uuidv4(): string {
-  throw new Error("Function not implemented.");
-}
