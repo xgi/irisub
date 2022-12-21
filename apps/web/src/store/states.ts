@@ -63,3 +63,9 @@ export const editorElementSizesState = atom<{ [key: string]: number }>({
   },
   effects: [localStorageEffect(storeKeys.WORKSPACE.EDITOR_ELEMENT_SIZES)],
 });
+
+export const editorShowMsState = atom<boolean>({
+  key: "editorShowMsState",
+  default: true,
+  effects: [localStorageEffect(storeKeys.WORKSPACE.EDITOR_SHOW_MS)],
+});

@@ -10,7 +10,7 @@ import {
 import styles from "../styles/components/Editor.module.scss";
 import Player from "./Player";
 import Timetable from "./timetable/Timetable";
-import { currentTrackState, editorElementSizesState } from "../store/states";
+import { currentTrackState, editorElementSizesState, editorShowMsState } from "../store/states";
 import ReactSlider from "react-slider";
 import ReactPlayer from "react-player";
 import FileDrop from "./FileDrop";
@@ -31,6 +31,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
   const playerDuration = useRecoilValue(playerDurationState);
   const [playerPath, setPlayerPath] = useRecoilState(playerPathState);
+  const showMs = useRecoilValue(editorShowMsState);
   const playerRef = useRef<ReactPlayer | null>(null);
   const pickerRef = useRef<HTMLInputElement | null>(null);
 
@@ -119,7 +120,10 @@ const Editor: React.FC<Props> = (props: Props) => {
             callback={(value: number) => handleSeek(value / 1000)}
           />
           <span className={styles.timeDivider}>/</span>
-          <input disabled value={new Date(playerDuration * 1000).toISOString().substring(12, 23)} />
+          <input
+            disabled
+            value={new Date(playerDuration * 1000).toISOString().substring(12, showMs ? 23 : 19)}
+          />
         </div>
         <div className={styles.optionsGroup}>
           <button onClick={handlePickerClick}>

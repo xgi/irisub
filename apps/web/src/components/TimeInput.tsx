@@ -1,3 +1,5 @@
+import { useRecoilValue } from "recoil";
+import { editorShowMsState } from "../store/states";
 import { MAX_TIMESTAMP_MS } from "../util/constants";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -7,6 +9,8 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const TimeInput: React.FC<Props> = (props: Props) => {
+  const showMs = useRecoilValue(editorShowMsState);
+
   const handleKeyPress = (keyboardEvent: React.KeyboardEvent) => {
     if (!/[0-9]/.test(keyboardEvent.key)) {
       keyboardEvent.preventDefault();
@@ -74,7 +78,7 @@ const TimeInput: React.FC<Props> = (props: Props) => {
     <input
       {...otherProps}
       ref={props.inputRef}
-      value={new Date(props.valueMs).toISOString().substring(12, 23)}
+      value={new Date(props.valueMs).toISOString().substring(12, showMs ? 23 : 19)}
       onKeyPress={handleKeyPress}
       onChange={() => true}
     />

@@ -3,6 +3,7 @@ import {
   currentEditorPanelTabState,
   currentProjectState,
   currentTrackState,
+  editorShowMsState,
 } from "../store/states";
 import styles from "../styles/components/EditorPanel.module.scss";
 import { EditorPanelTab } from "../util/constants";
@@ -19,6 +20,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
   );
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
+  const [showMs, setShowMs] = useRecoilState(editorShowMsState);
 
   return (
     <div className={styles.container}>
@@ -114,6 +116,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
             >
               remove all events
             </button>
+            <button onClick={() => setShowMs(!showMs)}>toggle showing ms</button>
           </>
         ) : (
           ""
