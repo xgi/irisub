@@ -1,6 +1,8 @@
 import { Irisub } from "irisub-common";
 import { atom } from "recoil";
 import { NavPage, EditorPanelTab } from "../util/constants";
+import { localStorageEffect } from "./effects";
+import storeKeys from "../constants/storeKeys.json";
 
 export const currentNavPageState = atom<NavPage>({
   key: "currentNavPageState",
@@ -15,11 +17,13 @@ export const currentEditorPanelTabState = atom<EditorPanelTab>({
 export const currentProjectState = atom<Irisub.Project | null>({
   key: "currentProjectState",
   default: null,
+  effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_PROJECT)],
 });
 
 export const currentTrackState = atom<Irisub.Track | null>({
   key: "currentTrackState",
   default: null,
+  effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_TRACK)],
 });
 
 export const currentEventIndexState = atom<number>({
