@@ -62,7 +62,6 @@ const Editor: React.FC<Props> = (props: Props) => {
 
   const handlePickerChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e && e.target && e.target.files) setPlayerPath(URL.createObjectURL(e.target.files[0]));
-    console.log(e.target.files[0]);
   };
 
   // TODO: deprecate

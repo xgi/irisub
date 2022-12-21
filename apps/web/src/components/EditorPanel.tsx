@@ -89,19 +89,20 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
               list all events
             </button>
             <button
-            // onClick={async () => {
-            //   const database = await initDb();
-            //   Array.from(Array(10).keys()).forEach(async (idx) => {
-            //     const result = await database.put(DB_STORES.EVENT, {
-            //       id: uuidv4(),
-            //       index: idx,
-            //       text: "",
-            //       start_ms: idx * 2000,
-            //       end_ms: idx * 2 * 1000 + 2000,
-            //     });
-            //     console.log(result);
-            //   });
-            // }}
+              onClick={async () => {
+                if (currentTrack) {
+                  const events = Array.from(Array(10).keys()).map((idx) => {
+                    return {
+                      id: uuidv4(),
+                      index: idx,
+                      text: "",
+                      start_ms: idx * 2000,
+                      end_ms: idx * 2 * 1000 + 2000,
+                    };
+                  });
+                  setCurrentTrack({ ...currentTrack, events: events });
+                }
+              }}
             >
               add some events
             </button>
