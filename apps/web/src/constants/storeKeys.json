@@ -1,6 +1,7 @@
 {
   "WORKSPACE": {
     "CURRENT_PROJECT": "workspace-current-project",
-    "CURRENT_TRACK": "workspace-current-track"
+    "CURRENT_TRACK": "workspace-current-track",
+    "EDITOR_ELEMENT_SIZES": "workspace-editor-element-sizes"
   }
 }

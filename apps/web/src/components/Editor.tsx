@@ -1,5 +1,5 @@
 import { ChangeEvent, useRef } from "react";
-import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
+import { ReflexContainer, ReflexSplitter, ReflexElement, HandlerProps } from "react-reflex";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   playerDurationState,
@@ -10,7 +10,7 @@ import {
 import styles from "../styles/components/Editor.module.scss";
 import Player from "./Player";
 import Timetable from "./timetable/Timetable";
-import { currentTrackState } from "../store/states";
+import { currentTrackState, editorElementSizesState } from "../store/states";
 import ReactSlider from "react-slider";
 import ReactPlayer from "react-player";
 import FileDrop from "./FileDrop";
@@ -18,12 +18,14 @@ import { Icon10Left, Icon10Right, IconFileUpload, IconPause, IconPlay } from "./
 import TimeInput from "./TimeInput";
 import { classNames } from "../util/layout";
 import EditorPanel from "./EditorPanel";
+import { EditorElementKeys } from "../util/constants";
 
 type Props = {
   hidden?: boolean;
 };
 
 const Editor: React.FC<Props> = (props: Props) => {
+  const [editorElementSizes, setEditorElementSizes] = useRecoilState(editorElementSizesState);
   const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
   const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
@@ -41,6 +43,17 @@ const Editor: React.FC<Props> = (props: Props) => {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [database]);
 
+  const handleElementResize = (event: HandlerProps) => {
+    const { name, flex } = event.component.props;
+
+    if (name && flex !== undefined) {
+      setEditorElementSizes({
+        ...editorElementSizes,
+        [name]: flex,
+      });
+    }
+  };
+
   const handlePickerClick = () => {
     if (pickerRef.current) {
       pickerRef.current.click();
@@ -49,6 +62,7 @@ const Editor: React.FC<Props> = (props: Props) => {
 
   const handlePickerChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e && e.target && e.target.files) setPlayerPath(URL.createObjectURL(e.target.files[0]));
+    console.log(e.target.files[0]);
   };
 
   // TODO: deprecate
@@ -126,7 +140,11 @@ const Editor: React.FC<Props> = (props: Props) => {
       <ReflexContainer orientation="horizontal">
         <ReflexElement>
           <ReflexContainer orientation="vertical">
-            <ReflexElement flex={0.55}>
+            <ReflexElement
+              name={EditorElementKeys.Player}
+              flex={editorElementSizes[EditorElementKeys.Player]}
+              onStopResize={handleElementResize}
+            >
               <div className={styles.pane}>
                 {playerPath ? <Player path={playerPath} ref={playerRef} /> : <FileDrop />}
               </div>
@@ -140,13 +158,19 @@ const Editor: React.FC<Props> = (props: Props) => {
           </ReflexContainer>
         </ReflexElement>
         <ReflexSplitter />
-        <ReflexElement flex={0.125}>
+        <ReflexElement
+          name={EditorElementKeys.Timeline}
+          flex={editorElementSizes[EditorElementKeys.Timeline]}
+        >
           <div className={styles.pane}>
             <p style={{ textAlign: "center" }}>Timeline</p>
           </div>
         </ReflexElement>
         <ReflexSplitter />
-        <ReflexElement flex={0.3}>
+        <ReflexElement
+          name={EditorElementKeys.Timetable}
+          flex={editorElementSizes[EditorElementKeys.Timetable]}
+        >
           <div className={styles.pane} style={{ overflowY: "auto" }}>
             <Timetable />
           </div>

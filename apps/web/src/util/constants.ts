@@ -12,3 +12,10 @@ export enum EditorPanelTab {
   Styles = "Styles",
   Debug = "Debug",
 }
+
+export enum EditorElementKeys {
+  Player = "Player",
+  EditorPanel = "EditorPanel",
+  Timeline = "Timeline",
+  Timetable = "Timetable",
+}

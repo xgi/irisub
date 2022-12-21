@@ -1,6 +1,6 @@
 import { Irisub } from "irisub-common";
 import { atom } from "recoil";
-import { NavPage, EditorPanelTab } from "../util/constants";
+import { NavPage, EditorPanelTab, EditorElementKeys } from "../util/constants";
 import { localStorageEffect } from "./effects";
 import storeKeys from "../constants/storeKeys.json";
 
@@ -53,3 +53,13 @@ export const currentEventIndexState = atom<number>({
 //   key: "currentStylesheetListState",
 //   default: [],
 // });
+
+export const editorElementSizesState = atom<{ [key: string]: number }>({
+  key: "editorElementSizesState",
+  default: {
+    [EditorElementKeys.Player]: 0.55,
+    [EditorElementKeys.Timeline]: 0.125,
+    [EditorElementKeys.Timetable]: 0.3,
+  },
+  effects: [localStorageEffect(storeKeys.WORKSPACE.EDITOR_ELEMENT_SIZES)],
+});
