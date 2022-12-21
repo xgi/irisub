@@ -1,7 +1,8 @@
 import { Irisub } from "irisub-common";
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
+import { getDatabase, ref, child, push, update } from "firebase/database";
 import { NavPage, EditorPanelTab, EditorElementKeys } from "../util/constants";
-import { localStorageEffect } from "./effects";
+import { localStorageEffect, syncStorageEffect } from "./effects";
 import storeKeys from "../constants/storeKeys.json";
 
 export const currentNavPageState = atom<NavPage>({
@@ -24,6 +25,12 @@ export const currentTrackState = atom<Irisub.Track | null>({
   key: "currentTrackState",
   default: null,
   effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_TRACK)],
+});
+
+export const currentEventListState = atom<Irisub.Event[]>({
+  key: "currentEventListState",
+  default: [],
+  effects: [syncStorageEffect()],
 });
 
 export const currentEventIndexState = atom<number>({
