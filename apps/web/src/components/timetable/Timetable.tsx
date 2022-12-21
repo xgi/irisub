@@ -103,7 +103,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
             <th>L</th>
             <th style={{ whiteSpace: "nowrap" }}>Start</th>
             <th>End</th>
-            <th>CPS</th>
+            <th title="Characters Per Second">CPS</th>
             <th>Style</th>
             <th>Actor</th>
             <th style={{ textAlign: "left", paddingLeft: "6px" }}>Text</th>
@@ -116,6 +116,25 @@ const Timetable: React.FC<Props> = (props: Props) => {
             </td>
           </tr> */}
           {renderRows()}
+          <tr
+            className={styles.add}
+            onClick={() =>
+              setCurrentTrack({
+                ...currentTrack,
+                events: [
+                  ...currentTrack.events,
+                  {
+                    index: currentTrack.events.length,
+                    text: "",
+                    start_ms: 3000,
+                    end_ms: 5000,
+                  },
+                ],
+              })
+            }
+          >
+            <td colSpan={8}>+++</td>
+          </tr>
         </tbody>
       </table>
     </div>

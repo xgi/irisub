@@ -164,6 +164,7 @@ const Editor: React.FC<Props> = (props: Props) => {
         <ReflexElement
           name={EditorElementKeys.Timeline}
           flex={editorElementSizes[EditorElementKeys.Timeline]}
+          onStopResize={handleElementResize}
         >
           <div className={styles.pane}>
             <p style={{ textAlign: "center" }}>Timeline</p>
@@ -173,6 +174,7 @@ const Editor: React.FC<Props> = (props: Props) => {
         <ReflexElement
           name={EditorElementKeys.Timetable}
           flex={editorElementSizes[EditorElementKeys.Timetable]}
+          onStopResize={handleElementResize}
         >
           <div className={styles.pane} style={{ overflowY: "auto" }}>
             <Timetable />
