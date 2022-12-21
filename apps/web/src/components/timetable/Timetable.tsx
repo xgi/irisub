@@ -1,5 +1,5 @@
 import React from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import {
   currentEventIndexState,
   currentEventListState,
@@ -9,7 +9,6 @@ import styles from "../../styles/components/Timetable.module.scss";
 import { classNames } from "../../util/layout";
 import TimeInput from "../TimeInput";
 import { useFocusNext } from "./hooks";
-import { v4 as uuidv4 } from "uuid";
 import { Irisub } from "irisub-common";
 
 type Props = {};

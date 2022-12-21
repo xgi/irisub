@@ -60,7 +60,7 @@ export const useFocusNext = (
     if (element && !controls.current.includes(element)) {
       controls.current.push(element);
       element.addEventListener("keydown", handler);
-      element.addEventListener("focus", () => console.log("focused an input"));
+      // element.addEventListener("focus", () => console.log("focused an input"));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

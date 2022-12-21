@@ -9,7 +9,6 @@ export namespace Irisub {
     project_id: string;
     name?: string;
     language?: string;
-    events: Event[];
   };
 
   export type Event = {

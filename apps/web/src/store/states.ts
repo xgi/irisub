@@ -41,11 +41,9 @@ export const currentEventIndexState = atom<number>({
       onSet(async (newValue, oldValue) => {
         if (newValue < 0) setSelf(oldValue);
 
-        const currentTrack = await getPromise(currentTrackState);
-        if (currentTrack !== null) {
-          const lastIndex = currentTrack.events.length - 1;
-          if (newValue > lastIndex) setSelf(oldValue);
-        }
+        const currentEventList = await getPromise(currentEventListState);
+        const lastIndex = currentEventList.length - 1;
+        if (newValue > lastIndex) setSelf(oldValue);
       });
     },
   ],
