@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import {
-  currentEventIndexState,
+  editingEventIndexState,
   currentEventListState,
   currentTrackState,
 } from "../../store/states";
@@ -16,14 +16,10 @@ type Props = {};
 const Timetable: React.FC<Props> = (props: Props) => {
   const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
   const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
-  const [currentEventIndex, setCurrentEventIndex] = useRecoilState(currentEventIndexState);
-  const textFocusNextRef = useFocusNext(setCurrentEventIndex);
-  const startTimeFocusNextRef = useFocusNext(setCurrentEventIndex, true);
-  const endTimeFocusNextRef = useFocusNext(setCurrentEventIndex, true);
-
-  const handleRowClick = (index: number) => {
-    setCurrentEventIndex(index);
-  };
+  const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
+  const textFocusNextRef = useFocusNext();
+  const startTimeFocusNextRef = useFocusNext(true);
+  const endTimeFocusNextRef = useFocusNext(true);
 
   const addEvent = () => {
     setCurrentEventList([
@@ -63,8 +59,8 @@ const Timetable: React.FC<Props> = (props: Props) => {
       return (
         <tr
           key={event.index}
-          className={classNames(currentEventIndex === event.index ? styles.active : "")}
-          onClick={() => handleRowClick(event.index)}
+          className={classNames(editingEventIndex === event.index ? styles.editing : "")}
+          onClick={() => setEditingEventIndex(event.index)}
         >
           <td style={{ textAlign: "right" }}>{event.index + 1}</td>
           <td></td>
@@ -77,6 +73,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
               style={{ minWidth: "8em", textAlign: "center" }}
               valueMs={event.start_ms}
               callback={(value: number) => updateEvent(event.index, { start_ms: value })}
+              onFocus={() => setEditingEventIndex(event.index)}
             />
           </td>
           <td>
@@ -88,6 +85,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
               style={{ minWidth: "8em", textAlign: "center" }}
               valueMs={event.end_ms}
               callback={(value: number) => updateEvent(event.index, { end_ms: value })}
+              onFocus={() => setEditingEventIndex(event.index)}
             />
           </td>
           <td>23</td>
@@ -106,6 +104,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
                   text: changeEvent.target.value,
                 })
               }
+              onFocus={() => setEditingEventIndex(event.index)}
             />
           </td>
         </tr>

@@ -38,8 +38,8 @@ export const currentEventListState = atom<Irisub.Event[]>({
   effects: [syncStorageEffect()],
 });
 
-export const currentEventIndexState = atom<number>({
-  key: "currentEventIndexState",
+export const editingEventIndexState = atom<number>({
+  key: "editingEventIndexState",
   default: 0,
   effects: [
     ({ onSet, setSelf, getPromise }) => {

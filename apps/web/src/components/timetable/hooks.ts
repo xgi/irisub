@@ -1,13 +1,9 @@
 import { useCallback, useRef } from "react";
-import { SetterOrUpdater } from "recoil";
 
 // TODO: refactor
 // also has logic for if controls can be reordered, which has been removed here
 // https://stackoverflow.com/questions/38577224/focus-on-next-field-when-pressing-enter-react-js
-export const useFocusNext = (
-  setCurrentEventIndex: SetterOrUpdater<number>,
-  matchCursorPosition: boolean = false
-) => {
+export const useFocusNext = (matchCursorPosition: boolean = false) => {
   const controls = useRef<HTMLInputElement[]>([]);
 
   /**
@@ -30,11 +26,6 @@ export const useFocusNext = (
     const newControl = controls.current[parseInt(index) + indexDelta];
 
     if (newControl) {
-      const newActiveIndex = newControl.getAttribute("data-index");
-      if (newActiveIndex !== null) {
-        setCurrentEventIndex(parseInt(newActiveIndex));
-      }
-
       if (matchCursorPosition) {
         newControl.setSelectionRange(control.selectionStart, control.selectionStart);
       }
@@ -43,14 +34,10 @@ export const useFocusNext = (
   };
 
   const handler = (event: KeyboardEvent) => {
-    if (
-      event.key === "Enter" ||
-      (event.key === "Tab" && !event.shiftKey) ||
-      event.key === "ArrowDown"
-    ) {
+    if (event.key === "Enter" || event.key === "ArrowDown") {
       _focusRelativeControl(event.target as HTMLInputElement, 1);
       event.preventDefault();
-    } else if (event.key === "ArrowUp" || (event.key === "Tab" && event.shiftKey)) {
+    } else if (event.key === "ArrowUp") {
       _focusRelativeControl(event.target as HTMLInputElement, -1);
       event.preventDefault();
     }

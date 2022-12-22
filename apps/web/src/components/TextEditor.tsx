@@ -3,24 +3,24 @@ import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
 import "prismjs/themes/prism.css"; // TODO: update style
 import { useRecoilState } from "recoil";
-import { currentEventIndexState, currentEventListState } from "../store/states";
+import { editingEventIndexState, currentEventListState } from "../store/states";
 
 type Props = {};
 const TextEditor: React.FC<Props> = (props: Props) => {
-  const [currentEventIndex, setCurrentEventIndex] = useRecoilState(currentEventIndexState);
+  const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
   const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
 
   const setCurrentData = (text: string) => {
-    if (currentEventList[currentEventIndex]) {
+    if (currentEventList[editingEventIndex]) {
       const _temp = [...currentEventList];
-      _temp[currentEventIndex] = { ..._temp[currentEventIndex], text: text };
+      _temp[editingEventIndex] = { ..._temp[editingEventIndex], text: text };
       setCurrentEventList(_temp);
     }
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter" && !event.shiftKey) {
-      setCurrentEventIndex(currentEventIndex + 1);
+      setEditingEventIndex(editingEventIndex + 1);
       event.preventDefault();
       event.stopPropagation();
     }
@@ -29,7 +29,7 @@ const TextEditor: React.FC<Props> = (props: Props) => {
   return (
     <Editor
       placeholder="Edit text..."
-      value={currentEventList[currentEventIndex] ? currentEventList[currentEventIndex].text : ""}
+      value={currentEventList[editingEventIndex] ? currentEventList[editingEventIndex].text : ""}
       onValueChange={(value: string) => setCurrentData(value)}
       highlight={(value: string) => Prism.highlight(value || "", Prism.languages.html, "html")}
       onKeyDownCapture={handleKeyDown}
