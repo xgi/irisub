@@ -1,5 +1,5 @@
 import { AtomEffect } from "recoil";
-import { getDatabase, ref, child, get, onValue, DataSnapshot, set } from "firebase/database";
+import { getDatabase, ref, child, get, onValue, DataSnapshot, update } from "firebase/database";
 import { Irisub } from "irisub-common";
 
 export function localStorageEffect<T>(storeKey: string): AtomEffect<T> {
@@ -52,11 +52,11 @@ export function syncStorageEffect(): AtomEffect<Irisub.Event[]> {
     });
 
     onSet((newValue, oldValue) => {
-      // TODO: only update modified events
+      // TODO: only update modified events, and use transaction
       // const newKeys = Object.keys(newValue).filter((key) => !Object.keys(oldValue).includes(key));
 
       const _temp = new Map(newValue.map((obj) => [obj.index, { ...obj }]));
-      set(eventsRef, Object.fromEntries(_temp));
+      update(eventsRef, Object.fromEntries(_temp));
     });
   };
 }

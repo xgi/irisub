@@ -16,6 +16,8 @@ body {
   font-family: "Inter", sans-serif;
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
+
+  user-select: none;
 }
 
 a {

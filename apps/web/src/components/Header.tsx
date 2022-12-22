@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { currentProjectState } from "../store/states";
 import styles from "../styles/components/Header.module.scss";
-import HeaderLoginButton from "./auth/HeaderLoginButton";
+import LoginModal from "./auth/LoginModal";
 
 type Props = {};
 
@@ -10,6 +10,7 @@ const Header: React.FC<Props> = (props: Props) => {
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [editingProjectTitle, setEditingProjectTitle] = useState(false);
   const [tempProjectTitle, setTempProjectTitle] = useState("");
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   const updateProjectTitle = () => {
     setEditingProjectTitle(false);
@@ -50,6 +51,7 @@ const Header: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={styles.container}>
+      <LoginModal isOpen={loginModalOpen} handleClose={() => setLoginModalOpen(false)} />
       <header className={styles.header}>
         <div className={styles.group}>
           <a href="/" className={styles.brand}>
@@ -58,7 +60,7 @@ const Header: React.FC<Props> = (props: Props) => {
           {renderProjectTitle()}
         </div>
         <div className={styles.group}>
-          <HeaderLoginButton />
+          <button onClick={() => setLoginModalOpen(true)}>show login modal</button>
         </div>
       </header>
     </div>

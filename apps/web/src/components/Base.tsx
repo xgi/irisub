@@ -38,12 +38,12 @@ const Base: React.FC<Props> = (props: Props) => {
             is generated.
           */}
           <Editor hidden={currentNavPage !== NavPage.Editor} />
-          <p style={currentNavPage !== NavPage.Projects ? { display: "none" } : {}}>
+          <div style={currentNavPage !== NavPage.Projects ? { display: "none" } : {}}>
             projects page
-          </p>
-          <p style={currentNavPage !== NavPage.Settings ? { display: "none" } : {}}>
+          </div>
+          <div style={currentNavPage !== NavPage.Settings ? { display: "none" } : {}}>
             settings page user id: {userId}
-          </p>
+          </div>
         </div>
         <Footer />
       </div>
