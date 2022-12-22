@@ -11,6 +11,7 @@ import EditorPanelSidebar from "./EditorPanelSidebar";
 import TextEditor from "./TextEditor";
 import { Irisub } from "irisub-common";
 import { v4 as uuidv4 } from "uuid";
+import { getAuth } from "firebase/auth";
 
 type Props = {};
 
@@ -49,7 +50,6 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
                 const track: Irisub.Track = {
                   id: uuidv4(),
                   project_id: currentProject.id,
-                  events: [],
                 };
                 setCurrentTrack(track);
               }}
@@ -91,24 +91,6 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
               list all events
             </button>
             <button
-              onClick={async () => {
-                if (currentTrack) {
-                  const events = Array.from(Array(10).keys()).map((idx) => {
-                    return {
-                      id: uuidv4(),
-                      index: idx,
-                      text: "",
-                      start_ms: idx * 2000,
-                      end_ms: idx * 2 * 1000 + 2000,
-                    };
-                  });
-                  setCurrentTrack({ ...currentTrack, events: events });
-                }
-              }}
-            >
-              add some events
-            </button>
-            <button
             // onClick={async () => {
             //   const database = await initDb();
             //   database.clear("event");
@@ -117,6 +99,13 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
               remove all events
             </button>
             <button onClick={() => setShowMs(!showMs)}>toggle showing ms</button>
+            <button
+              onClick={() => {
+                getAuth().signOut();
+              }}
+            >
+              logout
+            </button>
           </>
         ) : (
           ""

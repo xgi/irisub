@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { currentProjectState } from "../store/states";
 import styles from "../styles/components/Header.module.scss";
+import HeaderLoginButton from "./auth/HeaderLoginButton";
 
 type Props = {};
 
@@ -56,7 +57,9 @@ const Header: React.FC<Props> = (props: Props) => {
           </a>
           {renderProjectTitle()}
         </div>
-        <div className={styles.group}>top right</div>
+        <div className={styles.group}>
+          <HeaderLoginButton />
+        </div>
       </header>
     </div>
   );

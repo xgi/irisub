@@ -19,6 +19,7 @@ const Base: React.FC<Props> = (props: Props) => {
     if (user) {
       setUserId(user.uid);
     } else {
+      // TODO: close workspace as well
       console.log("wasn't logged in -- signing in anonymously");
       signInAnonymously(getAuth());
     }
