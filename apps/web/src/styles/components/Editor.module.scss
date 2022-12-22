@@ -87,8 +87,15 @@
       padding-left: 1rem;
       padding-right: 1rem;
 
-      border: none;
+      border: 1px solid var(--divider-light-color);
       border-radius: 0.2rem;
+
+      &:hover {
+        cursor: pointer;
+        background-color: var(--primary-dark-color);
+        color: var(--secondary-dark-color);
+        border-color: var(--divider-dark-color);
+      }
 
       span {
         display: inline-flex;
@@ -103,12 +110,6 @@
           height: var(--line-height-body);
         }
       }
-    }
-
-    button:hover {
-      cursor: pointer;
-      background-color: var(--primary-dark-color);
-      color: var(--secondary-dark-color);
     }
   }
 }

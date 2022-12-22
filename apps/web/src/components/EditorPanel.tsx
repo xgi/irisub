@@ -106,6 +106,19 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
             >
               logout
             </button>
+            <button
+              onClick={() => {
+                if (document.documentElement.classList.contains("light")) {
+                  document.documentElement.className = "dark";
+                } else if (document.documentElement.classList.contains("dark")) {
+                  document.documentElement.className = "system";
+                } else {
+                  document.documentElement.className = "light";
+                }
+              }}
+            >
+              change theme
+            </button>
           </>
         ) : (
           ""
