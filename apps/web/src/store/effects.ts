@@ -37,7 +37,7 @@ export function syncStorageEffect(): AtomEffect<Irisub.Event[]> {
     if (trigger === "get") {
       const dbRef = ref(getDatabase());
 
-      get(child(dbRef, "project/MYPROJECT/track/MYTRACK/event"))
+      get(child(dbRef, "events/MYPROJECT/MYTRACK"))
         .then((snapshot) => {
           if (snapshot.exists()) setSelf(snapshotToEventList(snapshot));
         })
@@ -46,7 +46,7 @@ export function syncStorageEffect(): AtomEffect<Irisub.Event[]> {
         });
     }
 
-    const eventsRef = ref(getDatabase(), "project/MYPROJECT/track/MYTRACK/event");
+    const eventsRef = ref(getDatabase(), "events/MYPROJECT/MYTRACK");
     onValue(eventsRef, (snapshot) => {
       if (snapshot.exists()) setSelf(snapshotToEventList(snapshot));
     });

@@ -49,61 +49,68 @@ const Timetable: React.FC<Props> = (props: Props) => {
   const renderRows = () => {
     if (currentTrack === null) return;
 
-    return currentEventList
-      .slice()
-      .sort((a, b) => a.index - b.index)
-      .map((event) => {
-        // TODO: avoid re-renders
-        // https://alexsidorenko.com/blog/react-list-rerender/
-        return (
-          <tr
-            key={event.index}
-            className={classNames(currentEventIndex === event.index ? styles.active : "")}
-            onClick={() => handleRowClick(event.index)}
-            tabIndex={event.index + 1}
-          >
-            <td>{event.index + 1}</td>
-            <td></td>
-            <td>
-              <TimeInput
-                inputRef={startTimeFocusNextRef}
-                className={styles.input}
-                data-index={event.index}
-                style={{ minWidth: "8em", textAlign: "center" }}
-                valueMs={event.start_ms}
-                callback={(value: number) => updateEvent(event.index, { start_ms: value })}
-              />
-            </td>
-            <td>
-              <TimeInput
-                inputRef={endTimeFocusNextRef}
-                className={styles.input}
-                data-index={event.index}
-                style={{ minWidth: "8em", textAlign: "center" }}
-                valueMs={event.end_ms}
-                callback={(value: number) => updateEvent(event.index, { end_ms: value })}
-              />
-            </td>
-            <td>23</td>
-            <td>Default</td>
-            <td>Steve</td>
-            <td style={{ width: "100%" }}>
-              <input
-                ref={textFocusNextRef}
-                className={styles.input}
-                data-index={event.index}
-                placeholder=""
-                value={event.text.replaceAll("\n", "␤")}
-                onChange={(changeEvent: any) =>
-                  updateEvent(event.index, {
-                    text: changeEvent.target.value,
-                  })
-                }
-              />
-            </td>
-          </tr>
-        );
-      });
+    const _eventList = currentEventList.slice().sort((a, b) => a.index - b.index);
+    // _eventList[_eventList.length] = {
+    //   index: _eventList.length,
+    //   text: "",
+    //   start_ms: 0,
+    //   end_ms: 0,
+    // };
+
+    return _eventList.map((event) => {
+      // TODO: avoid re-renders
+      // https://alexsidorenko.com/blog/react-list-rerender/
+      return (
+        <tr
+          key={event.index}
+          className={classNames(currentEventIndex === event.index ? styles.active : "")}
+          onClick={() => handleRowClick(event.index)}
+        >
+          <td style={{ textAlign: "right" }}>{event.index + 1}</td>
+          <td></td>
+          <td>
+            <TimeInput
+              inputRef={startTimeFocusNextRef}
+              className={styles.input}
+              tabIndex={event.index + 1}
+              data-index={event.index}
+              style={{ minWidth: "8em", textAlign: "center" }}
+              valueMs={event.start_ms}
+              callback={(value: number) => updateEvent(event.index, { start_ms: value })}
+            />
+          </td>
+          <td>
+            <TimeInput
+              inputRef={endTimeFocusNextRef}
+              className={styles.input}
+              tabIndex={event.index + 1}
+              data-index={event.index}
+              style={{ minWidth: "8em", textAlign: "center" }}
+              valueMs={event.end_ms}
+              callback={(value: number) => updateEvent(event.index, { end_ms: value })}
+            />
+          </td>
+          <td>23</td>
+          <td>Default</td>
+          <td>Steve</td>
+          <td style={{ width: "100%" }}>
+            <input
+              ref={textFocusNextRef}
+              className={styles.input}
+              tabIndex={event.index + 1}
+              data-index={event.index}
+              placeholder=""
+              value={event.text.replaceAll("\n", "␤")}
+              onChange={(changeEvent: any) =>
+                updateEvent(event.index, {
+                  text: changeEvent.target.value,
+                })
+              }
+            />
+          </td>
+        </tr>
+      );
+    });
   };
 
   if (currentTrack === null) return <span>track is null</span>;

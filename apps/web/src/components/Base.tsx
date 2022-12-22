@@ -3,14 +3,26 @@ import Footer from "./Footer";
 import Header from "./Header";
 import Sidebar from "./sidebar/Sidebar";
 import Editor from "./Editor";
-import { useRecoilValue } from "recoil";
-import { currentNavPageState } from "../store/states";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { currentNavPageState, userIdState } from "../store/states";
 import { NavPage } from "../util/constants";
+import { getAuth, onAuthStateChanged, signInAnonymously } from "firebase/auth";
 
 type Props = {};
 
 const Base: React.FC<Props> = (props: Props) => {
   const currentNavPage = useRecoilValue(currentNavPageState);
+  const [userId, setUserId] = useRecoilState(userIdState);
+
+  onAuthStateChanged(getAuth(), (user) => {
+    setUserId(user ? user.uid : null);
+    if (user) {
+      setUserId(user.uid);
+    } else {
+      console.log("wasn't logged in -- signing in anonymously");
+      signInAnonymously(getAuth());
+    }
+  });
 
   return (
     <div className={styles.container}>
@@ -29,7 +41,7 @@ const Base: React.FC<Props> = (props: Props) => {
             projects page
           </p>
           <p style={currentNavPage !== NavPage.Settings ? { display: "none" } : {}}>
-            settings page
+            settings page user id: {userId}
           </p>
         </div>
         <Footer />

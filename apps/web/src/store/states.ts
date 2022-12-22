@@ -5,6 +5,11 @@ import { NavPage, EditorPanelTab, EditorElementKeys } from "../util/constants";
 import { localStorageEffect, syncStorageEffect } from "./effects";
 import storeKeys from "../constants/storeKeys.json";
 
+export const userIdState = atom<string | null>({
+  key: "userIdState",
+  default: null,
+});
+
 export const currentNavPageState = atom<NavPage>({
   key: "currentNavPageState",
   default: NavPage.Editor,
