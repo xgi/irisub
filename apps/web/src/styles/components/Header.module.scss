@@ -30,11 +30,17 @@
     justify-content: center;
     align-items: center;
     display: inline-flex;
+
+    &:hover {
+      background-color: var(--primary-dark-color);
+      border-radius: 0.25rem;
+    }
   }
 
-  a.brand:hover {
-    background-color: var(--primary-dark-color);
-    border-radius: 0.25rem;
+  .group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .project {

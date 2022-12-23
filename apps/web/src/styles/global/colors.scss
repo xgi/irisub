@@ -54,12 +54,14 @@
   --accent-color: #c3423f;
   --accent-light-color: #cf6866;
   --accent-dark-color: #9e3431;
+  --accent-contrast-color: #fff;
 }
 
 :root[data-accent="blue"] {
   --accent-color: #3b82f6;
   --accent-light-color: #60a5fa;
   --accent-dark-color: #2563eb;
+  --accent-contrast-color: #fff;
 }
 
 @media (prefers-color-scheme: light) {

@@ -14,11 +14,12 @@ import { currentTrackState, editorElementSizesState, editorShowMsState } from ".
 import ReactSlider from "react-slider";
 import ReactPlayer from "react-player";
 import FileDrop from "./FileDrop";
-import { Icon10Left, Icon10Right, IconFileUpload, IconPause, IconPlay } from "./Icons";
+import { Icon10Left, Icon10Right, IconBars4, IconFileUpload, IconPause, IconPlay } from "./Icons";
 import TimeInput from "./TimeInput";
 import { classNames } from "../util/layout";
 import EditorPanel from "./EditorPanel";
 import { EditorElementKeys } from "../util/constants";
+import Button from "./Button";
 
 type Props = {
   hidden?: boolean;
@@ -126,7 +127,14 @@ const Editor: React.FC<Props> = (props: Props) => {
           />
         </div>
         <div className={styles.optionsGroup}>
-          <button onClick={handlePickerClick}>
+          <Button>
+            <span>
+              <IconBars4 />
+              Track List
+            </span>
+          </Button>
+
+          <Button onClick={handlePickerClick}>
             <span>
               <IconFileUpload />
               Select Video
@@ -137,7 +145,7 @@ const Editor: React.FC<Props> = (props: Props) => {
               ref={pickerRef}
               onChange={handlePickerChange}
             />
-          </button>
+          </Button>
         </div>
       </div>
       <ReflexContainer orientation="horizontal">

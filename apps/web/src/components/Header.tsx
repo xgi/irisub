@@ -3,6 +3,8 @@ import { useRecoilState } from "recoil";
 import { currentProjectState } from "../store/states";
 import styles from "../styles/components/Header.module.scss";
 import LoginModal from "./auth/LoginModal";
+import Button from "./Button";
+import { IconCloud, IconInvite } from "./Icons";
 
 type Props = {};
 
@@ -60,7 +62,18 @@ const Header: React.FC<Props> = (props: Props) => {
           {renderProjectTitle()}
         </div>
         <div className={styles.group}>
-          <button onClick={() => setLoginModalOpen(true)}>show login modal</button>
+          <Button onClick={() => setLoginModalOpen(true)}>
+            <span>
+              <IconInvite />
+              Invite Members
+            </span>
+          </Button>
+          <Button accent onClick={() => setLoginModalOpen(true)}>
+            <span>
+              <IconCloud />
+              Save Workspace
+            </span>
+          </Button>
         </div>
       </header>
     </div>

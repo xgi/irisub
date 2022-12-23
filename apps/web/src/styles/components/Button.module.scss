@@ -1,0 +1,48 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;
+  background-color: var(--primary-light-color);
+  color: var(--secondary-color);
+
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  border: 1px solid var(--divider-light-color);
+  border-radius: 0.2rem;
+
+  &.accent {
+    color: var(--accent-contrast-color);
+    background-color: var(--accent-color);
+    border-width: 0;
+  }
+
+  &:hover {
+    cursor: pointer;
+    color: var(--secondary-dark-color);
+    background-color: var(--primary-dark-color);
+    border-color: var(--divider-dark-color);
+
+    &.accent {
+      background-color: var(--accent-dark-color);
+    }
+  }
+
+  span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    line-height: var(--line-height-body);
+    gap: 0.3rem;
+
+    svg {
+      width: var(--line-height-body);
+      height: var(--line-height-body);
+    }
+  }
+}
