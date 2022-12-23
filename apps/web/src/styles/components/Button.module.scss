@@ -28,6 +28,7 @@
     border-color: var(--divider-dark-color);
 
     &.accent {
+      color: var(--accent-contrast-color);
       background-color: var(--accent-dark-color);
     }
   }

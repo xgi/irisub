@@ -9,7 +9,8 @@ const Icon: React.FC<IconProps> = (props: IconProps) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
-      style={{ width: "1rem", height: "1rem" }}
+      width="1rem"
+      height="1rem"
       {...props}
     >
       {props.children}
