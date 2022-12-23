@@ -1,7 +1,7 @@
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   currentEditorPanelTabState,
-  currentProjectState,
+  currentProjectIdState,
   currentTrackState,
   editorShowMsState,
 } from "../store/states";
@@ -12,6 +12,7 @@ import TextEditor from "./TextEditor";
 import { Irisub } from "irisub-common";
 import { v4 as uuidv4 } from "uuid";
 import { getAuth } from "firebase/auth";
+import { currentProjectState } from "../store/project";
 
 type Props = {};
 
@@ -20,6 +21,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
     currentEditorPanelTabState
   );
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
+  const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
   const [showMs, setShowMs] = useRecoilState(editorShowMsState);
 
@@ -32,7 +34,6 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
             <button
               onClick={() => {
                 const myNewProject: Irisub.Project = {
-                  id: uuidv4(),
                   title: "my new project",
                 };
                 setCurrentProject(myNewProject);
@@ -42,21 +43,28 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
             </button>
             <button
               onClick={() => {
-                if (currentProject === null) {
+                setCurrentProjectId(uuidv4());
+              }}
+            >
+              randomize currentProjectId {currentProjectId}
+            </button>
+            <button
+              onClick={() => {
+                if (currentProjectId === null) {
                   console.log("no current project");
                   return;
                 }
 
                 const track: Irisub.Track = {
                   id: uuidv4(),
-                  project_id: currentProject.id,
+                  project_id: currentProjectId,
                 };
                 setCurrentTrack(track);
               }}
             >
               create track
             </button>
-            <button
+            {/* <button
               onClick={() => {
                 if (currentProject) {
                   setCurrentProject({
@@ -67,7 +75,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
               }}
             >
               modify project
-            </button>
+            </button> */}
             <button
             // onClick={async () => {
             //   const database = await initDb();

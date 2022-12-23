@@ -1,9 +1,10 @@
 import { Irisub } from "irisub-common";
-import { atom, selector } from "recoil";
-import { getDatabase, ref, child, push, update } from "firebase/database";
+import { atom, AtomEffect, selector, selectorFamily } from "recoil";
+import { getDatabase, ref, child, push, update, get as dbGet, onValue } from "firebase/database";
 import { NavPage, EditorPanelTab, EditorElementKeys } from "../util/constants";
-import { localStorageEffect, syncStorageEffect } from "./effects";
+import { localStorageEffect } from "./effects";
 import storeKeys from "../constants/storeKeys.json";
+import { currentEventListState } from "./events";
 
 export const userIdState = atom<string | null>({
   key: "userIdState",
@@ -20,22 +21,15 @@ export const currentEditorPanelTabState = atom<EditorPanelTab>({
   default: EditorPanelTab.Text,
 });
 
-export const currentProjectState = atom<Irisub.Project | null>({
-  key: "currentProjectState",
-  default: null,
-  effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_PROJECT)],
+export const currentProjectIdState = atom<string | null>({
+  key: "currentProjectIdState",
+  default: "MYPROJECT",
 });
 
 export const currentTrackState = atom<Irisub.Track | null>({
   key: "currentTrackState",
   default: null,
   effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_TRACK)],
-});
-
-export const currentEventListState = atom<Irisub.Event[]>({
-  key: "currentEventListState",
-  default: [],
-  effects: [syncStorageEffect()],
 });
 
 export const editingEventIndexState = atom<number>({

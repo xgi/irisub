@@ -1,21 +1,24 @@
-import React from "react";
-import { useRecoilState } from "recoil";
+import React, { useEffect } from "react";
+import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import {
   editingEventIndexState,
-  currentEventListState,
   currentTrackState,
+  currentProjectIdState,
 } from "../../store/states";
 import styles from "../../styles/components/Timetable.module.scss";
 import { classNames } from "../../util/layout";
 import TimeInput from "../TimeInput";
 import { useFocusNext } from "./hooks";
 import { Irisub } from "irisub-common";
+import { currentEventListState } from "../../store/events";
 
 type Props = {};
 
 const Timetable: React.FC<Props> = (props: Props) => {
   const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
+  const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
+  const resetCurrentEventList = useResetRecoilState(currentEventListState);
   const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
   const textFocusNextRef = useFocusNext();
   const startTimeFocusNextRef = useFocusNext(true);
@@ -27,6 +30,11 @@ const Timetable: React.FC<Props> = (props: Props) => {
       { index: currentEventList.length, text: "", start_ms: 3000, end_ms: 5000 },
     ]);
   };
+
+  useEffect(() => {
+    console.log("currentProjectId changed, resetting event list");
+    resetCurrentEventList();
+  }, [currentProjectId]);
 
   const updateEvent = (
     index: number,
@@ -135,7 +143,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
               <span>something here</span>
             </td>
           </tr> */}
-          {renderRows()}
+          <React.Suspense fallback={<div>Loading...</div>}>{renderRows()}</React.Suspense>
           <tr className={styles.add} onClick={() => addEvent()}>
             <td colSpan={8}>+++</td>
           </tr>

@@ -6,8 +6,14 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button: React.FC<Props> = (props: Props) => {
+  const customProps = { ...props };
+  delete customProps.accent;
+
   return (
-    <button className={classNames(styles.button, props.accent ? styles.accent : "")} {...props} />
+    <button
+      className={classNames(styles.button, props.accent ? styles.accent : "")}
+      {...customProps}
+    />
   );
 };
 

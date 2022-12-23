@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { currentProjectState } from "../store/states";
+import { currentProjectState } from "../store/project";
+import { userIdState } from "../store/states";
 import styles from "../styles/components/Header.module.scss";
 import LoginModal from "./auth/LoginModal";
 import Button from "./Button";
@@ -10,6 +11,7 @@ type Props = {};
 
 const Header: React.FC<Props> = (props: Props) => {
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
+  const [userId, setUserId] = useRecoilState(userIdState);
   const [editingProjectTitle, setEditingProjectTitle] = useState(false);
   const [tempProjectTitle, setTempProjectTitle] = useState("");
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -62,13 +64,14 @@ const Header: React.FC<Props> = (props: Props) => {
           {renderProjectTitle()}
         </div>
         <div className={styles.group}>
+          {userId}
           <Button onClick={() => setLoginModalOpen(true)}>
             <span>
               <IconInvite />
               Invite Members
             </span>
           </Button>
-          <Button accent onClick={() => setLoginModalOpen(true)}>
+          <Button accent={true} onClick={() => setLoginModalOpen(true)}>
             <span>
               <IconCloud />
               Save Workspace
