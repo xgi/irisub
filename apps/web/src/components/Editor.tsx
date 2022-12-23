@@ -14,7 +14,14 @@ import { currentTrackState, editorElementSizesState, editorShowMsState } from ".
 import ReactSlider from "react-slider";
 import ReactPlayer from "react-player";
 import FileDrop from "./FileDrop";
-import { Icon10Left, Icon10Right, IconBars4, IconFileUpload, IconPause, IconPlay } from "./Icons";
+import {
+  Icon10Left,
+  Icon10Right,
+  IconFileUpload,
+  IconPause,
+  IconPlay,
+  IconSubtitle,
+} from "./Icons";
 import TimeInput from "./TimeInput";
 import { classNames } from "../util/layout";
 import EditorPanel from "./EditorPanel";
@@ -98,13 +105,17 @@ const Editor: React.FC<Props> = (props: Props) => {
         {/* TODO: move to ControlBar.tsx */}
         <div className={styles.controlsGroup}>
           <a onClick={() => setPlayerPlaying(!playerPlaying)}>
-            {playerPlaying ? <IconPause /> : <IconPlay />}
+            {playerPlaying ? (
+              <IconPause width={22} height={22} />
+            ) : (
+              <IconPlay width={22} height={22} />
+            )}
           </a>
           <a onClick={() => handleSeek(playerProgress - 10)}>
-            <Icon10Left />
+            <Icon10Left width={22} height={22} />
           </a>
           <a onClick={() => handleSeek(playerProgress + 10)}>
-            <Icon10Right />
+            <Icon10Right width={22} height={22} />
           </a>
           <ReactSlider
             className={classNames(styles.horizontalSlider, playerPath ? "" : styles.disabled)}
@@ -129,7 +140,7 @@ const Editor: React.FC<Props> = (props: Props) => {
         <div className={styles.optionsGroup}>
           <Button>
             <span>
-              <IconBars4 />
+              <IconSubtitle />
               Track List
             </span>
           </Button>

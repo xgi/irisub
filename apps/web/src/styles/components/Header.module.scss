@@ -67,6 +67,11 @@
     cursor: pointer;
     padding: 0.5rem 0.5rem;
 
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+
     &:hover {
       background-color: var(--primary-dark-color);
     }

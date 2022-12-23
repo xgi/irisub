@@ -1,16 +1,17 @@
 import * as React from "react";
 
-interface IconProps extends React.SVGAttributes<HTMLOrSVGElement> {
+interface BaseIconProps extends React.SVGAttributes<SVGSVGElement> {
   children: React.ReactNode;
 }
-const Icon: React.FC<IconProps> = (props: IconProps) => {
+const Icon: React.FC<BaseIconProps> = (props: BaseIconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
-      width="1rem"
-      height="1rem"
+      width={15}
+      height={15}
+      // style={{ width: "1rem", height: "1rem" }}
       {...props}
     >
       {props.children}
@@ -18,28 +19,31 @@ const Icon: React.FC<IconProps> = (props: IconProps) => {
   );
 };
 
-export const IconStart: React.FC = () => {
+export const IconStart: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon>
+    <Icon {...props}>
       <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" />
     </Icon>
   );
 };
 
-export const IconDoubleArrowLeft: React.FC = () => {
+export const IconDoubleArrowLeft: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon>
+    <Icon {...props}>
       <path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z" />
     </Icon>
   );
 };
 
-export const Icon10Left: React.FC = () => {
+export const Icon10Left: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon>
-      <g>
-        <rect fill="none" height="24" width="24" />
-      </g>
+    <Icon {...props}>
       <g>
         <g>
           <path d="M11.99,5V1l-5,5l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6h-2c0,4.42,3.58,8,8,8s8-3.58,8-8S16.41,5,11.99,5z" />
@@ -53,9 +57,11 @@ export const Icon10Left: React.FC = () => {
   );
 };
 
-export const Icon10Right: React.FC = () => {
+export const Icon10Right: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon>
+    <Icon {...props}>
       <g>
         <g>
           <path d="M18,13c0,3.31-2.69,6-6,6s-6-2.69-6-6s2.69-6,6-6v4l5-5l-5-5v4c-4.42,0-8,3.58-8,8c0,4.42,3.58,8,8,8s8-3.58,8-8H18z" />
@@ -67,60 +73,85 @@ export const Icon10Right: React.FC = () => {
   );
 };
 
-export const IconDoubleArrowRight: React.FC = () => {
+export const IconDoubleArrowRight: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon>
+    <Icon {...props}>
       <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z" />
     </Icon>
   );
 };
 
-export const IconPlay: React.FC = () => {
+export const IconPlay: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
     <Icon
-    // fill="#10b981"
+      {...props}
+      // fill="#10b981"
     >
       <path d="M8 5v14l11-7z" />
     </Icon>
   );
 };
 
-export const IconPause: React.FC = () => {
+export const IconPause: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon>
+    <Icon {...props}>
       <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
     </Icon>
   );
 };
 
-export const IconFileUpload: React.FC = () => {
+export const IconFileUpload: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon>
+    <Icon {...props}>
       <path d="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z M7,9l1.41,1.41L11,7.83V16h2V7.83l2.59,2.58L17,9l-5-5L7,9z" />
     </Icon>
   );
 };
 
-export const IconCloud: React.FC = () => {
+export const IconCloud: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon>
+    <Icon {...props}>
       <path d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
     </Icon>
   );
 };
 
-export const IconInvite: React.FC = () => {
+export const IconInvite: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon stroke-width="1.5" stroke="currentColor">
-      <path d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+    <Icon {...props}>
+      <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z" />
     </Icon>
   );
 };
 
-export const IconBars4: React.FC = () => {
+export const IconSubtitle: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
   return (
-    <Icon>
+    <Icon {...props}>
       <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 12h4v2H4v-2zm10 6H4v-2h10v2zm6 0h-4v-2h4v2zm0-4H10v-2h10v2z" />
+    </Icon>
+  );
+};
+
+export const IconPencil: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
+  return (
+    <Icon {...props}>
+      <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z" />
     </Icon>
   );
 };

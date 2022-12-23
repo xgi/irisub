@@ -5,7 +5,7 @@ import { userIdState } from "../store/states";
 import styles from "../styles/components/Header.module.scss";
 import LoginModal from "./auth/LoginModal";
 import Button from "./Button";
-import { IconCloud, IconInvite } from "./Icons";
+import { IconCloud, IconInvite, IconPencil } from "./Icons";
 
 type Props = {};
 
@@ -48,6 +48,7 @@ const Header: React.FC<Props> = (props: Props) => {
       return (
         <span onClick={() => setEditingProjectTitle(true)} className={styles.project}>
           {currentProject?.title || "Untitled project"}
+          <IconPencil />
         </span>
       );
     }
