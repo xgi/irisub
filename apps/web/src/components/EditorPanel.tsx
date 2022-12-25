@@ -13,6 +13,7 @@ import { Irisub } from "irisub-common";
 import { v4 as uuidv4 } from "uuid";
 import { getAuth } from "firebase/auth";
 import { currentProjectState } from "../store/project";
+import { accentState, nextAccent, nextTheme, themeState } from "../store/theme";
 
 type Props = {};
 
@@ -24,6 +25,8 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
   const [showMs, setShowMs] = useRecoilState(editorShowMsState);
+  const [theme, setTheme] = useRecoilState(themeState);
+  const [accent, setAccent] = useRecoilState(accentState);
 
   return (
     <div className={styles.container}>
@@ -116,16 +119,17 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
             </button>
             <button
               onClick={() => {
-                if (document.documentElement.classList.contains("light")) {
-                  document.documentElement.className = "dark";
-                } else if (document.documentElement.classList.contains("dark")) {
-                  document.documentElement.className = "system";
-                } else {
-                  document.documentElement.className = "light";
-                }
+                setTheme(nextTheme(theme));
               }}
             >
-              change theme
+              change theme (cur: {theme})
+            </button>
+            <button
+              onClick={() => {
+                setAccent(nextAccent(accent));
+              }}
+            >
+              change accent (cur: {accent})
             </button>
           </>
         ) : (

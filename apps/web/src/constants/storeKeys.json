@@ -1,5 +1,7 @@
 {
   "WORKSPACE": {
+    "THEME": "workspace-theme",
+    "ACCENT": "workspace-accent",
     "CURRENT_PROJECT": "workspace-current-project",
     "CURRENT_PROJECT_ID": "workspace-current-project-id",
     "CURRENT_TRACK": "workspace-current-track",
