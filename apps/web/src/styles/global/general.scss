@@ -1,5 +1,6 @@
 :root {
   --font-size-body: 0.9rem;
+  --font-size-tiny: calc(var(--font-size-body) - 0.1rem);
   --line-height-body: 1rem;
 }
 
@@ -16,8 +17,6 @@ body {
   font-family: "Inter", sans-serif;
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
-
-  user-select: none;
 }
 
 a {

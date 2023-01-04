@@ -1,0 +1,163 @@
+.container {
+  text-align: center;
+  width: 100%;
+
+  .header {
+    background-color: var(--primary-contrast-color);
+    border-bottom: 1px solid var(--divider-light-color);
+    padding: 1.2rem;
+
+    display: flex;
+    align-items: bottom;
+    justify-content: space-between;
+
+    h3 {
+      color: var(--secondary-dark-color);
+      font-size: 1.2rem;
+      line-height: 1.4rem;
+      margin: 0;
+    }
+
+    .exit {
+      color: var(--secondary-light-color);
+      background-color: transparent;
+      height: 22px;
+      width: 22px;
+      border: none;
+
+      &:hover {
+        color: var(--secondary-dark-color);
+        cursor: pointer;
+      }
+    }
+  }
+
+  .footer {
+    color: var(--secondary-light-color);
+    background-color: var(--primary-contrast-color);
+    padding: 0.8rem 1rem;
+    font-weight: 500;
+    font-size: var(--font-size-tiny);
+    line-height: 1rem;
+    border-top: 1px solid var(--divider-light-color);
+  }
+
+  .inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0.25rem 1rem;
+    padding: 0.75rem 0.5rem;
+
+    input {
+      background-color: var(--primary-color);
+      color: var(--secondary-dark-color);
+      border: 1px solid var(--divider-color);
+
+      width: 100%;
+      padding: 0.5rem 0.5rem;
+
+      outline: none;
+
+      &::placeholder {
+        color: var(--secondary-color);
+      }
+    }
+
+    button {
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .providerButton {
+      display: flex;
+      align-items: center;
+      text-align: left;
+      gap: 1rem;
+
+      color: var(--secondary-color);
+      background: none;
+      border: 1px solid var(--divider-light-color);
+      margin: 0.2rem 0;
+      padding: 0.8rem 1rem;
+
+      &:hover {
+        color: var(--secondary-dark-color);
+        background-color: var(--primary-dark-color);
+        border-color: var(--divider-dark-color);
+      }
+    }
+
+    .buttonRow {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+      margin-top: 0.5rem;
+
+      .backLink {
+        flex: 1;
+        color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        text-align: left;
+        cursor: pointer;
+
+        &:hover {
+          color: var(--secondary-dark-color);
+        }
+      }
+
+      .actionButton {
+        flex: 1;
+        color: var(--accent-contrast-color);
+        background-color: var(--accent-color);
+        border: none;
+
+        padding: 0.5rem 0;
+        font-weight: bold;
+
+        &:hover {
+          background-color: var(--accent-dark-color);
+        }
+      }
+    }
+
+    .sentContainer {
+      padding: 0 1rem;
+
+      h2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      p {
+        line-height: calc(var(--line-height-body) + 0.15rem);
+      }
+    }
+
+    .loading {
+      .spin {
+        width: 24px;
+        height: 24px;
+        border: 4px solid var(--secondary-light-color);
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 0.6s linear infinite;
+      }
+
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    }
+  }
+}
