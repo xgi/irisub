@@ -18,43 +18,54 @@ const snapshotToEventList = (snapshot: DataSnapshot): Irisub.Event[] => {
   }
 };
 
-const getRemoteEventList = async (projectId: string | null): Promise<Irisub.Event[]> => {
-  console.log(`getting remote event list with projectId: ${projectId}`);
-  if (projectId === null) return [];
+const getRemoteEventList = async (projectId: string | null): Promise<Irisub.Event[] | null> => {
+  if (projectId === null) return null;
 
-  const snapshot = await get(child(ref(getDatabase()), `events/${projectId}/MYTRACK`));
-  if (snapshot.exists()) return snapshotToEventList(snapshot);
-  return [];
+  return get(child(ref(getDatabase()), `events/${projectId}/MYTRACK`))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        return snapshotToEventList(snapshot);
+      }
+      return [];
+    })
+    .catch(() => {
+      return [];
+    });
 };
 
-function syncEventListEffect(): AtomEffect<Irisub.Event[]> {
+function syncEventListEffect(): AtomEffect<Irisub.Event[] | null> {
   return ({ setSelf, onSet, trigger, getPromise, getLoadable }) => {
     const projectId = getLoadable(currentProjectIdState).getValue();
 
-    if (trigger === "get") {
-      getRemoteEventList(projectId).then((events) => setSelf(events));
-    }
+    if (projectId !== null) {
+      if (trigger === "get") {
+        getRemoteEventList(projectId).then((events) => setSelf(events));
+      }
 
-    onValue(ref(getDatabase(), `events/${projectId}/MYTRACK`), (snapshot) => {
-      if (snapshot.exists()) setSelf(snapshotToEventList(snapshot));
-    });
+      onValue(ref(getDatabase(), `events/${projectId}/MYTRACK`), (snapshot) => {
+        if (snapshot.exists()) setSelf(snapshotToEventList(snapshot));
+      });
+    }
 
     onSet((newValue, oldValue, isReset) => {
       // TODO: only update modified events, and use transaction
       // const newKeys = Object.keys(newValue).filter((key) => !Object.keys(oldValue).includes(key));
+      const projectId = getLoadable(currentProjectIdState).getValue();
 
-      if (isReset) {
+      if (isReset || newValue === null) {
         getRemoteEventList(projectId).then((events) => setSelf(events));
       } else {
-        const _temp = new Map(newValue.map((obj) => [obj.index, { ...obj }]));
-        update(ref(getDatabase(), `events/${projectId}/MYTRACK`), Object.fromEntries(_temp));
+        if (newValue !== null) {
+          const _temp = new Map(newValue.map((obj) => [obj.index, { ...obj }]));
+          update(ref(getDatabase(), `events/${projectId}/MYTRACK`), Object.fromEntries(_temp));
+        }
       }
     });
   };
 }
 
-export const currentEventListState = atom<Irisub.Event[]>({
+export const currentEventListState = atom<Irisub.Event[] | null>({
   key: "currentEventListState",
-  default: [],
+  default: null,
   effects: [syncEventListEffect()],
 });

@@ -1,6 +1,5 @@
 import { Irisub } from "irisub-common";
-import { atom, AtomEffect, selector, selectorFamily } from "recoil";
-import { getDatabase, ref, child, push, update, get as dbGet, onValue } from "firebase/database";
+import { atom } from "recoil";
 import { NavPage, EditorPanelTab, EditorElementKeys } from "../util/constants";
 import { localStorageEffect } from "./effects";
 import storeKeys from "../constants/storeKeys.json";
@@ -23,7 +22,8 @@ export const currentEditorPanelTabState = atom<EditorPanelTab>({
 
 export const currentProjectIdState = atom<string | null>({
   key: "currentProjectIdState",
-  default: "MYPROJECT",
+  default: null,
+  effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_PROJECT_ID)],
 });
 
 export const currentTrackState = atom<Irisub.Track | null>({
@@ -41,22 +41,14 @@ export const editingEventIndexState = atom<number>({
         if (newValue < 0) setSelf(oldValue);
 
         const currentEventList = await getPromise(currentEventListState);
-        const lastIndex = currentEventList.length - 1;
-        if (newValue > lastIndex) setSelf(oldValue);
+        if (currentEventList !== null) {
+          const lastIndex = currentEventList.length - 1;
+          if (newValue > lastIndex) setSelf(oldValue);
+        }
       });
     },
   ],
 });
-
-// const currentCommentListState = atom<Irisub.Comment[]>({
-//   key: "currentCommentListState",
-//   default: [],
-// });
-
-// const currentStyleSheetListState = atom<Irisub.StyleSheet[]>({
-//   key: "currentStylesheetListState",
-//   default: [],
-// });
 
 export const editorElementSizesState = atom<{ [key: string]: number }>({
   key: "editorElementSizesState",
