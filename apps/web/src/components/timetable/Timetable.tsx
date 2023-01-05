@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import React from "react";
+import { useRecoilState } from "recoil";
 import {
   editingEventIndexState,
   currentTrackState,
@@ -11,18 +11,25 @@ import TimeInput from "../TimeInput";
 import { useFocusNext } from "./hooks";
 import { Irisub } from "irisub-common";
 import { currentEventListState } from "../../store/events";
+import { playerPlayingState, playerProgressState } from "../../store/player";
 
-type Props = {};
+type Props = {
+  handleSeek: (value: number) => void;
+};
 
 const Timetable: React.FC<Props> = (props: Props) => {
   const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
-  const resetCurrentEventList = useResetRecoilState(currentEventListState);
   const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
+  const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
+  const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
   const textFocusNextRef = useFocusNext();
   const startTimeFocusNextRef = useFocusNext(true);
   const endTimeFocusNextRef = useFocusNext(true);
+
+  // TODO: show loader instead
+  if (currentEventList === null) return <></>;
 
   const addEvent = () => {
     setCurrentEventList([
@@ -30,11 +37,6 @@ const Timetable: React.FC<Props> = (props: Props) => {
       { index: currentEventList.length, text: "", start_ms: 3000, end_ms: 5000 },
     ]);
   };
-
-  useEffect(() => {
-    console.log("currentProjectId changed, resetting event list");
-    resetCurrentEventList();
-  }, [currentProjectId]);
 
   const updateEvent = (
     index: number,
@@ -48,6 +50,43 @@ const Timetable: React.FC<Props> = (props: Props) => {
     const _temp = [...currentEventList];
     _temp[index] = newEvent;
     setCurrentEventList(_temp);
+  };
+
+  const renderRowStatusCell = (event: Irisub.Event) => {
+    const playerProgressMs = playerProgress * 1000;
+    const active = playerProgressMs >= event.start_ms && playerProgressMs < event.end_ms;
+
+    if (active) {
+      return (
+        <td
+          className={styles.iconCell}
+          onClick={() => {
+            if (!playerPlaying) props.handleSeek(event.start_ms / 1000);
+            setPlayerPlaying(!playerPlaying);
+          }}
+        >
+          <span
+            className={classNames(
+              styles.statusIcon,
+              playerPlaying ? styles.playing : styles.paused
+            )}
+          >
+            ➤
+          </span>
+        </td>
+      );
+    }
+    return (
+      <td
+        className={styles.iconCell}
+        onClick={() => {
+          setPlayerPlaying(false);
+          props.handleSeek(event.start_ms / 1000);
+        }}
+      >
+        <span className={classNames(styles.statusIcon, styles.jump)}>↪</span>
+      </td>
+    );
   };
 
   const renderRows = () => {
@@ -70,6 +109,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
           className={classNames(editingEventIndex === event.index ? styles.editing : "")}
           onClick={() => setEditingEventIndex(event.index)}
         >
+          {renderRowStatusCell(event)}
           <td style={{ textAlign: "right" }}>{event.index + 1}</td>
           <td></td>
           <td>
@@ -127,6 +167,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
       <table className={styles.table}>
         <thead>
           <tr>
+            <th></th>
             <th>#</th>
             <th>L</th>
             <th style={{ whiteSpace: "nowrap" }}>Start</th>
@@ -143,9 +184,9 @@ const Timetable: React.FC<Props> = (props: Props) => {
               <span>something here</span>
             </td>
           </tr> */}
-          <React.Suspense fallback={<div>Loading...</div>}>{renderRows()}</React.Suspense>
+          {renderRows()}
           <tr className={styles.add} onClick={() => addEvent()}>
-            <td colSpan={8}>+++</td>
+            <td colSpan={9}>+++</td>
           </tr>
         </tbody>
       </table>

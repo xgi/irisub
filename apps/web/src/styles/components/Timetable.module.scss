@@ -36,11 +36,28 @@
       }
     }
 
+    .statusIcon {
+      &.jump {
+        color: #10b981;
+      }
+      &.playing {
+        color: #3b82f6;
+      }
+      &.paused {
+        color: #f97316;
+      }
+    }
+
     td,
     th {
       border: 1px solid var(--divider-light-color);
       padding-left: 0.5rem;
       padding-right: 0.5rem;
+    }
+
+    td.iconCell {
+      cursor: pointer;
+      user-select: none;
     }
   }
 }
