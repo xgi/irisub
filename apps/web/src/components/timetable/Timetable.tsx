@@ -112,7 +112,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
           {renderRowStatusCell(event)}
           <td style={{ textAlign: "right" }}>{event.index + 1}</td>
           <td></td>
-          <td>
+          <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
             <TimeInput
               inputRef={startTimeFocusNextRef}
               className={styles.input}
@@ -124,7 +124,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
               onFocus={() => setEditingEventIndex(event.index)}
             />
           </td>
-          <td>
+          <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
             <TimeInput
               inputRef={endTimeFocusNextRef}
               className={styles.input}

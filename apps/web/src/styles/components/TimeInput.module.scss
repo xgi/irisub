@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+
+    > button {
+      line-height: var(--line-height-body);
+      cursor: pointer;
+      font-size: 0.7rem;
+      padding: 0 6px;
+
+      border: none;
+      background: none;
+      color: var(--secondary-light-color);
+
+      &:hover {
+        color: var(--secondary-dark-color);
+        background-color: var(--primary-dark-color);
+      }
+    }
+  }
+}

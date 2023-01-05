@@ -1,6 +1,7 @@
 import { useRecoilValue } from "recoil";
 import { editorShowMsState } from "../store/states";
 import { MAX_TIMESTAMP_MS } from "../util/constants";
+import styles from "../styles/components/TimeInput.module.scss";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   inputRef?: React.LegacyRef<HTMLInputElement> | undefined;
@@ -73,15 +74,30 @@ const TimeInput: React.FC<Props> = (props: Props) => {
     });
   };
 
+  const handleUnary = (deltaSeconds: number) => {
+    const newValue = props.valueMs + deltaSeconds * 1000;
+    if (newValue < 0) {
+      props.callback(0);
+    } else {
+      props.callback(newValue);
+    }
+  };
+
   const { inputRef, valueMs, callback, ...otherProps } = props;
   return (
-    <input
-      {...otherProps}
-      ref={props.inputRef}
-      value={new Date(props.valueMs).toISOString().substring(12, showMs ? 23 : 19)}
-      onKeyPress={handleKeyPress}
-      onChange={() => true}
-    />
+    <div className={styles.container}>
+      <input
+        {...otherProps}
+        ref={props.inputRef}
+        value={new Date(props.valueMs).toISOString().substring(12, showMs ? 23 : 19)}
+        onKeyPress={handleKeyPress}
+        onChange={() => true}
+      />
+      <div className={styles.buttons}>
+        <button onClick={() => handleUnary(1)}>▲</button>
+        <button onClick={() => handleUnary(-1)}>▼</button>
+      </div>
+    </div>
   );
 };
 
