@@ -39,12 +39,21 @@
     .statusIcon {
       &.jump {
         color: #10b981;
+        &:hover {
+          color: #059669;
+        }
       }
       &.playing {
         color: #3b82f6;
+        &:hover {
+          color: #2563eb;
+        }
       }
       &.paused {
         color: #f97316;
+        &:hover {
+          color: #ea580c;
+        }
       }
     }
 
@@ -53,11 +62,18 @@
       border: 1px solid var(--divider-light-color);
       padding-left: 0.5rem;
       padding-right: 0.5rem;
+
+      &,
+      * {
+        font-size: var(--font-size-small);
+      }
     }
 
     td.iconCell {
       cursor: pointer;
       user-select: none;
+      min-width: 2.2rem;
+      text-align: center;
     }
   }
 }

@@ -1,6 +1,7 @@
 :root {
-  --font-size-body: 0.9rem;
-  --font-size-tiny: calc(var(--font-size-body) - 0.1rem);
+  --font-size-body: 1rem;
+  --font-size-small: calc(var(--font-size-body) - 0.1rem);
+  --font-size-tiny: calc(var(--font-size-body) - 0.2rem);
   --line-height-body: 1rem;
 }
 

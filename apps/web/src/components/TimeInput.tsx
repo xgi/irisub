@@ -5,6 +5,7 @@ import styles from "../styles/components/TimeInput.module.scss";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   inputRef?: React.LegacyRef<HTMLInputElement> | undefined;
+  hasButtons?: boolean;
   valueMs: number;
   callback: (valueInMs: number) => void;
 }
@@ -93,10 +94,12 @@ const TimeInput: React.FC<Props> = (props: Props) => {
         onKeyPress={handleKeyPress}
         onChange={() => true}
       />
-      <div className={styles.buttons}>
-        <button onClick={() => handleUnary(1)}>▲</button>
-        <button onClick={() => handleUnary(-1)}>▼</button>
-      </div>
+      {props.hasButtons ? (
+        <div className={styles.buttons}>
+          <button onClick={() => handleUnary(1)}>▲</button>
+          <button onClick={() => handleUnary(-1)}>▼</button>
+        </div>
+      ) : undefined}
     </div>
   );
 };

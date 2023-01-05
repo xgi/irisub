@@ -122,6 +122,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
               valueMs={event.start_ms}
               callback={(value: number) => updateEvent(event.index, { start_ms: value })}
               onFocus={() => setEditingEventIndex(event.index)}
+              hasButtons
             />
           </td>
           <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
@@ -134,6 +135,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
               valueMs={event.end_ms}
               callback={(value: number) => updateEvent(event.index, { end_ms: value })}
               onFocus={() => setEditingEventIndex(event.index)}
+              hasButtons
             />
           </td>
           <td>23</td>

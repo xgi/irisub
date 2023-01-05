@@ -196,7 +196,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           onStopResize={handleElementResize}
         >
           <div className={styles.pane} style={{ overflowY: "auto" }}>
-            <Timetable />
+            <Timetable handleSeek={handleSeek} />
           </div>
         </ReflexElement>
       </ReflexContainer>
