@@ -8,7 +8,6 @@ import {
 import styles from "../../styles/components/Timetable.module.scss";
 import { classNames } from "../../util/layout";
 import TimeInput from "../TimeInput";
-import { useFocusNext } from "./hooks";
 import { Irisub } from "irisub-common";
 import { currentEventListState } from "../../store/events";
 import { playerPlayingState, playerProgressState } from "../../store/player";
@@ -24,9 +23,6 @@ const Timetable: React.FC<Props> = (props: Props) => {
   const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
   const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
-  const textFocusNextRef = useFocusNext();
-  const startTimeFocusNextRef = useFocusNext(true);
-  const endTimeFocusNextRef = useFocusNext(true);
 
   // TODO: show loader instead
   if (currentEventList === null) return <></>;
@@ -89,14 +85,10 @@ const Timetable: React.FC<Props> = (props: Props) => {
     );
   };
 
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, event: Irisub.Event) => {
-    if (e.key === "Enter" && e.shiftKey) {
-      updateEvent(event.index, {
-        text: event.text + "\n",
-      });
-      return;
-    }
-
+  const handleInputMoveFocus = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    matchCursorPosition: boolean = true
+  ) => {
     let delta = 0;
     if (e.key === "ArrowUp") delta = -1;
     if (e.key === "ArrowDown" || e.key === "Enter") delta = 1;
@@ -113,12 +105,29 @@ const Timetable: React.FC<Props> = (props: Props) => {
         if (newInput) {
           newInput.focus();
           e.preventDefault();
-          // setTimeout(function () {
-          //   newInput.selectionStart = newInput.selectionEnd = 9999;
-          // }, 0);
+
+          if (matchCursorPosition) {
+            newInput.setSelectionRange(
+              e.currentTarget.selectionStart,
+              e.currentTarget.selectionStart
+            );
+          }
         }
       }
     }
+  };
+
+  const handleTextInputKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    event: Irisub.Event
+  ) => {
+    if (e.key === "Enter" && e.shiftKey) {
+      updateEvent(event.index, {
+        text: event.text + "\n",
+      });
+      return;
+    }
+    handleInputMoveFocus(e, false);
   };
 
   const renderRows = () => {
@@ -146,7 +155,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
           <td></td>
           <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
             <TimeInput
-              inputRef={startTimeFocusNextRef}
+              id={`timetable-input-starttime-${event.index}`}
               className={styles.input}
               tabIndex={event.index + 1}
               data-index={event.index}
@@ -154,12 +163,13 @@ const Timetable: React.FC<Props> = (props: Props) => {
               valueMs={event.start_ms}
               callback={(value: number) => updateEvent(event.index, { start_ms: value })}
               onFocus={() => setEditingEventIndex(event.index)}
+              onKeyDown={handleInputMoveFocus}
               hasButtons
             />
           </td>
           <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
             <TimeInput
-              inputRef={endTimeFocusNextRef}
+              id={`timetable-input-endtime-${event.index}`}
               className={styles.input}
               tabIndex={event.index + 1}
               data-index={event.index}
@@ -167,6 +177,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
               valueMs={event.end_ms}
               callback={(value: number) => updateEvent(event.index, { end_ms: value })}
               onFocus={() => setEditingEventIndex(event.index)}
+              onKeyDown={handleInputMoveFocus}
               hasButtons
             />
           </td>
@@ -185,7 +196,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
                   text: changeEvent.target.value.replaceAll("␤", "\n"),
                 })
               }
-              onKeyDown={(e) => handleInputKeyDown(e, event)}
+              onKeyDown={(e) => handleTextInputKeyDown(e, event)}
               onFocus={() => setEditingEventIndex(event.index)}
             />
           </td>

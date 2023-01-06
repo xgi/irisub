@@ -13,9 +13,33 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 const TimeInput: React.FC<Props> = (props: Props) => {
   const showMs = useRecoilValue(editorShowMsState);
 
-  const handleKeyPress = (keyboardEvent: React.KeyboardEvent) => {
+  const handleKeyDown = (keyboardEvent: React.KeyboardEvent<HTMLInputElement>) => {
+    if (props.onKeyDown) props.onKeyDown(keyboardEvent);
+
+    const target = keyboardEvent.target as HTMLInputElement;
+    const pointer = target.selectionStart || 0;
+
+    if (
+      keyboardEvent.shiftKey &&
+      (keyboardEvent.key === "ArrowUp" || keyboardEvent.key === "ArrowDown")
+    ) {
+      props.callback(props.valueMs + (keyboardEvent.key === "ArrowUp" ? 1 : -1) * 1000);
+      window.requestAnimationFrame(() => {
+        target.setSelectionRange(pointer, pointer);
+      });
+      return;
+    }
+
+    if (keyboardEvent.key === "ArrowLeft" || keyboardEvent.key === "ArrowRight") {
+      const delta = keyboardEvent.key === "ArrowLeft" ? -1 : 1;
+      const newPointer = pointer + delta > 0 ? pointer + delta : 0;
+      window.requestAnimationFrame(() => {
+        target.setSelectionRange(newPointer, newPointer);
+      });
+      return;
+    }
+
     if (!/[0-9]/.test(keyboardEvent.key)) {
-      keyboardEvent.preventDefault();
       return;
     }
     const digit = parseInt(keyboardEvent.key);
@@ -24,9 +48,6 @@ const TimeInput: React.FC<Props> = (props: Props) => {
     let seconds = Math.floor((props.valueMs / 1000) % 60);
     let minutes = Math.floor((props.valueMs / (1000 * 60)) % 60);
     let hours = Math.floor((props.valueMs / (1000 * 60 * 60)) % 60);
-
-    const target = keyboardEvent.target as HTMLInputElement;
-    const pointer = target.selectionStart || 0;
 
     let nextPointer = pointer + 1;
     switch (pointer) {
@@ -92,7 +113,7 @@ const TimeInput: React.FC<Props> = (props: Props) => {
         {...otherProps}
         ref={props.inputRef}
         value={new Date(props.valueMs).toISOString().substring(12, showMs ? 23 : 19)}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyDown}
         onChange={() => true}
       />
       {props.hasButtons ? (
