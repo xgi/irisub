@@ -89,6 +89,38 @@ const Timetable: React.FC<Props> = (props: Props) => {
     );
   };
 
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, event: Irisub.Event) => {
+    if (e.key === "Enter" && e.shiftKey) {
+      updateEvent(event.index, {
+        text: event.text + "\n",
+      });
+      return;
+    }
+
+    let delta = 0;
+    if (e.key === "ArrowUp") delta = -1;
+    if (e.key === "ArrowDown" || e.key === "Enter") delta = 1;
+
+    if (delta != 0) {
+      const inputId = e.currentTarget.id;
+      const splitIdx = inputId.lastIndexOf("-");
+      const eventIdx = parseInt(inputId.substring(splitIdx + 1, inputId.length));
+
+      const newEventIdx = eventIdx + delta;
+      if (newEventIdx >= 0 && newEventIdx < currentEventList.length) {
+        const newInputId = inputId.substring(0, splitIdx + 1) + newEventIdx;
+        const newInput = document.getElementById(newInputId) as HTMLInputElement | null;
+        if (newInput) {
+          newInput.focus();
+          e.preventDefault();
+          // setTimeout(function () {
+          //   newInput.selectionStart = newInput.selectionEnd = 9999;
+          // }, 0);
+        }
+      }
+    }
+  };
+
   const renderRows = () => {
     if (currentTrack === null) return;
 
@@ -143,17 +175,17 @@ const Timetable: React.FC<Props> = (props: Props) => {
           <td>Steve</td>
           <td style={{ width: "100%" }}>
             <input
-              ref={textFocusNextRef}
+              id={`timetable-input-text-${event.index}`}
               className={styles.input}
               tabIndex={event.index + 1}
-              data-index={event.index}
               placeholder=""
               value={event.text.replaceAll("\n", "␤")}
               onChange={(changeEvent: any) =>
                 updateEvent(event.index, {
-                  text: changeEvent.target.value,
+                  text: changeEvent.target.value.replaceAll("␤", "\n"),
                 })
               }
+              onKeyDown={(e) => handleInputKeyDown(e, event)}
               onFocus={() => setEditingEventIndex(event.index)}
             />
           </td>

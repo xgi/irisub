@@ -85,6 +85,7 @@ const TimeInput: React.FC<Props> = (props: Props) => {
   };
 
   const { inputRef, valueMs, callback, ...otherProps } = props;
+  delete otherProps.hasButtons;
   return (
     <div className={styles.container}>
       <input
