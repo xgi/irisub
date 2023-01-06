@@ -130,6 +130,12 @@ const Timetable: React.FC<Props> = (props: Props) => {
     handleInputMoveFocus(e, false);
   };
 
+  const getCPS = (event: Irisub.Event) => {
+    const cps = Math.ceil(event.text.length / ((event.end_ms - event.start_ms) / 1000));
+    if (cps === Infinity || Number.isNaN(cps)) return 0;
+    return cps;
+  };
+
   const renderRows = () => {
     if (currentTrack === null) return;
 
@@ -152,7 +158,6 @@ const Timetable: React.FC<Props> = (props: Props) => {
         >
           {renderRowStatusCell(event)}
           <td style={{ textAlign: "right" }}>{event.index + 1}</td>
-          <td></td>
           <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
             <TimeInput
               id={`timetable-input-starttime-${event.index}`}
@@ -181,7 +186,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
               hasButtons
             />
           </td>
-          <td>23</td>
+          <td>{getCPS(event)}</td>
           <td>Default</td>
           <td>Steve</td>
           <td style={{ width: "100%" }}>
@@ -214,7 +219,6 @@ const Timetable: React.FC<Props> = (props: Props) => {
           <tr>
             <th></th>
             <th>#</th>
-            <th>L</th>
             <th style={{ whiteSpace: "nowrap" }}>Start</th>
             <th>End</th>
             <th title="Characters Per Second">CPS</th>
@@ -231,7 +235,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
           </tr> */}
           {renderRows()}
           <tr className={styles.add} onClick={() => addEvent()}>
-            <td colSpan={9}>+++</td>
+            <td colSpan={8}>+++</td>
           </tr>
         </tbody>
       </table>
