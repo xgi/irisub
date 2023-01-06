@@ -65,7 +65,10 @@
 
   span.project {
     cursor: pointer;
-    padding: 0.5rem 0.5rem;
+    padding: 0.2rem 0.2rem;
+    font-weight: 500;
+
+    line-height: 1.2em;
 
     display: inline-flex;
     justify-content: center;
@@ -74,6 +77,13 @@
 
     &:hover {
       background-color: var(--primary-dark-color);
+    }
+
+    :first-child {
+      max-width: 300px;
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
     }
   }
 }

@@ -3,7 +3,6 @@ import {
   getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
-  linkWithPopup,
   OAuthProvider,
   sendSignInLinkToEmail,
   signInWithPopup,
@@ -14,6 +13,12 @@ import { getDatabase, ref, set } from "firebase/database";
 import { IconArrowLeft, IconEmail, IconGitHub, IconGoogle, IconMicrosoft, IconX } from "../Icons";
 import styles from "../../styles/components/LoginModal.module.scss";
 import { useState } from "react";
+
+enum ProviderName {
+  GOOGLE,
+  MICROSOFT,
+  GITHUB,
+}
 
 type Props = {
   isOpen: boolean;
@@ -37,47 +42,18 @@ const LoginModal: React.FC<Props> = (props: Props) => {
     if (successful && props.callback) props.callback();
   };
 
-  const handleGoogleLink = () => {
-    const currentUser = getAuth().currentUser;
-    if (!currentUser) return;
-
-    linkWithPopup(currentUser, new GoogleAuthProvider())
-      .then(() => close())
-      .catch((error) => {
-        console.warn("failed to link");
-        console.error(error);
-      });
+  const getProvider = (providerName: ProviderName) => {
+    switch (providerName) {
+      case ProviderName.GOOGLE:
+        return new GoogleAuthProvider();
+      case ProviderName.MICROSOFT:
+        return new OAuthProvider("microsoft.com");
+      case ProviderName.GITHUB:
+        return new GithubAuthProvider();
+    }
   };
 
-  const handleGithubLink = () => {
-    const currentUser = getAuth().currentUser;
-    if (!currentUser) return;
-
-    linkWithPopup(currentUser, new GithubAuthProvider())
-      .then(() => close())
-      .catch((error) => {
-        console.warn("failed to link");
-        console.error(error);
-      });
-  };
-
-  const handleMicrosoftLink = () => {
-    const currentUser = getAuth().currentUser;
-    if (!currentUser) return;
-
-    const provider = new OAuthProvider("microsoft.com");
-
-    linkWithPopup(currentUser, provider)
-      .then(() => close())
-      .catch((error) => {
-        console.warn("failed to link");
-        console.error(error);
-      });
-  };
-
-  const handleTemp = () => {
-    // TODO: from https://firebase.google.com/docs/auth/web/account-linking
-
+  const handleLogin = (providerName: ProviderName) => {
     const auth = getAuth();
     const prevUser = auth.currentUser;
     if (!prevUser) return;
@@ -85,14 +61,11 @@ const LoginModal: React.FC<Props> = (props: Props) => {
     // TODO: do for all projects. Also maybe copy all project data instead of just the owner?
     set(ref(getDatabase(), `projects/${currentProjectId}/owner`), "");
 
-    signInWithPopup(auth, new GoogleAuthProvider())
+    const provider = getProvider(providerName);
+
+    signInWithPopup(auth, provider)
       .then((loginResult) => {
         const currentUser = loginResult.user;
-
-        // const credential = OAuthProvider.credentialFromResult(loginResult);
-        // return linkWithCredential(prevUser, credential!).then((linkResult) => {
-        // const linkCredential = OAuthProvider.credentialFromResult(linkResult);
-
         set(ref(getDatabase(), `projects/${currentProjectId}/owner`), currentUser.uid);
       })
       .then(() => close())
@@ -106,8 +79,6 @@ const LoginModal: React.FC<Props> = (props: Props) => {
     setLoading(true);
 
     const actionCodeSettings = {
-      // URL you want to redirect back to. The domain (www.example.com) for this
-      // URL must be in the authorized domains list in the Firebase Console.
       url: "http://localhost:5173/finishSignUp?cartId=1234",
       handleCodeInApp: true,
     };
@@ -127,15 +98,18 @@ const LoginModal: React.FC<Props> = (props: Props) => {
   const renderOptionButtons = () => {
     return (
       <>
-        <button className={styles.providerButton} onClick={() => handleMicrosoftLink()}>
+        <button className={styles.providerButton} onClick={() => handleLogin(ProviderName.GOOGLE)}>
           <IconGoogle width={18} height={18} />
           <span>Continue with Google</span>
         </button>
-        <button className={styles.providerButton} onClick={() => handleMicrosoftLink()}>
+        <button
+          className={styles.providerButton}
+          onClick={() => handleLogin(ProviderName.MICROSOFT)}
+        >
           <IconMicrosoft width={18} height={18} />
           <span>Continue with Microsoft</span>
         </button>
-        <button className={styles.providerButton} onClick={() => handleMicrosoftLink()}>
+        <button className={styles.providerButton} onClick={() => handleLogin(ProviderName.GITHUB)}>
           <IconGitHub width={18} height={18} />
           <span>Continue with GitHub</span>
         </button>

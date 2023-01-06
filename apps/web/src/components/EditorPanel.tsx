@@ -4,6 +4,7 @@ import {
   currentProjectIdState,
   currentTrackState,
   editorShowMsState,
+  userIdState,
 } from "../store/states";
 import styles from "../styles/components/EditorPanel.module.scss";
 import { EditorPanelTab } from "../util/constants";
@@ -24,6 +25,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
+  const [userId, setUserId] = useRecoilState(userIdState);
   const [showMs, setShowMs] = useRecoilState(editorShowMsState);
   const [theme, setTheme] = useRecoilState(themeState);
   const [accent, setAccent] = useRecoilState(accentState);
@@ -112,6 +114,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
             <button onClick={() => setShowMs(!showMs)}>toggle showing ms</button>
             <button
               onClick={() => {
+                setUserId(null);
                 getAuth().signOut();
               }}
             >

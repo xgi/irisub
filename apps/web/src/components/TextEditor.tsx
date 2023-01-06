@@ -11,6 +11,9 @@ const TextEditor: React.FC<Props> = (props: Props) => {
   const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
   const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
 
+  // TODO: show loader instead
+  if (currentEventList === null) return <></>;
+
   const setCurrentData = (text: string) => {
     if (currentEventList[editingEventIndex]) {
       const _temp = [...currentEventList];
