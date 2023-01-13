@@ -4,8 +4,6 @@ export namespace Irisub {
   };
 
   export type Track = {
-    id: string;
-    project_id: string;
     name?: string;
     language?: string;
   };

@@ -60,6 +60,19 @@ function syncProjectEffect(): AtomEffect<Irisub.Project | null> {
         getRemoteProject(projectId).then((project) => setSelf(project));
       } else {
         if (newValue !== null) {
+          // TODO: consider limiting the number of projects per user
+          // Option 1:
+          // If project doesn't exist in DB yet, call a createProject API. Also add
+          // DB rule to disallow writing if the project doesn't exist yet (maybe have
+          // that API call if this update command fails because of that rule).
+          //
+          // Option 2:
+          // Alternatively, we may be able to keep a list of the user's projects
+          // in an add-only list (or increment-only counter) in the realtime DB,
+          // and add a DB rule checking the size of that before adding a new project.
+          // The list/counter would only support deletion/decrements through a delete
+          // API, which is perhaps more reasonable to keep online-only.
+
           update(ref(getDatabase(), `projects/${projectId}`), newValue);
         }
       }

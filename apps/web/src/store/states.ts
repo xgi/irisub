@@ -26,10 +26,9 @@ export const currentProjectIdState = atom<string | null>({
   effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_PROJECT_ID)],
 });
 
-export const currentTrackState = atom<Irisub.Track | null>({
-  key: "currentTrackState",
-  default: null,
-  effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_TRACK)],
+export const currentTrackIndexState = atom<number>({
+  key: "currentTrackIndexState",
+  default: 0,
 });
 
 export const editingEventIndexState = atom<number>({

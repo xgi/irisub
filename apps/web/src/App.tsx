@@ -15,7 +15,7 @@ import {
   signInAnonymously,
   signInWithEmailLink,
 } from "firebase/auth";
-import { currentProjectIdState, userIdState } from "./store/states";
+import { currentProjectIdState, currentTrackIndexState, userIdState } from "./store/states";
 import { themeState, accentState } from "./store/theme";
 import styles from "./styles/components/App.module.scss";
 import { currentEventListState } from "./store/events";
@@ -39,6 +39,7 @@ function App() {
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
+  const [currentTrackIndex, setCurrentTrackIndex] = useRecoilState(currentTrackIndexState);
   const theme = useRecoilValue(themeState);
   const accent = useRecoilValue(accentState);
 
@@ -98,6 +99,7 @@ function App() {
     } else {
       console.log(`currentProjectId changed to ${currentProjectId}, resetting others`);
       setCurrentProject(null);
+      setCurrentTrackIndex(0);
       setCurrentEventList(null);
       // resetProject();
       // resetCurrentEventList();

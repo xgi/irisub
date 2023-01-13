@@ -2,7 +2,7 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import {
   editingEventIndexState,
-  currentTrackState,
+  currentTrackIndexState,
   currentProjectIdState,
 } from "../../store/states";
 import styles from "../../styles/components/Timetable.module.scss";
@@ -17,7 +17,7 @@ type Props = {
 };
 
 const Timetable: React.FC<Props> = (props: Props) => {
-  const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
+  const [currentTrackIndex, setCurrentTrackIndex] = useRecoilState(currentTrackIndexState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
   const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
@@ -137,7 +137,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
   };
 
   const renderRows = () => {
-    if (currentTrack === null) return;
+    if (currentTrackIndex === null) return;
 
     const _eventList = currentEventList.slice().sort((a, b) => a.index - b.index);
     // _eventList[_eventList.length] = {
@@ -210,7 +210,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
     });
   };
 
-  if (currentTrack === null) return <span>track is null</span>;
+  if (currentTrackIndex === null) return <span>track is null</span>;
 
   return (
     <div style={{ width: "100%" }}>

@@ -2,7 +2,6 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import {
   currentEditorPanelTabState,
   currentProjectIdState,
-  currentTrackState,
   editorShowMsState,
   userIdState,
 } from "../store/states";
@@ -24,7 +23,6 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
   );
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
-  const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
   const [userId, setUserId] = useRecoilState(userIdState);
   const [showMs, setShowMs] = useRecoilState(editorShowMsState);
   const [theme, setTheme] = useRecoilState(themeState);
@@ -60,11 +58,11 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
                   return;
                 }
 
-                const track: Irisub.Track = {
-                  id: uuidv4(),
-                  project_id: currentProjectId,
-                };
-                setCurrentTrack(track);
+                // const track: Irisub.Track = {
+                //   id: uuidv4(),
+                //   project_id: currentProjectId,
+                // };
+                // setCurrentTrack(track);
               }}
             >
               create track

@@ -10,7 +10,7 @@ import {
 import styles from "../styles/components/Editor.module.scss";
 import Player from "./Player";
 import Timetable from "./timetable/Timetable";
-import { currentTrackState, editorElementSizesState, editorShowMsState } from "../store/states";
+import { editorElementSizesState, editorShowMsState } from "../store/states";
 import ReactSlider from "react-slider";
 import ReactPlayer from "react-player";
 import FileDrop from "./FileDrop";
@@ -34,7 +34,6 @@ type Props = {
 
 const Editor: React.FC<Props> = (props: Props) => {
   const [editorElementSizes, setEditorElementSizes] = useRecoilState(editorElementSizesState);
-  const [currentTrack, setCurrentTrack] = useRecoilState(currentTrackState);
   const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
   const playerDuration = useRecoilValue(playerDurationState);
