@@ -12,7 +12,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:0.0.0",
+    "irisub-eslint": "workspace:0.0.0",
     "prettier": "latest",
     "turbo": "latest"
   },
