@@ -1,0 +1,51 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "events": {
+      "$project": {
+        // Events can be read or written by the project owner or any member
+        ".read": "auth.uid === root.child('projects').child($project).child('owner').val() || root.child('projects').child($project).child('canEdit').child(auth.uid).val() === true",
+        ".write": "auth.uid === root.child('projects').child($project).child('owner').val() || root.child('projects').child($project).child('canEdit').child(auth.uid).val() === true",
+      }
+    },
+    "projects": {
+      "$project": {
+        // A deleted project cannot be read
+        // Project metadata can be read by its owner or any member
+        ".read": "auth.uid === data.child('owner').val() || data.child('canEdit').child(auth.uid).val() === true",
+        // A deleted project cannot be written
+        ".write": "!data.exists() || data.child('deleted').val() !== true",
+        "owner": {
+          // Only the owner can set the owner
+          // TODO: who can they set it to?
+          ".write": "data.val() === auth.uid || data.val() === ''",
+        },
+        "canEdit": {
+          // Only the owner can edit the entire canEdit list
+          ".write": "auth.uid === data.parent().child('owner').val()",
+          "$member": {
+            // Users can remove themselves from canEdit list
+            ".write": "auth.uid === $member && !newData.exists()",
+            ".validate": "newData.isBoolean()"
+          }
+        },
+        "title": {
+          ".validate": "newData.isString()",
+        },
+        "deleted": {
+          // Only the owner can set a project as deleted
+          ".write": "auth.uid === data.parent().child('owner').val()",
+          ".validate": "newData.isBoolean()"
+        },
+        "tracks": {},
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "$other": {
+      ".validate": false
+    }
+  }
+}
