@@ -6,6 +6,7 @@ import Editor from "./Editor";
 import { useRecoilValue } from "recoil";
 import { currentNavPageState } from "../store/states";
 import { NavPage } from "../util/constants";
+import TracksModal from "./TracksModal";
 
 type Props = {};
 
@@ -14,6 +15,8 @@ const Base: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={styles.container}>
+      <TracksModal />
+
       <div className={styles.column}>
         <Header />
         <div className={styles.middle}>

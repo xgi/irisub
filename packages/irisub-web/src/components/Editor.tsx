@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { ReflexContainer, ReflexSplitter, ReflexElement, HandlerProps } from "react-reflex";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -27,6 +27,7 @@ import { classNames } from "../util/layout";
 import EditorPanel from "./EditorPanel";
 import { EditorElementKeys } from "../util/constants";
 import Button from "./Button";
+import { tracksModalOpenState } from "../store/modals";
 
 type Props = {
   hidden?: boolean;
@@ -41,6 +42,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const showMs = useRecoilValue(editorShowMsState);
   const playerRef = useRef<ReactPlayer | null>(null);
   const pickerRef = useRef<HTMLInputElement | null>(null);
+  const [tracksModalOpen, setTracksModalOpen] = useRecoilState(tracksModalOpenState);
 
   // useEffect(() => {
   //   if (database) {
@@ -137,10 +139,10 @@ const Editor: React.FC<Props> = (props: Props) => {
           />
         </div>
         <div className={styles.optionsGroup}>
-          <Button>
+          <Button onClick={() => setTracksModalOpen(true)}>
             <span>
               <IconSubtitle />
-              Track List
+              Tracks
             </span>
           </Button>
 

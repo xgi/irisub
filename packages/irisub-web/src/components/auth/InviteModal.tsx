@@ -17,7 +17,7 @@ const InviteModal: React.FC<Props> = (props: Props) => {
       <div className={styles.container}>
         <div className={styles.header}>
           <h3>Invite Members</h3>
-          <button className={styles.exit}>
+          <button className={styles.exit} onClick={() => props.handleClose()}>
             <IconX width={22} height={22} />
           </button>
         </div>

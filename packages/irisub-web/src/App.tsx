@@ -21,6 +21,7 @@ import styles from "./styles/components/App.module.scss";
 import { currentEventListState } from "./store/events";
 import { currentProjectState } from "./store/project";
 import { v4 as uuidv4 } from "uuid";
+import { currentTrackListState } from "./store/tracks";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDhxbmwAD0wSYYRdZhwNkXHetytT-T0VBU",
@@ -38,6 +39,7 @@ function App() {
   const [userId, setUserId] = useRecoilState(userIdState);
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
+  const [currentTrackList, setCurrentTrackList] = useRecoilState(currentTrackListState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [currentTrackIndex, setCurrentTrackIndex] = useRecoilState(currentTrackIndexState);
   const theme = useRecoilValue(themeState);
@@ -99,6 +101,7 @@ function App() {
     } else {
       console.log(`currentProjectId changed to ${currentProjectId}, resetting others`);
       setCurrentProject(null);
+      setCurrentTrackList(null);
       setCurrentTrackIndex(0);
       setCurrentEventList(null);
       // resetProject();
