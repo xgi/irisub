@@ -115,7 +115,7 @@ const LoginModal: React.FC<Props> = (props: Props) => {
         </button>
         <button className={styles.providerButton} onClick={() => setShowingEmailForm(true)}>
           <IconEmail width={18} height={18} />
-          <span>Continue with Email</span>
+          <span>Continue with email</span>
         </button>
       </>
     );

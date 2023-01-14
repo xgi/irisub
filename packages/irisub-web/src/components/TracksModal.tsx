@@ -61,10 +61,11 @@ const TracksModal: React.FC<Props> = (props: Props) => {
 
     return (
       <div
+        key={track.index}
         className={classNames(styles.track, track.index === currentTrackIndex ? styles.active : "")}
         onClick={() => changeTrack(track.index)}
       >
-        <button key={track.index}>
+        <button>
           <span>
             {track.index} - {track.name || "Unnamed track"} - {track.language || "No language"}
           </span>

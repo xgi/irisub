@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import {
   editingEventIndexState,
@@ -24,13 +24,46 @@ const Timetable: React.FC<Props> = (props: Props) => {
   const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
 
+  useEffect(() => {
+    if (currentEventList && currentEventList.length === 0) {
+      if (currentTrackIndex === 0 || currentTrackIndex === null) {
+        const introEvents = [
+          "Welcome to Irisub! This is the first subtitle.",
+          "To get started, click Select Video to choose a file or Youtube/Vimeo/etc. video.",
+          "You can resize the panels on this page by clicking and dragging the dividers.",
+          "Split text into multiple lines with Shift+Enter.\nThis is the second line.",
+        ];
+
+        setCurrentEventList(
+          introEvents.map((text, index) => ({
+            index: index,
+            text: text,
+            start_ms: index * 3000,
+            end_ms: (index + 1) * 3000,
+          }))
+        );
+      } else {
+        addEvent();
+      }
+    }
+  }, [currentEventList]);
+
   // TODO: show loader instead
   if (currentEventList === null) return <></>;
 
-  const addEvent = () => {
+  const addEvent = (text = "") => {
+    let startMs = 0;
+    let endMs = 3000;
+
+    if (currentEventList.length > 0) {
+      const lastEvent = currentEventList[currentEventList.length - 1];
+      startMs = lastEvent.end_ms;
+      endMs = startMs + 3000;
+    }
+
     setCurrentEventList([
       ...currentEventList,
-      { index: currentEventList.length, text: "", start_ms: 3000, end_ms: 5000 },
+      { index: currentEventList.length, text: text, start_ms: startMs, end_ms: endMs },
     ]);
   };
 
@@ -99,7 +132,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
       const eventIdx = parseInt(inputId.substring(splitIdx + 1, inputId.length));
 
       const newEventIdx = eventIdx + delta;
-      if (newEventIdx >= 0 && newEventIdx < currentEventList.length) {
+      const _move = () => {
         const newInputId = inputId.substring(0, splitIdx + 1) + newEventIdx;
         const newInput = document.getElementById(newInputId) as HTMLInputElement | null;
         if (newInput) {
@@ -113,6 +146,14 @@ const Timetable: React.FC<Props> = (props: Props) => {
             );
           }
         }
+      };
+
+      if (newEventIdx >= 0 && newEventIdx < currentEventList.length) {
+        _move();
+      } else if (newEventIdx >= currentEventList.length) {
+        addEvent();
+        setTimeout(() => _move(), 0);
+        // _move();
       }
     }
   };
@@ -209,8 +250,6 @@ const Timetable: React.FC<Props> = (props: Props) => {
       );
     });
   };
-
-  if (currentTrackIndex === null) return <span>track is null</span>;
 
   return (
     <div style={{ width: "100%" }}>
