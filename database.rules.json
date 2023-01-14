@@ -9,6 +9,10 @@
         ".write": "auth.uid === root.child('projects').child($project).child('owner').val() || root.child('projects').child($project).child('canEdit').child(auth.uid).val() === true",
       }
     },
+    "tracks": {
+      ".read": true,
+      ".write": true
+    },
     "projects": {
       "$project": {
         // A deleted project cannot be read
