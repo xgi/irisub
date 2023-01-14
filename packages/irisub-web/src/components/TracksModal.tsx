@@ -1,7 +1,7 @@
 import Modal from "./Modal";
 import { useRecoilState } from "recoil";
 import { currentTrackIndexState } from "../store/states";
-import { IconX } from "./Icons";
+import { IconDuplicate, IconTrash, IconX } from "./Icons";
 import styles from "../styles/components/TracksModal.module.scss";
 import { useEffect } from "react";
 import { tracksModalOpenState } from "../store/modals";
@@ -9,6 +9,7 @@ import { currentTrackListState } from "../store/tracks";
 import { Irisub } from "irisub-common";
 import { currentEventListState } from "../store/events";
 import { classNames } from "../util/layout";
+import ReactTooltip from "react-tooltip";
 
 const DEFAULT_TRACK: Irisub.Track = {
   index: 0,
@@ -36,6 +37,8 @@ const TracksModal: React.FC<Props> = (props: Props) => {
   };
 
   const changeTrack = (trackIndex: number) => {
+    if (trackIndex === currentTrackIndex) return;
+
     setCurrentTrackIndex(trackIndex);
     setCurrentEventList(null);
   };
@@ -53,14 +56,54 @@ const TracksModal: React.FC<Props> = (props: Props) => {
   };
 
   const renderTrack = (track: Irisub.Track) => {
+    const tooltipIdDelete = `tooltip-track-${track.index}-delete`;
+    const tooltipIdDuplicate = `tooltip-track-${track.index}-duplicate`;
+
     return (
-      <button
-        key={track.index}
-        className={classNames(track.index === currentTrackIndex ? styles.active : "")}
+      <div
+        className={classNames(styles.track, track.index === currentTrackIndex ? styles.active : "")}
         onClick={() => changeTrack(track.index)}
       >
+        <button key={track.index}>
+          <span>
+            {track.index} - {track.name || "Unnamed track"} - {track.language || "No language"}
+          </span>
+        </button>
+        <div className={styles.actions}>
+          <IconDuplicate width={20} height={20} data-tip data-for={tooltipIdDuplicate} />
+          <IconTrash width={20} height={20} data-tip data-for={tooltipIdDelete} />
+        </div>
+
+        <ReactTooltip
+          id={tooltipIdDuplicate}
+          className="tooltip"
+          effect="solid"
+          place="right"
+          arrowColor="transparent"
+        >
+          <span>Duplicate</span>
+        </ReactTooltip>
+        <ReactTooltip
+          id={tooltipIdDelete}
+          className="tooltip"
+          effect="solid"
+          place="right"
+          arrowColor="transparent"
+        >
+          <span>Delete</span>
+        </ReactTooltip>
+      </div>
+    );
+  };
+
+  const renderAddButton = () => {
+    // TODO: unenforced limit
+    if (currentTrackList && currentTrackList.length >= 5) return undefined;
+
+    return (
+      <button className={styles.add} onClick={newTrack}>
         <span>
-          {track.index} - {track.name || "Unnamed track"} - {track.language || "No language"}
+          <b>Add track</b>
         </span>
       </button>
     );
@@ -85,11 +128,7 @@ const TracksModal: React.FC<Props> = (props: Props) => {
 
         <div className={styles.inner}>
           {renderTrackList()}
-          <button className={styles.add} onClick={newTrack}>
-            <span>
-              <b>Add track</b>
-            </span>
-          </button>
+          {renderAddButton()}
         </div>
       </div>
     </Modal>

@@ -32,16 +32,6 @@
     }
   }
 
-  .footer {
-    color: var(--secondary-light-color);
-    background-color: var(--primary-contrast-color);
-    padding: 0.8rem 1rem;
-    font-weight: 500;
-    font-size: var(--font-size-tiny);
-    line-height: 1rem;
-    border-top: 1px solid var(--divider-light-color);
-  }
-
   .inner {
     display: flex;
     flex-direction: column;
@@ -51,64 +41,68 @@
     margin: 0.25rem 1rem;
     padding: 0.75rem 0.5rem;
 
-    input {
-      background-color: var(--primary-color);
-      color: var(--secondary-dark-color);
-      border: 1px solid var(--divider-color);
+    // input {
+    //   background-color: var(--primary-color);
+    //   color: var(--secondary-dark-color);
+    //   border: 1px solid var(--divider-color);
 
-      width: 100%;
-      padding: 0.5rem 0.5rem;
+    //   width: 100%;
+    //   padding: 0.5rem 0.5rem;
 
-      outline: none;
+    //   outline: none;
 
-      &::placeholder {
-        color: var(--secondary-color);
-      }
-    }
+    //   &::placeholder {
+    //     color: var(--secondary-color);
+    //   }
+    // }
 
-    button {
+    div.track {
       width: 100%;
       cursor: pointer;
 
-      font-size: var(--font-size-small);
-
       display: flex;
       align-items: center;
+      justify-content: space-between;
       text-align: left;
       gap: 1rem;
 
-      color: var(--secondary-color);
-      background: none;
-      border: 1px solid var(--divider-light-color);
       margin: 0.2rem 0;
       padding: 0.8rem 1rem;
+      border: 1px solid var(--divider-light-color);
 
       &.active {
         border-color: var(--accent-color);
       }
 
-      &:hover {
-        color: var(--secondary-dark-color);
-        background-color: var(--primary-dark-color);
-        border-color: var(--divider-dark-color);
-
-        &.active {
-          border-color: var(--accent-dark-color);
-        }
+      button {
+        cursor: pointer;
+        text-align: left;
+        font-size: var(--font-size-small);
+        border: none;
+        color: var(--secondary-color);
+        background: none;
       }
 
-      &.add {
-        > span {
-          width: 100%;
-        }
-        text-align: center;
-        color: var(--accent-contrast-color);
-        background-color: var(--accent-color);
+      .actions {
+        display: inline-flex;
+        gap: 0.5rem;
+      }
+    }
 
-        &:hover {
-          color: var(--accent-contrast-color);
-          background-color: var(--accent-dark-color);
-        }
+    button.add {
+      width: 100%;
+      cursor: pointer;
+
+      margin: 0.2rem 0;
+      padding: 0.4rem 1rem;
+
+      color: var(--accent-contrast-color);
+      background-color: var(--accent-color);
+      border: none;
+
+      &:hover {
+        color: var(--accent-contrast-color);
+        background-color: var(--accent-dark-color);
       }
     }
   }
