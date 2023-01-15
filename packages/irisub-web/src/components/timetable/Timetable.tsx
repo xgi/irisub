@@ -11,6 +11,40 @@ import TimeInput from "../TimeInput";
 import { Irisub } from "irisub-common";
 import { currentEventListState } from "../../store/events";
 import { playerPlayingState, playerProgressState } from "../../store/player";
+import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
+import EventTextInput from "./EventTextInput";
+
+const COMMENTS_SUBSCRIPTION = gql`
+  subscription subscribeToEvents($project_id: uuid!) {
+    events(where: { project_id: { _eq: $project_id } }) {
+      id
+      index
+      start_ms
+      end_ms
+      text
+    }
+  }
+`;
+
+const GET_EVENTS = gql`
+  query getAllEvents {
+    events {
+      id
+      index
+      text
+      start_ms
+      end_ms
+    }
+  }
+`;
+
+const UPDATE_EVENT = gql`
+  mutation updateEvent($event_id: uuid!, $text: String!) {
+    update_events_by_pk(pk_columns: { id: $event_id }, _set: { text: $text }) {
+      id
+    }
+  }
+`;
 
 type Props = {
   handleSeek: (value: number) => void;
@@ -24,46 +58,58 @@ const Timetable: React.FC<Props> = (props: Props) => {
   const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
 
-  useEffect(() => {
-    if (currentEventList && currentEventList.length === 0) {
-      if (currentTrackIndex === 0 || currentTrackIndex === null) {
-        const introEvents = [
-          "Welcome to Irisub! This is the first subtitle.",
-          "To get started, click Select Video to choose a file or Youtube/Vimeo/etc. video.",
-          "You can resize the panels on this page by clicking and dragging the dividers.",
-          "Split text into multiple lines with Shift+Enter.\nThis is the second line.",
-        ];
+  const eventListSubscription = useSubscription(COMMENTS_SUBSCRIPTION, {
+    variables: { project_id: "199c7ceb-1215-4dbf-920e-4d6980e8dbe8" },
+  });
+  const [tempUpdateEvent, { data, loading, error }] = useMutation(UPDATE_EVENT);
 
-        setCurrentEventList(
-          introEvents.map((text, index) => ({
-            index: index,
-            text: text,
-            start_ms: index * 3000,
-            end_ms: (index + 1) * 3000,
-          }))
-        );
-      } else {
-        addEvent();
-      }
-    }
-  }, [currentEventList]);
+  const eventList = eventListSubscription.data ? eventListSubscription.data.events : [];
+
+  // useEffect(() => {
+  //   console.log("got new data from subscription (timetable):");
+  //   console.log(eventListSubscription.data);
+  // }, [eventListSubscription]);
+
+  // useEffect(() => {
+  //   if (eventList && eventList.length === 0) {
+  //     if (currentTrackIndex === 0 || currentTrackIndex === null) {
+  //       const introEvents = [
+  //         "Welcome to Irisub! This is the first subtitle.",
+  //         "To get started, click Select Video to choose a file or Youtube/Vimeo/etc. video.",
+  //         "You can resize the panels on this page by clicking and dragging the dividers.",
+  //         "Split text into multiple lines with Shift+Enter.\nThis is the second line.",
+  //       ];
+
+  //       setCurrentEventList(
+  //         introEvents.map((text, index) => ({
+  //           index: index,
+  //           text: text,
+  //           start_ms: index * 3000,
+  //           end_ms: (index + 1) * 3000,
+  //         }))
+  //       );
+  //     } else {
+  //       addEvent();
+  //     }
+  //   }
+  // }, [eventList]);
 
   // TODO: show loader instead
-  if (currentEventList === null) return <></>;
+  if (eventList === undefined) return <></>;
 
   const addEvent = (text = "") => {
     let startMs = 0;
     let endMs = 3000;
 
-    if (currentEventList.length > 0) {
-      const lastEvent = currentEventList[currentEventList.length - 1];
+    if (eventList.length > 0) {
+      const lastEvent = eventList[eventList.length - 1];
       startMs = lastEvent.end_ms;
       endMs = startMs + 3000;
     }
 
     setCurrentEventList([
-      ...currentEventList,
-      { index: currentEventList.length, text: text, start_ms: startMs, end_ms: endMs },
+      ...eventList,
+      { index: eventList.length, text: text, start_ms: startMs, end_ms: endMs },
     ]);
   };
 
@@ -71,14 +117,19 @@ const Timetable: React.FC<Props> = (props: Props) => {
     index: number,
     data: { text?: string; start_ms?: number; end_ms?: number }
   ) => {
-    const newEvent: Irisub.Event = { ...currentEventList[index] };
-    if (data.text !== undefined) newEvent.text = data.text;
-    if (data.start_ms !== undefined) newEvent.start_ms = data.start_ms;
-    if (data.end_ms !== undefined) newEvent.end_ms = data.end_ms;
+    // const newEvent: Irisub.Event = { ...eventList[index] };
+    // if (data.text !== undefined) newEvent.text = data.text;
+    // if (data.start_ms !== undefined) newEvent.start_ms = data.start_ms;
+    // if (data.end_ms !== undefined) newEvent.end_ms = data.end_ms;
 
-    const _temp = [...currentEventList];
-    _temp[index] = newEvent;
-    setCurrentEventList(_temp);
+    // const _temp = [...eventList];
+    // _temp[index] = newEvent;
+    // setCurrentEventList(_temp);
+
+    const oldEvent = eventList[index];
+    console.log(`changing ${oldEvent.text} to ${data.text}`);
+
+    tempUpdateEvent({ variables: { event_id: oldEvent.id, text: data.text } });
   };
 
   const renderRowStatusCell = (event: Irisub.Event) => {
@@ -148,12 +199,11 @@ const Timetable: React.FC<Props> = (props: Props) => {
         }
       };
 
-      if (newEventIdx >= 0 && newEventIdx < currentEventList.length) {
+      if (newEventIdx >= 0 && newEventIdx < eventList.length) {
         _move();
-      } else if (newEventIdx >= currentEventList.length) {
+      } else if (newEventIdx >= eventList.length) {
         addEvent();
         setTimeout(() => _move(), 0);
-        // _move();
       }
     }
   };
@@ -180,7 +230,9 @@ const Timetable: React.FC<Props> = (props: Props) => {
   const renderRows = () => {
     if (currentTrackIndex === null) return;
 
-    const _eventList = currentEventList.slice().sort((a, b) => a.index - b.index);
+    const _eventList = eventList
+      .slice()
+      .sort((a: Irisub.Event, b: Irisub.Event) => a.index - b.index);
     // _eventList[_eventList.length] = {
     //   index: _eventList.length,
     //   text: "",
@@ -188,7 +240,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
     //   end_ms: 0,
     // };
 
-    return _eventList.map((event) => {
+    return _eventList.map((event: Irisub.Event) => {
       // TODO: avoid re-renders
       // https://alexsidorenko.com/blog/react-list-rerender/
       return (
@@ -231,7 +283,8 @@ const Timetable: React.FC<Props> = (props: Props) => {
           <td>Default</td>
           <td>Steve</td>
           <td style={{ width: "100%" }}>
-            <input
+            <EventTextInput event={event} />
+            {/* <input
               id={`timetable-input-text-${event.index}`}
               className={styles.input}
               tabIndex={event.index + 1}
@@ -244,7 +297,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
               }
               onKeyDown={(e) => handleTextInputKeyDown(e, event)}
               onFocus={() => setEditingEventIndex(event.index)}
-            />
+            /> */}
           </td>
         </tr>
       );

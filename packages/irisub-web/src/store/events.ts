@@ -1,4 +1,5 @@
 import { child, ref, getDatabase, onValue, update, get, DataSnapshot } from "firebase/database";
+import { ApolloClient, InMemoryCache, ApolloProvider, gql, HttpLink } from "@apollo/client";
 import { Irisub } from "irisub-common";
 import { atom, AtomEffect } from "recoil";
 import { currentProjectIdState, currentTrackIndexState } from "./states";
@@ -43,6 +44,22 @@ function syncEventListEffect(): AtomEffect<Irisub.Event[] | null> {
 
     if (projectId !== null) {
       if (trigger === "get") {
+        console.log("doing test");
+        // client
+        //   .query({
+        //     query: gql`
+        //       query getAllEvents {
+        //         events {
+        //           id
+        //           text
+        //           start_ms
+        //           end_ms
+        //         }
+        //       }
+        //     `,
+        //   })
+        //   .then((result) => console.log(result));
+
         getRemoteEventList(projectId, trackIndex).then((events) => setSelf(events));
       }
 

@@ -10,6 +10,7 @@ export namespace Irisub {
   };
 
   export type Event = {
+    id: string;
     index: number;
     // name?: string;
     text: string;

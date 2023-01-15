@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "irisub-web",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,10 @@
     "lint": "TIMING=1 eslint \"src/**/*.ts\""
   },
   "dependencies": {
+    "@apollo/client": "^3.7.4",
     "firebase": "^9.15.0",
+    "graphql": "^16.6.0",
+    "graphql-ws": "^5.11.2",
     "irisub-common": "workspace:0.0.0",
     "prismjs": "^1.29.0",
     "react": "18.2.0",
@@ -32,7 +35,7 @@
     "@types/uuid": "^8.3.4",
     "@vitejs/plugin-react": "^3.0.0",
     "eslint": "7.32.0",
-    "irisub-eslint": "workspace:0.0.0",
+    "eslint-config-custom": "workspace:0.0.0",
     "prop-types": "^15.8.1",
     "typescript": "^4.9.4",
     "vite": "^4.0.0"

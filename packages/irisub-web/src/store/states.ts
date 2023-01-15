@@ -49,6 +49,11 @@ export const editingEventIndexState = atom<number>({
   ],
 });
 
+export const editingEventState = atom<Irisub.Event | null>({
+  key: "editingEventState",
+  default: null,
+});
+
 export const editorElementSizesState = atom<{ [key: string]: number }>({
   key: "editorElementSizesState",
   default: {
