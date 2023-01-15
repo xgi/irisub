@@ -57,7 +57,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
 
   const eventListSubscription = useSubscription(COMMENTS_SUBSCRIPTION, {
-    variables: { project_id: "199c7ceb-1215-4dbf-920e-4d6980e8dbe8" },
+    variables: { project_id: currentProjectId },
   });
   const [tempUpdateEvent, { data, loading, error }] = useMutation(UPDATE_EVENT);
 
