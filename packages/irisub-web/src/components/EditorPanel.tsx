@@ -12,7 +12,6 @@ import TextEditor from "./TextEditor";
 import { Irisub } from "irisub-common";
 import { v4 as uuidv4 } from "uuid";
 import { getAuth } from "firebase/auth";
-import { currentProjectState } from "../store/project";
 import { accentState, nextAccent, nextTheme, themeState } from "../store/theme";
 
 type Props = {};
@@ -21,7 +20,6 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
   const [currentEditorPanelTab, setCurrentEditorPanelTab] = useRecoilState(
     currentEditorPanelTabState
   );
-  const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [userId, setUserId] = useRecoilState(userIdState);
   const [showMs, setShowMs] = useRecoilState(editorShowMsState);
@@ -34,16 +32,6 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
       <div className={styles.content}>
         {currentEditorPanelTab === EditorPanelTab.Debug ? (
           <>
-            <button
-              onClick={() => {
-                const myNewProject: Irisub.Project = {
-                  title: "my new project",
-                };
-                setCurrentProject(myNewProject);
-              }}
-            >
-              create project
-            </button>
             <button
               onClick={() => {
                 setCurrentProjectId(uuidv4());

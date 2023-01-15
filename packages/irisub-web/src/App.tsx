@@ -15,13 +15,10 @@ import {
   signInAnonymously,
   signInWithEmailLink,
 } from "firebase/auth";
-import { currentProjectIdState, currentTrackIndexState, userIdState } from "./store/states";
+import { currentProjectIdState, userIdState } from "./store/states";
 import { themeState, accentState } from "./store/theme";
 import styles from "./styles/components/App.module.scss";
-import { currentEventListState } from "./store/events";
-import { currentProjectState } from "./store/project";
-import { v4 as uuidv4 } from "uuid";
-import { currentTrackListState } from "./store/tracks";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDhxbmwAD0wSYYRdZhwNkXHetytT-T0VBU",
@@ -32,18 +29,35 @@ const firebaseConfig = {
   messagingSenderId: "42922342456",
   appId: "1:42922342456:web:e8d7467de3955c6bb40ecd",
 };
-
 const app = initializeApp(firebaseConfig);
 
+const ADD_PROJECT = gql`
+  mutation insert_project($object: projects_insert_input!) {
+    insert_projects_one(object: $object) {
+      id
+      title
+    }
+  }
+`;
+
+const GET_PROJECT = gql`
+  query get_project($project_id: uuid!) {
+    projects_by_pk(id: $project_id) {
+      id
+      title
+    }
+  }
+`;
+
 function App() {
+  const [addProject, addProjectResult] = useMutation(ADD_PROJECT);
+
   const [userId, setUserId] = useRecoilState(userIdState);
-  const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
-  const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
-  const [currentTrackList, setCurrentTrackList] = useRecoilState(currentTrackListState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
-  const [currentTrackIndex, setCurrentTrackIndex] = useRecoilState(currentTrackIndexState);
   const theme = useRecoilValue(themeState);
   const accent = useRecoilValue(accentState);
+
+  const getProjectResult = useQuery(GET_PROJECT, { variables: { project_id: currentProjectId } });
 
   useEffect(() => {
     document.documentElement.className = theme;
@@ -52,6 +66,15 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute("data-accent", accent);
   }, [accent]);
+
+  useEffect(() => {
+    if (getProjectResult.data) {
+      setCurrentProjectId(getProjectResult.data.projects_by_pk.id);
+    } else if (addProjectResult.data) {
+      setCurrentProjectId(addProjectResult.data.insert_projects_one.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getProjectResult.data, addProjectResult.data]);
 
   useEffect(() => {
     onAuthStateChanged(getAuth(), (user) => {
@@ -95,21 +118,13 @@ function App() {
 
   useEffect(() => {
     if (!userId) return;
-
     if (currentProjectId === null) {
-      setCurrentProjectId(uuidv4());
-    } else {
-      console.log(`currentProjectId changed to ${currentProjectId}, resetting others`);
-      setCurrentProject(null);
-      setCurrentTrackList(null);
-      setCurrentTrackIndex(0);
-      setCurrentEventList(null);
-      // resetProject();
-      // resetCurrentEventList();
+      // TODO: use custom action which validates whether allowed to make new project
+      addProject({ variables: { object: { title: "some new project" } } });
     }
   }, [currentProjectId, userId]);
 
-  return userId === null || currentProject === null ? (
+  return userId === null || addProjectResult.loading || getProjectResult.loading ? (
     <div className={styles.loadingPage}>
       <div className={styles.spin} />
     </div>

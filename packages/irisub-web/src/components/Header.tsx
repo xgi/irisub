@@ -1,7 +1,7 @@
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { currentProjectState } from "../store/project";
+import { useRecoilValue } from "recoil";
 import { currentProjectIdState, userIdState } from "../store/states";
 import styles from "../styles/components/Header.module.scss";
 import InviteModal from "./auth/InviteModal";
@@ -9,22 +9,47 @@ import LoginModal from "./auth/LoginModal";
 import Button from "./Button";
 import { IconCloud, IconInvite, IconPencil } from "./Icons";
 
+const GET_PROJECT = gql`
+  query get_project($project_id: uuid!) {
+    projects_by_pk(id: $project_id) {
+      id
+      title
+    }
+  }
+`;
+
+const CHANGE_PROJECT_TITLE = gql`
+  mutation change_project_title($project_id: uuid!, $title: String!) {
+    update_projects_by_pk(pk_columns: { id: $project_id }, _set: { title: $title }) {
+      id
+    }
+  }
+`;
+
 type Props = {};
 
 const Header: React.FC<Props> = (props: Props) => {
-  const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const currentProjectId = useRecoilValue(currentProjectIdState);
-  const [userId, setUserId] = useRecoilState(userIdState);
+  const userId = useRecoilValue(userIdState);
   const [editingProjectTitle, setEditingProjectTitle] = useState(false);
   const [tempProjectTitle, setTempProjectTitle] = useState("");
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [loginModalCallback, setLoginModalCallback] = useState<() => void | undefined>();
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
+  const [changeProjectTitle] = useMutation(CHANGE_PROJECT_TITLE, {
+    refetchQueries: [GET_PROJECT],
+  });
+
+  const getProjectResult = useQuery(GET_PROJECT, {
+    variables: { project_id: currentProjectId },
+  });
+  const currentProject = getProjectResult.data ? getProjectResult.data.projects_by_pk : null;
+
   const updateProjectTitle = () => {
     setEditingProjectTitle(false);
-    if (currentProject) {
-      setCurrentProject({ ...currentProject, title: tempProjectTitle });
+    if (currentProjectId) {
+      changeProjectTitle({ variables: { project_id: currentProject.id, title: tempProjectTitle } });
     }
   };
 

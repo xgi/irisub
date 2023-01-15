@@ -44,7 +44,6 @@ function syncEventListEffect(): AtomEffect<Irisub.Event[] | null> {
 
     if (projectId !== null) {
       if (trigger === "get") {
-        console.log("doing test");
         // client
         //   .query({
         //     query: gql`
