@@ -3,7 +3,6 @@ import { atom } from "recoil";
 import { NavPage, EditorPanelTab, EditorElementKeys } from "../util/constants";
 import { localStorageEffect } from "./effects";
 import storeKeys from "../constants/storeKeys.json";
-import { currentEventListState } from "./events";
 
 export const userIdState = atom<string | null>({
   key: "userIdState",
@@ -34,19 +33,19 @@ export const currentTrackIndexState = atom<number>({
 export const editingEventIndexState = atom<number>({
   key: "editingEventIndexState",
   default: 0,
-  effects: [
-    ({ onSet, setSelf, getPromise }) => {
-      onSet(async (newValue, oldValue) => {
-        if (newValue < 0) setSelf(oldValue);
+  // effects: [
+  //   ({ onSet, setSelf, getPromise }) => {
+  //     onSet(async (newValue, oldValue) => {
+  //       if (newValue < 0) setSelf(oldValue);
 
-        const currentEventList = await getPromise(currentEventListState);
-        if (currentEventList !== null) {
-          const lastIndex = currentEventList.length - 1;
-          if (newValue > lastIndex) setSelf(oldValue);
-        }
-      });
-    },
-  ],
+  //       const currentEventList = await getPromise(currentEventListState);
+  //       if (currentEventList !== null) {
+  //         const lastIndex = currentEventList.length - 1;
+  //         if (newValue > lastIndex) setSelf(oldValue);
+  //       }
+  //     });
+  //   },
+  // ],
 });
 
 export const editingEventState = atom<Irisub.Event | null>({

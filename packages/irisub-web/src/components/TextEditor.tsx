@@ -4,7 +4,6 @@ import Prism from "prismjs";
 import "prismjs/themes/prism.css"; // TODO: update style
 import { useRecoilState } from "recoil";
 import { editingEventIndexState, editingEventState } from "../store/states";
-import { currentEventListState } from "../store/events";
 
 type Props = {};
 const TextEditor: React.FC<Props> = (props: Props) => {

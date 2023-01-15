@@ -68,9 +68,9 @@ function App() {
   }, [accent]);
 
   useEffect(() => {
-    if (getProjectResult.data) {
+    if (getProjectResult.data && getProjectResult.data.projects_by_pk) {
       setCurrentProjectId(getProjectResult.data.projects_by_pk.id);
-    } else if (addProjectResult.data) {
+    } else if (addProjectResult.data && addProjectResult.data.insert_projects_one) {
       setCurrentProjectId(addProjectResult.data.insert_projects_one.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,6 +115,16 @@ function App() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (
+      currentProjectId &&
+      getProjectResult.data &&
+      getProjectResult.data.projects_by_pk === null
+    ) {
+      setCurrentProjectId(null);
+    }
+  }, [getProjectResult]);
 
   useEffect(() => {
     if (!userId) return;

@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { tracksModalOpenState } from "../store/modals";
 import { currentTrackListState } from "../store/tracks";
 import { Irisub } from "irisub-common";
-import { currentEventListState } from "../store/events";
 import { classNames } from "../util/layout";
 import ReactTooltip from "react-tooltip";
 
@@ -22,7 +21,6 @@ type Props = {
 const TracksModal: React.FC<Props> = (props: Props) => {
   const [tracksModalOpen, setTracksModalOpen] = useRecoilState(tracksModalOpenState);
   const [currentTrackList, setCurrentTrackList] = useRecoilState(currentTrackListState);
-  const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
   const [currentTrackIndex, setCurrentTrackIndex] = useRecoilState(currentTrackIndexState);
 
   useEffect(() => {
@@ -40,7 +38,7 @@ const TracksModal: React.FC<Props> = (props: Props) => {
     if (trackIndex === currentTrackIndex) return;
 
     setCurrentTrackIndex(trackIndex);
-    setCurrentEventList(null);
+    // setCurrentEventList(null);
   };
 
   const newTrack = () => {

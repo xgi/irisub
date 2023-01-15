@@ -9,7 +9,6 @@ import styles from "../../styles/components/Timetable.module.scss";
 import { classNames } from "../../util/layout";
 import TimeInput from "../TimeInput";
 import { Irisub } from "irisub-common";
-import { currentEventListState } from "../../store/events";
 import { playerPlayingState, playerProgressState } from "../../store/player";
 import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 import EventTextInput from "./EventTextInput";
@@ -53,7 +52,6 @@ type Props = {
 const Timetable: React.FC<Props> = (props: Props) => {
   const [currentTrackIndex, setCurrentTrackIndex] = useRecoilState(currentTrackIndexState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
-  const [currentEventList, setCurrentEventList] = useRecoilState(currentEventListState);
   const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
   const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
@@ -107,10 +105,10 @@ const Timetable: React.FC<Props> = (props: Props) => {
       endMs = startMs + 3000;
     }
 
-    setCurrentEventList([
-      ...eventList,
-      { index: eventList.length, text: text, start_ms: startMs, end_ms: endMs },
-    ]);
+    // setCurrentEventList([
+    //   ...eventList,
+    //   { index: eventList.length, text: text, start_ms: startMs, end_ms: endMs },
+    // ]);
   };
 
   const updateEvent = (
