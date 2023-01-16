@@ -9,7 +9,6 @@ import {
 } from "firebase/auth";
 import { useRecoilValue } from "recoil";
 import { currentProjectIdState } from "../../store/states";
-import { getDatabase, ref, set } from "firebase/database";
 import { IconArrowLeft, IconEmail, IconGitHub, IconGoogle, IconMicrosoft, IconX } from "../Icons";
 import styles from "../../styles/components/LoginModal.module.scss";
 import { useState } from "react";
@@ -59,19 +58,19 @@ const LoginModal: React.FC<Props> = (props: Props) => {
     if (!prevUser) return;
 
     // TODO: do for all projects. Also maybe copy all project data instead of just the owner?
-    set(ref(getDatabase(), `projects/${currentProjectId}/owner`), "");
+    // set(ref(getDatabase(), `projects/${currentProjectId}/owner`), "");
 
     const provider = getProvider(providerName);
 
     signInWithPopup(auth, provider)
       .then((loginResult) => {
         const currentUser = loginResult.user;
-        set(ref(getDatabase(), `projects/${currentProjectId}/owner`), currentUser.uid);
+        // set(ref(getDatabase(), `projects/${currentProjectId}/owner`), currentUser.uid);
       })
       .then(() => close())
       .catch((error) => {
         console.log("Sign In Error", error);
-        set(ref(getDatabase(), `projects/${currentProjectId}/owner`), prevUser.uid);
+        // set(ref(getDatabase(), `projects/${currentProjectId}/owner`), prevUser.uid);
       });
   };
 

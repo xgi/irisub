@@ -3,13 +3,10 @@ import { connectAuthEmulator, getAuth } from "firebase/auth";
 
 export const initializeFirebase = () => {
   const firebaseConfig = {
-    apiKey: "AIzaSyDhxbmwAD0wSYYRdZhwNkXHetytT-T0VBU",
-    authDomain: "irisub.firebaseapp.com",
-    databaseURL: "https://irisub-default-rtdb.firebaseio.com",
-    projectId: "irisub",
-    storageBucket: "irisub.appspot.com",
-    messagingSenderId: "42922342456",
-    appId: "1:42922342456:web:e8d7467de3955c6bb40ecd",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
   };
   const app = initializeApp(firebaseConfig);
 
