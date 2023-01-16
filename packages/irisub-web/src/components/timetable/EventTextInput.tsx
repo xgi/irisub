@@ -16,14 +16,13 @@ const UPDATE_EVENT = gql`
 
 type Props = {
   event: Irisub.Event;
+  callback: (text: string) => void;
 };
 
 const EventTextInput: React.FC<Props> = (props: Props) => {
-  const [tempUpdateEvent, { data, loading, error }] = useMutation(UPDATE_EVENT);
   const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
   const [editingEvent, setEditingEvent] = useRecoilState(editingEventState);
   const [value, setValue] = useState(props.event.text);
-  const [debounced] = useDebouncedValue(value, 1000);
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
@@ -31,33 +30,24 @@ const EventTextInput: React.FC<Props> = (props: Props) => {
   }, [editing, value]);
 
   useEffect(() => {
-    tempUpdateEvent({ variables: { event_id: props.event.id, text: debounced } });
+    props.callback(value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounced]);
+  }, [value]);
 
   useEffect(() => {
     if (!editing) setValue(props.event.text);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.event.text]);
 
-  // const updateEvent = (
-  //   index: number,
-  //   data: { text?: string; start_ms?: number; end_ms?: number }
-  // ) => {
-  //   tempUpdateEvent({ variables: { event_id: props.event.id, text: data.text } });
-  // };
-
-  // const handleTextInputKeyDown = (
-  //   e: React.KeyboardEvent<HTMLInputElement>,
-  //   event: Irisub.Event
-  // ) => {
-  //   if (e.key === "Enter" && e.shiftKey) {
-  //     updateEvent(event.index, {
-  //       text: event.text + "\n",
-  //     });
-  //     return;
-  //   }
-  // };
+  const handleTextInputKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    event: Irisub.Event
+  ) => {
+    if (e.key === "Enter" && e.shiftKey) {
+      setValue(value + "\n");
+      return;
+    }
+  };
 
   return (
     <input
@@ -72,7 +62,7 @@ const EventTextInput: React.FC<Props> = (props: Props) => {
       //     text: changeEvent.target.value.replaceAll("␤", "\n"),
       //   })
       // }
-      // onKeyDown={(e) => handleTextInputKeyDown(e, props.event)}
+      onKeyDown={(e) => handleTextInputKeyDown(e, props.event)}
       onFocus={() => {
         setEditingEventIndex(props.event.index);
         setEditing(true);
