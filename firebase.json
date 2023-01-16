@@ -1,5 +1,17 @@
 {
-  "database": {
-    "rules": "database.rules.json"
+  "functions": {
+    "source": "packages/irisub-functions"
+  },
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "auth": {
+      "port": 9099
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }

@@ -6,7 +6,6 @@ import "./styles/global/tooltip.scss";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Base from "./components/Base";
 
-import { initializeApp } from "firebase/app";
 import { useEffect } from "react";
 import {
   getAuth,
@@ -19,17 +18,6 @@ import { currentProjectIdState, userIdState } from "./store/states";
 import { themeState, accentState } from "./store/theme";
 import styles from "./styles/components/App.module.scss";
 import { gql, useMutation, useQuery } from "@apollo/client";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDhxbmwAD0wSYYRdZhwNkXHetytT-T0VBU",
-  authDomain: "irisub.firebaseapp.com",
-  databaseURL: "https://irisub-default-rtdb.firebaseio.com",
-  projectId: "irisub",
-  storageBucket: "irisub.appspot.com",
-  messagingSenderId: "42922342456",
-  appId: "1:42922342456:web:e8d7467de3955c6bb40ecd",
-};
-const app = initializeApp(firebaseConfig);
 
 const ADD_PROJECT = gql`
   mutation insert_project($object: projects_insert_input!) {
