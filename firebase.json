@@ -3,6 +3,9 @@
     "source": "packages/irisub-functions"
   },
   "emulators": {
+    "database": {
+      "port": 9000
+    },
     "functions": {
       "port": 5001
     },

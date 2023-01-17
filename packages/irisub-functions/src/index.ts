@@ -33,6 +33,10 @@ export const processSignUp = functions.auth.user().onCreate((user) => {
   return admin
     .auth()
     .setCustomUserClaims(user.uid, customClaims)
+    .then(() => {
+      const metadataRef = admin.database().ref("metadata/" + user.uid);
+      return metadataRef.set({ refreshTime: new Date().getTime() });
+    })
     .catch((error) => {
       console.log(error);
     });
