@@ -7,18 +7,10 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import Base from "./components/Base";
 
 import { useEffect } from "react";
-import {
-  getAuth,
-  isSignInWithEmailLink,
-  onAuthStateChanged,
-  signInAnonymously,
-  signInWithEmailLink,
-} from "firebase/auth";
-import { DatabaseReference, getDatabase, onValue, ref, Unsubscribe } from "firebase/database";
 import { currentProjectIdState, userIdState } from "./store/states";
 import { themeState, accentState } from "./store/theme";
-import styles from "./styles/components/App.module.scss";
 import { gql, useMutation, useQuery } from "@apollo/client";
+import LoadingPage from "./components/LoadingPage";
 
 const ADD_PROJECT = gql`
   mutation insert_project($object: projects_insert_input!) {
@@ -41,7 +33,7 @@ const GET_PROJECT = gql`
 function App() {
   const [addProject, addProjectResult] = useMutation(ADD_PROJECT);
 
-  const [userId, setUserId] = useRecoilState(userIdState);
+  const userId = useRecoilValue(userIdState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const theme = useRecoilValue(themeState);
   const accent = useRecoilValue(accentState);
@@ -65,64 +57,6 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getProjectResult.data, addProjectResult.data]);
 
-  const handleEmailLogin = () => {
-    // TODO: should maybe copy local project to user account
-
-    let email = window.localStorage.getItem("emailForSignIn");
-    if (!email) {
-      email = window.prompt("Please provide your email for confirmation");
-      console.log(`got email: ${email}`);
-      if (!email) return;
-    }
-    signInWithEmailLink(getAuth(), email, window.location.href)
-      .then((result) => {
-        window.localStorage.removeItem("emailForSignIn");
-        // window.location.href = "google.com/good";
-      })
-      .catch((error) => {
-        console.log(error);
-        // window.location.href = "google.com/bad";
-      })
-      .finally(() => {
-        window.history.pushState({}, document.title, "/");
-      });
-  };
-
-  useEffect(() => {
-    let unsubscribe: Unsubscribe | null = null;
-    let metadataRef: DatabaseReference | null = null;
-
-    onAuthStateChanged(getAuth(), (user) => {
-      console.log(`auth state changed, now: ${user ? user.uid : "null"}`);
-
-      setUserId(user ? user.uid : null);
-      if (unsubscribe) unsubscribe();
-
-      if (user) {
-        setUserId(user.uid);
-        if (isSignInWithEmailLink(getAuth(), window.location.href)) {
-          handleEmailLogin();
-          return;
-        }
-
-        if (user) {
-          metadataRef = ref(getDatabase(), "metadata/" + user.uid + "/refreshTime");
-          unsubscribe = onValue(metadataRef, (snapshot) => {
-            // TODO: add database rules to disable writing metadata/ and allow reading user's own
-            // user.getIdToken(true).then((thing) => console.log(thing));
-            user.getIdTokenResult(true).then((thing) => console.log(thing));
-          });
-        }
-      } else {
-        setCurrentProjectId(null);
-        setUserId(null);
-
-        console.log("wasn't logged in -- signing in anonymously");
-        signInAnonymously(getAuth());
-      }
-    });
-  }, []);
-
   useEffect(() => {
     if (
       currentProjectId &&
@@ -142,9 +76,7 @@ function App() {
   }, [currentProjectId, userId]);
 
   return userId === null || addProjectResult.loading || getProjectResult.loading ? (
-    <div className={styles.loadingPage}>
-      <div className={styles.spin} />
-    </div>
+    <LoadingPage />
   ) : (
     <Base />
   );
