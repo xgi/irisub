@@ -2,24 +2,13 @@ import { gql, useMutation } from "@apollo/client";
 import { Irisub } from "irisub-common";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
+import { UPDATE_EVENT } from "../../constants/graphql";
 import { editingEventIndexState, editingEventState } from "../../store/states";
 import styles from "../../styles/components/EventTextInput.module.scss";
 import { useDebouncedValue } from "../../util/hooks";
 import { classNames } from "../../util/layout";
 import TimeInput from "../TimeInput";
 import EventTextInput from "./EventTextInput";
-
-const UPDATE_EVENT = gql`
-  mutation UpdateEvent($event_id: uuid!, $event: events_set_input) {
-    update_events_by_pk(pk_columns: { id: $event_id }, _set: $event) {
-      id
-      text
-      start_ms
-      end_ms
-      index
-    }
-  }
-`;
 
 type Props = {
   event: Irisub.Event;

@@ -2,29 +2,13 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
+import { CHANGE_PROJECT_TITLE, GET_PROJECT } from "../constants/graphql";
 import { currentProjectIdState, userIdState } from "../store/states";
 import styles from "../styles/components/Header.module.scss";
 import InviteModal from "./auth/InviteModal";
 import LoginModal from "./auth/LoginModal";
 import Button from "./Button";
 import { IconCloud, IconInvite, IconPencil } from "./Icons";
-
-const GET_PROJECT = gql`
-  query get_project($project_id: uuid!) {
-    projects_by_pk(id: $project_id) {
-      id
-      title
-    }
-  }
-`;
-
-const CHANGE_PROJECT_TITLE = gql`
-  mutation change_project_title($project_id: uuid!, $title: String!) {
-    update_projects_by_pk(pk_columns: { id: $project_id }, _set: { title: $title }) {
-      id
-    }
-  }
-`;
 
 type Props = {};
 

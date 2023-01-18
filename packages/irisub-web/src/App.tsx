@@ -11,27 +11,10 @@ import { currentProjectIdState, userIdState } from "./store/states";
 import { themeState, accentState } from "./store/theme";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import LoadingPage from "./components/LoadingPage";
-
-const ADD_PROJECT = gql`
-  mutation insert_project($object: projects_insert_input!) {
-    insert_projects_one(object: $object) {
-      id
-      title
-    }
-  }
-`;
-
-const GET_PROJECT = gql`
-  query get_project($project_id: uuid!) {
-    projects_by_pk(id: $project_id) {
-      id
-      title
-    }
-  }
-`;
+import { GET_PROJECT, INSERT_PROJECT } from "./constants/graphql";
 
 function App() {
-  const [addProject, addProjectResult] = useMutation(ADD_PROJECT);
+  const [addProject, addProjectResult] = useMutation(INSERT_PROJECT);
 
   const userId = useRecoilValue(userIdState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);

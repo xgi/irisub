@@ -6,14 +6,6 @@ import { editingEventIndexState, editingEventState } from "../../store/states";
 import styles from "../../styles/components/EventTextInput.module.scss";
 import { useDebouncedValue } from "../../util/hooks";
 
-const UPDATE_EVENT = gql`
-  mutation updateEvent($event_id: uuid!, $text: String!) {
-    update_events_by_pk(pk_columns: { id: $event_id }, _set: { text: $text }) {
-      id
-    }
-  }
-`;
-
 type Props = {
   event: Irisub.Event;
   callback: (text: string) => void;

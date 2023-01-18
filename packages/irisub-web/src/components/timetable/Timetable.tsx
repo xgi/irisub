@@ -13,50 +13,11 @@ import { playerPlayingState, playerProgressState } from "../../store/player";
 import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 import EventTextInput from "./EventTextInput";
 import EventRow from "./EventRow";
-
-const COMMENTS_SUBSCRIPTION = gql`
-  subscription subscribeToEvents($project_id: uuid!) {
-    events(where: { project_id: { _eq: $project_id } }) {
-      id
-      index
-      start_ms
-      end_ms
-      text
-    }
-  }
-`;
-
-const GET_EVENTS = gql`
-  query getAllEvents {
-    events {
-      id
-      index
-      text
-      start_ms
-      end_ms
-    }
-  }
-`;
-
-const UPDATE_EVENT = gql`
-  mutation updateEvent($event_id: uuid!, $text: String!) {
-    update_events_by_pk(pk_columns: { id: $event_id }, _set: { text: $text }) {
-      id
-    }
-  }
-`;
-
-const INSERT_EVENT = gql`
-  mutation insert_event($object: events_insert_input!) {
-    insert_events_one(object: $object) {
-      id
-      text
-      start_ms
-      end_ms
-      index
-    }
-  }
-`;
+import {
+  CHANGE_EVENT_TEXT,
+  EVENT_SUBSCRIPTION_FOR_PROJECT,
+  INSERT_EVENT,
+} from "../../constants/graphql";
 
 type Props = {
   handleSeek: (value: number) => void;
@@ -72,10 +33,10 @@ const Timetable: React.FC<Props> = (props: Props) => {
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
 
   const [insertEvent, insertEventResult] = useMutation(INSERT_EVENT);
-  const eventListSubscription = useSubscription(COMMENTS_SUBSCRIPTION, {
+  const eventListSubscription = useSubscription(EVENT_SUBSCRIPTION_FOR_PROJECT, {
     variables: { project_id: currentProjectId },
   });
-  const [tempUpdateEvent, { data, loading, error }] = useMutation(UPDATE_EVENT);
+  const [tempUpdateEvent, { data, loading, error }] = useMutation(CHANGE_EVENT_TEXT);
 
   const eventList = eventListSubscription.data ? eventListSubscription.data.events : [];
 
