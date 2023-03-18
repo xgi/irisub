@@ -13,6 +13,7 @@ import { Irisub } from "irisub-common";
 import { v4 as uuidv4 } from "uuid";
 import { getAuth } from "firebase/auth";
 import { accentState, nextAccent, nextTheme, themeState } from "../store/theme";
+import { sendWebsocketMessage } from "../services/ws";
 
 type Props = {};
 
@@ -55,6 +56,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
             >
               create track
             </button>
+            <button onClick={() => sendWebsocketMessage()}>send websocket message</button>
             {/* <button
               onClick={() => {
                 if (currentProject) {

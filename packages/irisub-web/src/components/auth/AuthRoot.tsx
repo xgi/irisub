@@ -11,6 +11,7 @@ import {
 import { DatabaseReference, getDatabase, onValue, ref, Unsubscribe } from "firebase/database";
 import { currentProjectIdState, userIdState } from "../../store/states";
 import LoadingPage from "../LoadingPage";
+import { openWsConnection } from "../../services/ws";
 
 type Props = {
   children?: ReactNode;
@@ -62,14 +63,16 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
           return;
         }
 
-        if (user) {
-          metadataRef = ref(getDatabase(), "metadata/" + user.uid + "/refreshTime");
-          unsubscribe = onValue(metadataRef, (snapshot) => {
-            // TODO: add database rules to disable writing metadata/ and allow reading user's own
-            // user.getIdToken(true).then((thing) => console.log(thing));
-            user.getIdTokenResult(true).then((thing) => console.log(thing));
-          });
-        }
+        user.getIdToken(true).then((jwtToken) => {
+          openWsConnection(jwtToken);
+        });
+
+        // metadataRef = ref(getDatabase(), "metadata/" + user.uid + "/refreshTime");
+        // unsubscribe = onValue(metadataRef, (snapshot) => {
+        //   // TODO: add database rules to disable writing metadata/ and allow reading user's own
+        //   // user.getIdToken(true).then((thing) => console.log(thing));
+        //   user.getIdTokenResult(true).then((thing) => console.log(thing));
+        // });
       } else {
         setCurrentProjectId(null);
         setUserId(null);
