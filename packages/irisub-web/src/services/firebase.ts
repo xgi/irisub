@@ -11,10 +11,12 @@ export const initializeFirebase = () => {
     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
   };
-  const app = initializeApp(firebaseConfig);
+  initializeApp(firebaseConfig);
 
   if (import.meta.env.DEV) {
-    connectAuthEmulator(getAuth(), "http://localhost:9099", { disableWarnings: true });
+    connectAuthEmulator(getAuth(), import.meta.env.VITE_FIREBASE_AUTH_URL, {
+      disableWarnings: true,
+    });
     connectDatabaseEmulator(getDatabase(), "localhost", 9000);
     connectFunctionsEmulator(getFunctions(), "localhost", 5001);
   }
