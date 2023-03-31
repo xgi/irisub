@@ -50,7 +50,6 @@ const Editor: React.FC<Props> = (props: Props) => {
   //       .getAll(DB_STORES.EVENT)
   //       .then((events) => setCurrentEventList(events.sort((a, b) => a.index - b.index)));
   //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [database]);
 
   const handleElementResize = (event: HandlerProps) => {
@@ -71,7 +70,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   const handlePickerChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e && e.target && e.target.files) setPlayerPath(URL.createObjectURL(e.target.files[0]));
+    if (e?.target?.files) setPlayerPath(URL.createObjectURL(e.target.files[0]));
   };
 
   // TODO: deprecate
