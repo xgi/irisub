@@ -11,6 +11,9 @@
         "useButtonType": "off",
         "useKeyWithClickEvents": "off",
         "useValidAnchor": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn"
       }
     }
   },
