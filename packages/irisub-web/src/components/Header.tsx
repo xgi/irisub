@@ -1,8 +1,6 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { CHANGE_PROJECT_TITLE, GET_PROJECT } from "../constants/graphql";
 import { currentProjectIdState, userIdState } from "../store/states";
 import styles from "../styles/components/Header.module.scss";
 import InviteModal from "./auth/InviteModal";
@@ -13,6 +11,7 @@ import { IconCloud, IconInvite, IconPencil } from "./Icons";
 type Props = {};
 
 const Header: React.FC<Props> = (props: Props) => {
+  const currentProject = null;
   const currentProjectId = useRecoilValue(currentProjectIdState);
   const userId = useRecoilValue(userIdState);
   const [editingProjectTitle, setEditingProjectTitle] = useState(false);
@@ -21,25 +20,16 @@ const Header: React.FC<Props> = (props: Props) => {
   const [loginModalCallback, setLoginModalCallback] = useState<() => void | undefined>();
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
-  const [changeProjectTitle] = useMutation(CHANGE_PROJECT_TITLE, {
-    refetchQueries: [GET_PROJECT],
-  });
-
-  const getProjectResult = useQuery(GET_PROJECT, {
-    variables: { project_id: currentProjectId },
-  });
-  const currentProject = getProjectResult.data ? getProjectResult.data.projects_by_pk : null;
-
   const updateProjectTitle = () => {
-    setEditingProjectTitle(false);
-    if (currentProjectId) {
-      changeProjectTitle({ variables: { project_id: currentProject.id, title: tempProjectTitle } });
-    }
+    // setEditingProjectTitle(false);
+    // if (currentProjectId) {
+    //   changeProjectTitle({ variables: { project_id: currentProject.id, title: tempProjectTitle } });
+    // }
   };
 
-  useEffect(() => {
-    if (editingProjectTitle && currentProject) setTempProjectTitle(currentProject.title || "");
-  }, [editingProjectTitle]);
+  // useEffect(() => {
+  //   if (editingProjectTitle && currentProject) setTempProjectTitle(currentProject.title || "");
+  // }, [editingProjectTitle]);
 
   const renderProjectTitle = () => {
     if (!currentProject) return;
@@ -54,6 +44,7 @@ const Header: React.FC<Props> = (props: Props) => {
             onFocus={(e) => e.target.select()}
             onBlur={() => updateProjectTitle()}
             onSubmit={(e) => console.log("here")}
+            // rome-ignore lint/a11y/noAutofocus: <explanation>
             autoFocus
           />
         </form>
@@ -61,7 +52,8 @@ const Header: React.FC<Props> = (props: Props) => {
     } else {
       return (
         <span onClick={() => setEditingProjectTitle(true)} className={styles.project}>
-          <span>{currentProject?.title || "Untitled project"}</span>
+          {/* <span>{currentProject?.title || "Untitled project"}</span> */}
+          <span>Untitled project</span>
           <IconPencil />
         </span>
       );
