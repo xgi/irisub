@@ -1,49 +1,25 @@
-import React, { useEffect } from "react";
-import { useRecoilState } from "recoil";
+import React from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  editingEventIndexState,
-  currentTrackIndexState,
   currentProjectIdState,
+  currentCueListState,
+  gatewayConnectedState,
+  currentTrackIdState,
 } from "../../store/states";
 import styles from "../../styles/components/Timetable.module.scss";
-import { classNames } from "../../util/layout";
-import TimeInput from "../TimeInput";
+import { nanoid } from "nanoid";
 import { Irisub } from "irisub-common";
-import { playerPlayingState, playerProgressState } from "../../store/player";
-import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
-import EventTextInput from "./EventTextInput";
-import EventRow from "./EventRow";
-import {
-  CHANGE_EVENT_TEXT,
-  EVENT_SUBSCRIPTION_FOR_PROJECT,
-  INSERT_EVENT,
-} from "../../constants/graphql";
+import CueRow from "./CueRow";
 
 type Props = {
   handleSeek: (value: number) => void;
 };
 
 const Timetable: React.FC<Props> = (props: Props) => {
-  console.log("rendering timetable");
-
-  const [currentTrackIndex, setCurrentTrackIndex] = useRecoilState(currentTrackIndexState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
-  const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
-  const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
-  const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
+  const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
 
-  const [insertEvent, insertEventResult] = useMutation(INSERT_EVENT);
-  const eventListSubscription = useSubscription(EVENT_SUBSCRIPTION_FOR_PROJECT, {
-    variables: { project_id: currentProjectId },
-  });
-  const [tempUpdateEvent, { data, loading, error }] = useMutation(CHANGE_EVENT_TEXT);
-
-  const eventList = eventListSubscription.data ? eventListSubscription.data.events : [];
-
-  // useEffect(() => {
-  //   console.log("got new data from subscription (timetable):");
-  //   console.log(eventListSubscription.data);
-  // }, [eventListSubscription]);
+  const [currentCueList, setCurrentCueList] = useRecoilState(currentCueListState);
 
   // useEffect(() => {
   //   if (eventList && eventList.length === 0) {
@@ -69,220 +45,79 @@ const Timetable: React.FC<Props> = (props: Props) => {
   //   }
   // }, [eventList]);
 
-  // TODO: show loader instead
-  if (eventList === undefined) return <></>;
-
-  const addEvent = (text = "") => {
+  const createNewCue = (text = "") => {
     let startMs = 0;
     let endMs = 3000;
 
-    if (eventList.length > 0) {
-      const lastEvent = eventList[eventList.length - 1];
-      startMs = lastEvent.end_ms;
+    if (currentCueList.length > 0) {
+      const lastCue = currentCueList[currentCueList.length - 1];
+      startMs = lastCue.end_ms;
       endMs = startMs + 3000;
     }
 
-    insertEvent({
-      variables: {
-        object: {
-          project_id: currentProjectId,
-          text: text,
-          start_ms: startMs,
-          end_ms: endMs,
-          index: eventList.length,
-        },
+    setCurrentCueList([
+      ...currentCueList,
+      {
+        id: nanoid(),
+        text: text,
+        start_ms: startMs,
+        end_ms: endMs,
       },
-    });
+    ]);
   };
 
-  const updateEvent = (
-    index: number,
-    data: { text?: string; start_ms?: number; end_ms?: number }
-  ) => {
-    // const newEvent: Irisub.Event = { ...eventList[index] };
-    // if (data.text !== undefined) newEvent.text = data.text;
-    // if (data.start_ms !== undefined) newEvent.start_ms = data.start_ms;
-    // if (data.end_ms !== undefined) newEvent.end_ms = data.end_ms;
-
-    // const _temp = [...eventList];
-    // _temp[index] = newEvent;
-    // setCurrentEventList(_temp);
-
-    const oldEvent = eventList[index];
-    console.log(`changing ${oldEvent.text} to ${data.text}`);
-
-    tempUpdateEvent({ variables: { event_id: oldEvent.id, text: data.text } });
-  };
-
-  const renderRowStatusCell = (event: Irisub.Event) => {
-    const playerProgressMs = playerProgress * 1000;
-    const active = playerProgressMs >= event.start_ms && playerProgressMs < event.end_ms;
-
-    if (active) {
-      return (
-        <td
-          className={styles.iconCell}
-          onClick={() => {
-            if (!playerPlaying) props.handleSeek(event.start_ms / 1000);
-            setPlayerPlaying(!playerPlaying);
-          }}
-        >
-          <span
-            className={classNames(
-              styles.statusIcon,
-              playerPlaying ? styles.playing : styles.paused
-            )}
-          >
-            ➤
-          </span>
-        </td>
-      );
-    }
-    return (
-      <td
-        className={styles.iconCell}
-        onClick={() => {
-          setPlayerPlaying(false);
-          props.handleSeek(event.start_ms / 1000);
-        }}
-      >
-        <span className={classNames(styles.statusIcon, styles.jump)}>↪</span>
-      </td>
-    );
-  };
-
-  const handleInputMoveFocus = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    matchCursorPosition: boolean = true
-  ) => {
+  const handleInputMoveFocus = (e: React.KeyboardEvent<HTMLInputElement>) => {
     let delta = 0;
+
     if (e.key === "ArrowUp") delta = -1;
     if (e.key === "ArrowDown" || e.key === "Enter") delta = 1;
 
-    if (delta != 0) {
+    if (delta !== 0) {
       const inputId = e.currentTarget.id;
       const splitIdx = inputId.lastIndexOf("-");
-      const eventIdx = parseInt(inputId.substring(splitIdx + 1, inputId.length));
+      const cueIdx = parseInt(inputId.substring(splitIdx + 1, inputId.length));
 
-      const newEventIdx = eventIdx + delta;
+      const newCueIdx = cueIdx + delta;
       const _move = () => {
-        const newInputId = inputId.substring(0, splitIdx + 1) + newEventIdx;
+        const newInputId = inputId.substring(0, splitIdx + 1) + newCueIdx;
         const newInput = document.getElementById(newInputId) as HTMLInputElement | null;
         if (newInput) {
           newInput.focus();
           e.preventDefault();
 
-          if (matchCursorPosition) {
-            newInput.setSelectionRange(
-              e.currentTarget.selectionStart,
-              e.currentTarget.selectionStart
-            );
-          }
+          const selectionPos = e.currentTarget ? e.currentTarget.selectionStart : 0;
+          newInput.setSelectionRange(selectionPos, selectionPos);
         }
       };
 
-      if (newEventIdx >= 0 && newEventIdx < eventList.length) {
+      if (newCueIdx >= 0 && newCueIdx < currentCueList.length) {
         _move();
-      } else if (newEventIdx >= eventList.length) {
-        addEvent();
+      } else if (newCueIdx >= currentCueList.length && e.key === "Enter") {
+        createNewCue();
         setTimeout(() => _move(), 0);
       }
     }
   };
 
-  const handleTextInputKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    event: Irisub.Event
-  ) => {
-    if (e.key === "Enter" && e.shiftKey) {
-      updateEvent(event.index, {
-        text: event.text + "\n",
-      });
-      return;
-    }
-    handleInputMoveFocus(e, false);
-  };
-
-  const getCPS = (event: Irisub.Event) => {
-    const cps = Math.ceil(event.text.length / ((event.end_ms - event.start_ms) / 1000));
-    if (cps === Infinity || Number.isNaN(cps)) return 0;
-    return cps;
-  };
-
   const renderRows = () => {
-    if (currentTrackIndex === null) return;
+    if (currentTrackId === null) return;
 
-    const _eventList = eventList
+    const sortedCueList = currentCueList
       .slice()
-      .sort((a: Irisub.Event, b: Irisub.Event) => a.index - b.index);
-    // _eventList[_eventList.length] = {
-    //   index: _eventList.length,
-    //   text: "",
-    //   start_ms: 0,
-    //   end_ms: 0,
-    // };
+      .sort((a: Irisub.Cue, b: Irisub.Cue) => a.start_ms - b.start_ms);
 
-    return _eventList.map((event: Irisub.Event) => {
+    // TODO: do sort as selector
+    return sortedCueList.map((cue: Irisub.Cue, index: number) => {
       // TODO: avoid re-renders
       // https://alexsidorenko.com/blog/react-list-rerender/
       return (
-        <EventRow key={event.index} event={event} />
-        // <tr
-        //   key={event.index}
-        //   className={classNames(editingEventIndex === event.index ? styles.editing : "")}
-        //   onClick={() => setEditingEventIndex(event.index)}
-        // >
-        //   {renderRowStatusCell(event)}
-        //   <td style={{ textAlign: "right" }}>{event.index + 1}</td>
-        //   <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
-        //     <TimeInput
-        //       id={`timetable-input-starttime-${event.index}`}
-        //       className={styles.input}
-        //       tabIndex={event.index + 1}
-        //       data-index={event.index}
-        //       style={{ minWidth: "8em", textAlign: "center" }}
-        //       valueMs={event.start_ms}
-        //       callback={(value: number) => updateEvent(event.index, { start_ms: value })}
-        //       onFocus={() => setEditingEventIndex(event.index)}
-        //       onKeyDown={handleInputMoveFocus}
-        //       hasButtons
-        //     />
-        //   </td>
-        //   <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
-        //     <TimeInput
-        //       id={`timetable-input-endtime-${event.index}`}
-        //       className={styles.input}
-        //       tabIndex={event.index + 1}
-        //       data-index={event.index}
-        //       style={{ minWidth: "8em", textAlign: "center" }}
-        //       valueMs={event.end_ms}
-        //       callback={(value: number) => updateEvent(event.index, { end_ms: value })}
-        //       onFocus={() => setEditingEventIndex(event.index)}
-        //       onKeyDown={handleInputMoveFocus}
-        //       hasButtons
-        //     />
-        //   </td>
-        //   <td>{getCPS(event)}</td>
-        //   <td>Default</td>
-        //   <td>Steve</td>
-        //   <td style={{ width: "100%" }}>
-        //     <EventTextInput event={event} />
-        //     {/* <input
-        //       id={`timetable-input-text-${event.index}`}
-        //       className={styles.input}
-        //       tabIndex={event.index + 1}
-        //       placeholder=""
-        //       value={event.text.replaceAll("\n", "␤")}
-        //       onChange={(changeEvent: any) =>
-        //         updateEvent(event.index, {
-        //           text: changeEvent.target.value.replaceAll("␤", "\n"),
-        //         })
-        //       }
-        //       onKeyDown={(e) => handleTextInputKeyDown(e, event)}
-        //       onFocus={() => setEditingEventIndex(event.index)}
-        //     /> */}
-        //   </td>
-        // </tr>
+        <CueRow
+          key={cue.id}
+          index={index}
+          cue={cue}
+          handleInputMoveFocus={handleInputMoveFocus}
+          handleSeek={props.handleSeek}
+        />
       );
     });
   };
@@ -292,7 +127,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th></th>
+            <th />
             <th>#</th>
             <th style={{ whiteSpace: "nowrap" }}>Start</th>
             <th>End</th>
@@ -309,7 +144,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
             </td>
           </tr> */}
           {renderRows()}
-          <tr className={styles.add} onClick={() => addEvent()}>
+          <tr className={styles.add} onClick={() => createNewCue()}>
             <td colSpan={8}>+++</td>
           </tr>
         </tbody>

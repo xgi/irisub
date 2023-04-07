@@ -4,15 +4,14 @@ export namespace Irisub {
   };
 
   export type Track = {
-    index: number;
+    id: string;
     name?: string;
     language?: string;
   };
 
-  export type Event = {
+  export type Cue = {
     id: string;
-    index: number;
-    // name?: string;
+
     text: string;
     // actor: string;
     start_ms: number;

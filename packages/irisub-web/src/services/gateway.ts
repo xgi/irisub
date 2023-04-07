@@ -59,7 +59,7 @@ class GatewayConn {
     });
   }
 
-  upsertCues(projectId: string, trackId: string, cues: Irisub.Event[]) {
+  upsertCues(projectId: string, trackId: string, cues: Irisub.Cue[]) {
     return fetch(`${BASE_URL}/projects/${projectId}/tracks/${trackId}/cues`, {
       method: "POST",
       credentials: "include",

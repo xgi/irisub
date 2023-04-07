@@ -31,7 +31,7 @@ export const currentTrackIdState = atom<string | null>({
   effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_TRACK_ID)],
 });
 
-export const currentCueListState = atom<Irisub.Event[]>({
+export const currentCueListState = atom<Irisub.Cue[]>({
   key: "currentCueListState",
   default: [],
   effects: [
@@ -40,13 +40,13 @@ export const currentCueListState = atom<Irisub.Event[]>({
   ],
 });
 
-export const editingEventIdState = atom<string | null>({
-  key: "editingEventIdState",
+export const editingCueIdState = atom<string | null>({
+  key: "editingCueIdState",
   default: null,
 });
 
-export const editingEventState = atom<Irisub.Event | null>({
-  key: "editingEventState",
+export const editingCueState = atom<Irisub.Cue | null>({
+  key: "editingCueState",
   default: null,
 });
 

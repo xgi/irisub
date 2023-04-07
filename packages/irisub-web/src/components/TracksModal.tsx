@@ -1,6 +1,6 @@
 import Modal from "./Modal";
 import { useRecoilState } from "recoil";
-import { currentTrackIndexState } from "../store/states";
+import { currentTrackIdState } from "../store/states";
 import { IconDuplicate, IconTrash, IconX } from "./Icons";
 import styles from "../styles/components/TracksModal.module.scss";
 import { useEffect } from "react";
@@ -10,10 +10,6 @@ import { Irisub } from "irisub-common";
 import { classNames } from "../util/layout";
 import ReactTooltip from "react-tooltip";
 
-const DEFAULT_TRACK: Irisub.Track = {
-  index: 0,
-};
-
 type Props = {
   onClose?: () => void;
 };
@@ -21,11 +17,11 @@ type Props = {
 const TracksModal: React.FC<Props> = (props: Props) => {
   const [tracksModalOpen, setTracksModalOpen] = useRecoilState(tracksModalOpenState);
   const [currentTrackList, setCurrentTrackList] = useRecoilState(currentTrackListState);
-  const [currentTrackIndex, setCurrentTrackIndex] = useRecoilState(currentTrackIndexState);
+  const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
 
   useEffect(() => {
     if (currentTrackList && currentTrackList.length === 0) {
-      setCurrentTrackList([DEFAULT_TRACK]);
+      // setCurrentTrackList([DEFAULT_TRACK]);
     }
   }, [currentTrackList]);
 
@@ -34,38 +30,37 @@ const TracksModal: React.FC<Props> = (props: Props) => {
     if (props.onClose) props.onClose();
   };
 
-  const changeTrack = (trackIndex: number) => {
-    if (trackIndex === currentTrackIndex) return;
+  const changeTrack = (trackId: string) => {
+    if (trackId === currentTrackId) return;
 
-    setCurrentTrackIndex(trackIndex);
+    setCurrentTrackId(trackId);
     // setCurrentEventList(null);
   };
 
   const newTrack = () => {
-    let maxIndex = 0;
-    if (currentTrackList) {
-      for (let track of currentTrackList) {
-        if (track.index > maxIndex) maxIndex = track.index;
-      }
-    }
-
-    setCurrentTrackList([...(currentTrackList || [{ index: 0 }]), { index: maxIndex + 1 }]);
-    changeTrack(maxIndex + 1);
+    // let maxIndex = 0;
+    // if (currentTrackList) {
+    //   for (const track of currentTrackList) {
+    //     if (track.index > maxIndex) maxIndex = track.index;
+    //   }
+    // }
+    // setCurrentTrackList([...(currentTrackList || [{ index: 0 }]), { index: maxIndex + 1 }]);
+    // changeTrack(maxIndex + 1);
   };
 
   const renderTrack = (track: Irisub.Track) => {
-    const tooltipIdDelete = `tooltip-track-${track.index}-delete`;
-    const tooltipIdDuplicate = `tooltip-track-${track.index}-duplicate`;
+    const tooltipIdDelete = `tooltip-track-${track.id}-delete`;
+    const tooltipIdDuplicate = `tooltip-track-${track.id}-duplicate`;
 
     return (
       <div
-        key={track.index}
-        className={classNames(styles.track, track.index === currentTrackIndex ? styles.active : "")}
-        onClick={() => changeTrack(track.index)}
+        key={track.id}
+        className={classNames(styles.track, track.id === currentTrackId ? styles.active : "")}
+        onClick={() => changeTrack(track.id)}
       >
         <button>
           <span>
-            {track.index} - {track.name || "Unnamed track"} - {track.language || "No language"}
+            {track.id} - {track.name || "Unnamed track"} - {track.language || "No language"}
           </span>
         </button>
         <div className={styles.actions}>
@@ -109,10 +104,9 @@ const TracksModal: React.FC<Props> = (props: Props) => {
   };
 
   const renderTrackList = () => {
-    let _tracks = currentTrackList || [];
-    if (_tracks.length === 0) _tracks = [DEFAULT_TRACK];
+    const _tracks = currentTrackList || [];
 
-    return _tracks.map((track) => renderTrack(track));
+    return currentTrackList.map((track) => renderTrack(track));
   };
 
   return !tracksModalOpen ? null : (

@@ -19,19 +19,19 @@ export function localStorageEffect<T>(storeKey: string): AtomEffect<T> {
   };
 }
 
-export function syncCueListEffect(): AtomEffect<Irisub.Event[]> {
+export function syncCueListEffect(): AtomEffect<Irisub.Cue[]> {
   return ({ setSelf, onSet, trigger, getLoadable }) => {
     // if (trigger === 'get') {
     //   setSelf(myRemoteStorage.get(userID));
     // }
 
     onSet((newCueList, oldCueList) => {
-      const oldCueMap: { [key: string]: Irisub.Event } = {};
-      Object.values(oldCueList as Irisub.Event[]).forEach((oldCue) => {
+      const oldCueMap: { [key: string]: Irisub.Cue } = {};
+      Object.values(oldCueList as Irisub.Cue[]).forEach((oldCue) => {
         oldCueMap[oldCue.id] = { ...oldCue };
       });
 
-      const modifiedCues: Irisub.Event[] = [];
+      const modifiedCues: Irisub.Cue[] = [];
       newCueList.forEach((newCue) => {
         const existingCue = oldCueMap[newCue.id];
         if (existingCue === undefined || !shallowEqual(existingCue, newCue)) {

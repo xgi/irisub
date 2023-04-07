@@ -14,7 +14,7 @@ export namespace Gateway {
   };
 
   export type UpsertCuesEvent = {
-    cues: Irisub.Event[];
+    cues: Irisub.Cue[];
   };
 
   export type Event = IdentifyEventSourceClientEvent | UpsertCuesEvent;

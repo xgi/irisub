@@ -106,6 +106,7 @@ const TimeInput: React.FC<Props> = (props: Props) => {
   };
 
   const { inputRef, valueMs, callback, ...otherProps } = props;
+  // rome-ignore lint/performance/noDelete: <explanation>
   delete otherProps.hasButtons;
   return (
     <div className={styles.container}>

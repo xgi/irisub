@@ -3,25 +3,25 @@ import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
 import "prismjs/themes/prism.css"; // TODO: update style
 import { useRecoilState } from "recoil";
-import { editingEventIndexState, editingEventState } from "../store/states";
+import { editingCueIdState, editingCueState } from "../store/states";
 
 type Props = {};
 const TextEditor: React.FC<Props> = (props: Props) => {
-  const [editingEventIndex, setEditingEventIndex] = useRecoilState(editingEventIndexState);
-  const [editingEvent, setEditingEvent] = useRecoilState(editingEventState);
+  const [editingCueId, setEditingCueId] = useRecoilState(editingCueIdState);
+  const [editingCue, setEditingCue] = useRecoilState(editingCueState);
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      setEditingEventIndex(editingEventIndex + 1);
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    // if (event.key === "Enter" && !event.shiftKey) {
+    //   setEditingCueIndex(editingCueIndex + 1);
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    // }
   };
 
   return (
     <Editor
       placeholder="Edit text..."
-      value={editingEvent ? editingEvent.text : ""}
+      value={editingCue ? editingCue.text : ""}
       onValueChange={(value: string) => {
         // setCurrentData(value);
       }}

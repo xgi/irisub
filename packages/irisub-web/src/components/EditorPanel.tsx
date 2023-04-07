@@ -1,7 +1,9 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
+  currentCueListState,
   currentEditorPanelTabState,
   currentProjectIdState,
+  currentTrackIdState,
   editorShowMsState,
   userIdState,
 } from "../store/states";
@@ -10,18 +12,20 @@ import { EditorPanelTab } from "../util/constants";
 import EditorPanelSidebar from "./EditorPanelSidebar";
 import TextEditor from "./TextEditor";
 import { Irisub } from "irisub-common";
-import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "nanoid";
 import { getAuth } from "firebase/auth";
 import { accentState, nextAccent, nextTheme, themeState } from "../store/theme";
-import { sendWebsocketMessage } from "../services/ws";
+import { gateway } from "../services/gateway";
 
 type Props = {};
 
 const EditorPanel: React.FC<Props> = (props: Props) => {
   const [currentEditorPanelTab, setCurrentEditorPanelTab] = useRecoilState(
-    currentEditorPanelTabState
+    currentEditorPanelTabState,
   );
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
+  const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
+  const [currentCueList, setCurrentCueList] = useRecoilState(currentCueListState);
   const [userId, setUserId] = useRecoilState(userIdState);
   const [showMs, setShowMs] = useRecoilState(editorShowMsState);
   const [theme, setTheme] = useRecoilState(themeState);
@@ -35,7 +39,7 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
           <>
             <button
               onClick={() => {
-                setCurrentProjectId(uuidv4());
+                setCurrentProjectId(nanoid());
               }}
             >
               randomize currentProjectId {currentProjectId}
@@ -56,7 +60,6 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
             >
               create track
             </button>
-            <button onClick={() => sendWebsocketMessage()}>send websocket message</button>
             {/* <button
               onClick={() => {
                 if (currentProject) {
@@ -98,6 +101,15 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
             // }}
             >
               remove all events
+            </button>
+            <button
+              onClick={() => {
+                if (currentProjectId && currentTrackId) {
+                  gateway.upsertCues(currentProjectId, currentTrackId, currentCueList);
+                }
+              }}
+            >
+              send cues
             </button>
             <button onClick={() => setShowMs(!showMs)}>toggle showing ms</button>
             <button
