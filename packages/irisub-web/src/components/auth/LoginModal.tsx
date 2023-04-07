@@ -3,9 +3,10 @@ import {
   getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
+  linkWithPopup,
   OAuthProvider,
   sendSignInLinkToEmail,
-  signInWithPopup,
+  signInWithCredential,
 } from "firebase/auth";
 import { useRecoilValue } from "recoil";
 import { currentProjectIdState } from "../../store/states";
@@ -14,9 +15,9 @@ import styles from "../../styles/components/LoginModal.module.scss";
 import { useState } from "react";
 
 enum ProviderName {
-  GOOGLE,
-  MICROSOFT,
-  GITHUB,
+  GOOGLE = "GOOGLE",
+  MICROSOFT = "MICROSOFT",
+  GITHUB = "GITHUB",
 }
 
 type Props = {
@@ -54,23 +55,37 @@ const LoginModal: React.FC<Props> = (props: Props) => {
 
   const handleLogin = (providerName: ProviderName) => {
     const auth = getAuth();
-    const prevUser = auth.currentUser;
-    if (!prevUser) return;
-
-    // TODO: do for all projects. Also maybe copy all project data instead of just the owner?
-    // set(ref(getDatabase(), `projects/${currentProjectId}/owner`), "");
+    if (!auth.currentUser) return;
 
     const provider = getProvider(providerName);
 
-    signInWithPopup(auth, provider)
+    linkWithPopup(auth.currentUser, provider)
       .then((loginResult) => {
         const currentUser = loginResult.user;
-        // set(ref(getDatabase(), `projects/${currentProjectId}/owner`), currentUser.uid);
       })
       .then(() => close())
       .catch((error) => {
-        console.log("Sign In Error", error);
-        // set(ref(getDatabase(), `projects/${currentProjectId}/owner`), prevUser.uid);
+        if (error.code === "auth/credential-already-in-use") {
+          // User had already been linked with a different account, so sign-in to it instead.
+          // TODO: this means the current anon user is lost -- should prompt that they will
+          // lose their current project, or migrate it here
+
+          let credential = null;
+          switch (providerName) {
+            case ProviderName.GOOGLE:
+              credential = GoogleAuthProvider.credentialFromError(error);
+              break;
+            case ProviderName.MICROSOFT:
+              credential = OAuthProvider.credentialFromError(error);
+              break;
+            case ProviderName.GITHUB:
+              credential = GithubAuthProvider.credentialFromError(error);
+              break;
+          }
+          if (credential) signInWithCredential(getAuth(), credential);
+        } else {
+          console.error(error);
+        }
       });
   };
 

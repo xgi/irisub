@@ -44,7 +44,6 @@ const Header: React.FC<Props> = (props: Props) => {
             onFocus={(e) => e.target.select()}
             onBlur={() => updateProjectTitle()}
             onSubmit={(e) => console.log("here")}
-            // rome-ignore lint/a11y/noAutofocus: <explanation>
             autoFocus
           />
         </form>

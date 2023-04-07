@@ -2,11 +2,13 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { ReactNode, useEffect, useState } from "react";
 import {
+  EmailAuthProvider,
   getAuth,
   isSignInWithEmailLink,
+  linkWithCredential,
   onAuthStateChanged,
   signInAnonymously,
-  signInWithEmailLink,
+  signInWithCredential
 } from "firebase/auth";
 import { currentProjectIdState, currentTrackIdState, userIdState } from "../../store/states";
 import LoadingPage from "../LoadingPage";
@@ -23,21 +25,32 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
   const setCurrentTrackId = useSetRecoilState(currentTrackIdState);
 
   const handleEmailLogin = () => {
-    // TODO: should maybe copy local project to user account
-
     let email = window.localStorage.getItem("emailForSignIn");
     if (!email) {
       email = window.prompt("Please provide your email for confirmation");
       console.log(`got email: ${email}`);
       if (!email) return;
     }
-    signInWithEmailLink(getAuth(), email, window.location.href)
+
+    const currentUser = getAuth().currentUser;
+    if (!currentUser) return;
+
+    const credential = EmailAuthProvider.credentialWithLink(email, window.location.href);
+
+    linkWithCredential(currentUser, credential)
       .then((result) => {
         window.localStorage.removeItem("emailForSignIn");
         // window.location.href = "google.com/good";
       })
       .catch((error) => {
-        console.log(error);
+        if (error.code === "auth/email-already-in-use") {
+          // TODO: the anonymous user will be lost -- should prompt that they will lose their
+          // current project, or migrate it here
+
+          signInWithCredential(getAuth(), credential);
+        } else {
+          console.error(error);
+        }
         // window.location.href = "google.com/bad";
       })
       .finally(() => {
