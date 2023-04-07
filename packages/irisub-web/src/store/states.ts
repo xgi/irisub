@@ -1,7 +1,12 @@
 import { Irisub } from "irisub-common";
 import { atom } from "recoil";
 import { NavPage, EditorPanelTab, EditorElementKeys } from "../util/constants";
-import { localStorageEffect, syncCueListEffect } from "./effects";
+import {
+  localStorageEffect,
+  syncCueListEffect,
+  syncProjectEffect,
+  syncTrackListEffect,
+} from "./effects";
 import storeKeys from "../constants/storeKeys.json";
 
 export const userIdState = atom<string | null>({
@@ -29,6 +34,18 @@ export const currentTrackIdState = atom<string | null>({
   key: "currentTrackIdState",
   default: null,
   effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_TRACK_ID)],
+});
+
+export const currentProjectState = atom<Irisub.Project | null>({
+  key: "currentProjectState",
+  default: null,
+  effects: [syncProjectEffect()],
+});
+
+export const currentTrackListState = atom<Irisub.Track[] | null>({
+  key: "currentTrackListState",
+  default: null,
+  effects: [syncTrackListEffect()],
 });
 
 export const currentCueListState = atom<Irisub.Cue[]>({

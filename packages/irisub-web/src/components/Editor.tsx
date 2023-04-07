@@ -141,7 +141,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           <Button onClick={() => setTracksModalOpen(true)}>
             <span>
               <IconSubtitle />
-              Tracks
+              Track: English
             </span>
           </Button>
 

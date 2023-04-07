@@ -51,6 +51,12 @@ const CueRow: React.FC<Props> = (props: Props) => {
     if (!editing) setValue(props.cue);
   }, [props.cue]);
 
+  const getCPS = (cue: Irisub.Cue) => {
+    const cps = Math.ceil(cue.text.length / ((cue.end_ms - cue.start_ms) / 1000));
+    if (cps === Infinity || Number.isNaN(cps)) return 0;
+    return cps;
+  };
+
   return (
     <tr
       key={props.cue.id}
@@ -93,8 +99,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
           hasButtons
         />
       </td>
-      <td>3</td>
-      {/* <td>{getCPS(event)}</td> */}
+      <td>{getCPS(editingCueId === props.cue.id && editingCue ? editingCue : value)}</td>
       <td>Default</td>
       <td>Steve</td>
       <td style={{ width: "100%" }}>

@@ -1,11 +1,10 @@
 import Modal from "./Modal";
 import { useRecoilState } from "recoil";
-import { currentTrackIdState } from "../store/states";
+import { currentTrackIdState, currentTrackListState } from "../store/states";
 import { IconDuplicate, IconTrash, IconX } from "./Icons";
 import styles from "../styles/components/TracksModal.module.scss";
 import { useEffect } from "react";
 import { tracksModalOpenState } from "../store/modals";
-import { currentTrackListState } from "../store/tracks";
 import { Irisub } from "irisub-common";
 import { classNames } from "../util/layout";
 import ReactTooltip from "react-tooltip";
@@ -105,8 +104,7 @@ const TracksModal: React.FC<Props> = (props: Props) => {
 
   const renderTrackList = () => {
     const _tracks = currentTrackList || [];
-
-    return currentTrackList.map((track) => renderTrack(track));
+    return _tracks.map((track) => renderTrack(track));
   };
 
   return !tracksModalOpen ? null : (

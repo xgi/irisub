@@ -4,7 +4,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import admin from "firebase-admin";
 import { handleSessionCookieAuth } from "./middleware/auth_middleware";
-import { Gateway } from "irisub-common";
+import { Gateway, Irisub } from "irisub-common";
+import { db } from "./db";
 
 const app = express();
 const port = 3003;
@@ -94,11 +95,127 @@ app.get("/events", (req, res) => {
 
 /** REST API */
 
+app.get("/projects", (req, res) => {
+  console.log(`Getting projects for user ${res.locals.uid}`);
+
+  const projects = Object.values(db.projects);
+  res.send({ projects: projects });
+});
+
+app.get("/projects/:projectId", (req, res) => {
+  const { projectId } = req.params;
+
+  console.log(`Getting project ${projectId}`);
+
+  res.send({ project: db.projects[projectId] });
+});
+
+app.get("/projects/:projectId/tracks", (req, res) => {
+  const { projectId } = req.params;
+
+  console.log(`Getting tracks for project ${projectId}`);
+
+  const tracks = Object.values(db.tracks[projectId]);
+  res.send({ tracks: tracks });
+});
+
+app.get("/projects/:projectId/tracks/:trackId", (req, res) => {
+  const { projectId, trackId } = req.params;
+
+  console.log(`Getting track ${trackId}`);
+
+  res.send({ track: db.tracks[projectId][trackId] });
+});
+
+app.get("/projects/:projectId/tracks/:trackId/cues", (req, res) => {
+  const { projectId, trackId } = req.params;
+
+  console.log(`Getting cues for project ${projectId} track ${trackId}`);
+
+  res.send({ cues: db.cues[projectId][trackId] });
+});
+
+app.post("/projects/:projectId", (req, res) => {
+  const eventSourceClientId = req.headers["gateway-event-source-client-id"];
+  const { projectId } = req.params;
+
+  const newProject: Irisub.Project = req.body.project;
+  if (newProject.id !== projectId) {
+    res.status(400).send("Project ID in body does not match URL parameter");
+    return;
+  }
+
+  console.log(`Upserting project with ID ${projectId}`);
+
+  db.cues[projectId] = {};
+  db.projects[projectId] = {
+    id: projectId,
+    title: newProject.title,
+  };
+
+  if (clients[projectId]) {
+    clients[projectId].forEach((client) => {
+      if (client.id !== eventSourceClientId) {
+        console.log(`Sending message to client ${client.id} (uid ${client.uid})`);
+        const gwEvent: Gateway.UpsertProjectEvent = {
+          project: newProject,
+        };
+        sendGatewayEvent(Gateway.EventName.UPSERT_PROJECT, gwEvent, client);
+      }
+    });
+  }
+
+  res.end();
+});
+
+app.post("/projects/:projectId/tracks/:trackId", (req, res) => {
+  const eventSourceClientId = req.headers["gateway-event-source-client-id"];
+  const { projectId, trackId } = req.params;
+
+  const newTrack: Irisub.Track = req.body.track;
+  if (newTrack.id !== trackId) {
+    res.status(400).send("Track ID in body does not match URL parameter");
+    return;
+  }
+
+  console.log(`Upserting track with ID ${trackId} on project ${projectId}`);
+
+  db.cues[projectId][trackId] = [];
+
+  if (!db.tracks[projectId]) db.tracks[projectId] = {};
+  db.tracks[projectId][trackId] = {
+    id: trackId,
+  };
+
+  if (clients[projectId]) {
+    clients[projectId].forEach((client) => {
+      if (client.id !== eventSourceClientId) {
+        console.log(`Sending message to client ${client.id} (uid ${client.uid})`);
+        const gwEvent: Gateway.UpsertTrackEvent = {
+          track: newTrack,
+        };
+        sendGatewayEvent(Gateway.EventName.UPSERT_TRACK, gwEvent, client);
+      }
+    });
+  }
+
+  res.end();
+});
+
 app.post("/projects/:projectId/tracks/:trackId/cues", (req, res) => {
   const eventSourceClientId = req.headers["gateway-event-source-client-id"];
   const { projectId, trackId } = req.params;
 
   console.log(`Posting cues for project: ${projectId} track: ${trackId}`);
+
+  req.body.cues.forEach((cue: Irisub.Cue) => {
+    const existingIndex = db.cues[projectId][trackId].findIndex((c) => c.id === cue.id);
+    if (existingIndex === -1) {
+      db.cues[projectId][trackId].push(cue);
+    } else {
+      db.cues[projectId][trackId][existingIndex] = cue;
+    }
+  });
 
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {

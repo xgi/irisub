@@ -1,7 +1,7 @@
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { currentProjectIdState, userIdState } from "../store/states";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { currentProjectIdState, currentProjectState, userIdState } from "../store/states";
 import styles from "../styles/components/Header.module.scss";
 import InviteModal from "./auth/InviteModal";
 import LoginModal from "./auth/LoginModal";
@@ -11,7 +11,7 @@ import { IconCloud, IconInvite, IconPencil } from "./Icons";
 type Props = {};
 
 const Header: React.FC<Props> = (props: Props) => {
-  const currentProject = null;
+  const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const currentProjectId = useRecoilValue(currentProjectIdState);
   const userId = useRecoilValue(userIdState);
   const [editingProjectTitle, setEditingProjectTitle] = useState(false);
@@ -21,22 +21,28 @@ const Header: React.FC<Props> = (props: Props) => {
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
   const updateProjectTitle = () => {
-    // setEditingProjectTitle(false);
-    // if (currentProjectId) {
-    //   changeProjectTitle({ variables: { project_id: currentProject.id, title: tempProjectTitle } });
-    // }
+    setEditingProjectTitle(false);
+    if (currentProject) {
+      setCurrentProject({ ...currentProject, title: tempProjectTitle });
+    }
   };
 
-  // useEffect(() => {
-  //   if (editingProjectTitle && currentProject) setTempProjectTitle(currentProject.title || "");
-  // }, [editingProjectTitle]);
+  useEffect(() => {
+    if (editingProjectTitle && currentProject) setTempProjectTitle(currentProject.title || "");
+  }, [editingProjectTitle]);
 
   const renderProjectTitle = () => {
     if (!currentProject) return;
 
     if (editingProjectTitle) {
       return (
-        <form onSubmit={() => updateProjectTitle()} className={styles.project}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            updateProjectTitle();
+          }}
+          className={styles.project}
+        >
           <input
             value={tempProjectTitle}
             placeholder="Untitled project"
@@ -51,8 +57,7 @@ const Header: React.FC<Props> = (props: Props) => {
     } else {
       return (
         <span onClick={() => setEditingProjectTitle(true)} className={styles.project}>
-          {/* <span>{currentProject?.title || "Untitled project"}</span> */}
-          <span>Untitled project</span>
+          <span>{currentProject?.title || "Untitled project"}</span>
           <IconPencil />
         </span>
       );

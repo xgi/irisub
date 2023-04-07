@@ -1,5 +1,6 @@
 export namespace Irisub {
   export type Project = {
+    id: string;
     title: string;
   };
 

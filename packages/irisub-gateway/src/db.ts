@@ -1,11 +1,11 @@
-type Cue = {
-  id: string;
-  index: number;
-  text: string;
-  start_ms: number;
-  end_ms: number;
-};
+import { Irisub } from "irisub-common";
 
-export const db = {
-  cues: [] as Cue[],
+export const db: {
+  cues: { [projectId: string]: { [trackId: string]: Irisub.Cue[] } };
+  projects: { [projectId: string]: Irisub.Project };
+  tracks: { [projectId: string]: { [trackId: string]: Irisub.Track } };
+} = {
+  cues: {},
+  projects: {},
+  tracks: {},
 };
