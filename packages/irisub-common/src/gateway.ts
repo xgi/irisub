@@ -1,33 +1,21 @@
+import { Irisub } from "./irisub";
+
 export namespace Gateway {
   export enum EventName {
+    IDENTIFY_EVENT_SOURCE_CLIENT = "IDENTIFY_EVENT_SOURCE_CLIENT",
     UPSERT_CUES = "UPSERT_CUES",
     UPSERT_PROJECT = "UPSERT_PROJECT",
     UPDATE_MODIFYING_CUE = "UPDATE_MODIFYING_CUE",
+    GET_AVAILABLE_PROJECTS = "GET_AVAILABLE_PROJECTS",
   }
 
+  export type IdentifyEventSourceClientEvent = {
+    clientId: string;
+  };
+
   export type UpsertCuesEvent = {
-    n: EventName.UPSERT_CUES;
-    d: {
-      cueId: string;
-    }[];
-    s?: number;
+    cues: Irisub.Event[];
   };
 
-  export type UpsertProjectEvent = {
-    n: EventName.UPSERT_PROJECT;
-    d: {
-      projectId: string;
-    };
-    s?: number;
-  };
-
-  export type UpdateModifyingCueEvent = {
-    n: EventName.UPDATE_MODIFYING_CUE;
-    d: {
-      cueId: string | null;
-    };
-    s?: number;
-  };
-
-  export type Event = UpsertCuesEvent | UpsertProjectEvent | UpdateModifyingCueEvent;
+  export type Event = IdentifyEventSourceClientEvent | UpsertCuesEvent;
 }

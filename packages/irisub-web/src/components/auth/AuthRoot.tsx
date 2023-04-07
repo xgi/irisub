@@ -1,6 +1,6 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   getAuth,
   isSignInWithEmailLink,
@@ -8,18 +8,19 @@ import {
   signInAnonymously,
   signInWithEmailLink,
 } from "firebase/auth";
-import { DatabaseReference, getDatabase, onValue, ref, Unsubscribe } from "firebase/database";
-import { currentProjectIdState, userIdState } from "../../store/states";
+import { currentProjectIdState, currentTrackIdState, userIdState } from "../../store/states";
 import LoadingPage from "../LoadingPage";
-import { openWsConnection } from "../../services/ws";
+import { gateway } from "../../services/gateway";
 
 type Props = {
   children?: ReactNode;
 };
 
 const AuthRoot: React.FC<Props> = (props: Props) => {
+  const [authenticated, setAuthenticated] = useState(false);
   const [userId, setUserId] = useRecoilState(userIdState);
   const setCurrentProjectId = useSetRecoilState(currentProjectIdState);
+  const setCurrentTrackId = useSetRecoilState(currentTrackIdState);
 
   const handleEmailLogin = () => {
     // TODO: should maybe copy local project to user account
@@ -45,16 +46,11 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
-    let unsubscribe: Unsubscribe | null = null;
-    let metadataRef: DatabaseReference | null = null;
-
-    console.log("CREATING LISTENER (SHOULD ONLY RUN ONCE)");
-
     onAuthStateChanged(getAuth(), (user) => {
       console.log(`auth state changed, now: ${user ? user.uid : "null"}`);
 
+      setAuthenticated(false);
       setUserId(user ? user.uid : null);
-      if (unsubscribe) unsubscribe();
 
       if (user) {
         setUserId(user.uid);
@@ -63,28 +59,29 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
           return;
         }
 
-        user.getIdToken(true).then((jwtToken) => {
-          openWsConnection(jwtToken);
-        });
-
-        // metadataRef = ref(getDatabase(), "metadata/" + user.uid + "/refreshTime");
-        // unsubscribe = onValue(metadataRef, (snapshot) => {
-        //   // TODO: add database rules to disable writing metadata/ and allow reading user's own
-        //   // user.getIdToken(true).then((thing) => console.log(thing));
-        //   user.getIdTokenResult(true).then((thing) => console.log(thing));
-        // });
+        user
+          .getIdToken()
+          .then((idToken) => {
+            return gateway.sessionLogin(idToken);
+          })
+          .then(() => {
+            setAuthenticated(true);
+          })
+          .catch((err) => {
+            console.error(`Session login failed: ${err}`);
+          });
       } else {
         setCurrentProjectId(null);
+        setCurrentTrackId(null);
         setUserId(null);
 
         console.log("wasn't logged in -- signing in anonymously");
         signInAnonymously(getAuth());
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return userId === null ? <LoadingPage /> : <>{props.children}</>;
+  return authenticated ? <>{props.children}</> : <LoadingPage />;
 };
 
 export default AuthRoot;

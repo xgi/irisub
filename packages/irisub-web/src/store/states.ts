@@ -1,7 +1,7 @@
 import { Irisub } from "irisub-common";
 import { atom } from "recoil";
 import { NavPage, EditorPanelTab, EditorElementKeys } from "../util/constants";
-import { localStorageEffect } from "./effects";
+import { localStorageEffect, syncCueListEffect } from "./effects";
 import storeKeys from "../constants/storeKeys.json";
 
 export const userIdState = atom<string | null>({
@@ -25,27 +25,24 @@ export const currentProjectIdState = atom<string | null>({
   effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_PROJECT_ID)],
 });
 
-export const currentTrackIndexState = atom<number>({
-  key: "currentTrackIndexState",
-  default: 0,
+export const currentTrackIdState = atom<string | null>({
+  key: "currentTrackIdState",
+  default: null,
+  effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_TRACK_ID)],
 });
 
-export const editingEventIndexState = atom<number>({
-  key: "editingEventIndexState",
-  default: 0,
-  // effects: [
-  //   ({ onSet, setSelf, getPromise }) => {
-  //     onSet(async (newValue, oldValue) => {
-  //       if (newValue < 0) setSelf(oldValue);
+export const currentCueListState = atom<Irisub.Event[]>({
+  key: "currentCueListState",
+  default: [],
+  effects: [
+    // localStorageEffect(storeKeys.WORKSPACE.CURRENT_PROJECT_ID)
+    syncCueListEffect(),
+  ],
+});
 
-  //       const currentEventList = await getPromise(currentEventListState);
-  //       if (currentEventList !== null) {
-  //         const lastIndex = currentEventList.length - 1;
-  //         if (newValue > lastIndex) setSelf(oldValue);
-  //       }
-  //     });
-  //   },
-  // ],
+export const editingEventIdState = atom<string | null>({
+  key: "editingEventIdState",
+  default: null,
 });
 
 export const editingEventState = atom<Irisub.Event | null>({
@@ -67,4 +64,9 @@ export const editorShowMsState = atom<boolean>({
   key: "editorShowMsState",
   default: true,
   effects: [localStorageEffect(storeKeys.WORKSPACE.EDITOR_SHOW_MS)],
+});
+
+export const gatewayConnectedState = atom<boolean>({
+  key: "gatewayConnectedState",
+  default: false,
 });
