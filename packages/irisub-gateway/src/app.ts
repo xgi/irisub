@@ -1,60 +1,120 @@
-import express from "express";
-import jwt from "jsonwebtoken";
-import WebSocket from "ws";
-import url from "url";
+import express, { Request, Response } from "express";
+import { v4 as uuidv4 } from "uuid";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import admin from "firebase-admin";
+import { handleSessionCookieAuth } from "./middleware/auth_middleware";
+import { Gateway } from "irisub-common";
 
 const app = express();
-const port = 3000;
+const port = 3003;
 
-// app.use(express.static("public"));
+app.use(cors({ credentials: true, origin: true }));
+app.use(express.json());
+app.use(cookieParser());
+app.use(/\/((?!sessionLogin).)*/, handleSessionCookieAuth);
 
 admin.initializeApp();
 
-const expressServer = app.listen(port, () => {
-  console.log("Express server listening at http://localhost:" + port);
-});
+/** Auth */
 
-const wss = new WebSocket.Server({ server: expressServer });
+app.post("/sessionLogin", (req, res) => {
+  const idToken = req.body.idToken.toString();
 
-var wsClients: { [token: string]: WebSocket } = {};
-
-wss.on("connection", (ws, req) => {
-  console.log("Processing websocket connection...");
-
-  var token = url.parse(req.url as string, true).query.token as string;
-
-  var wsUserId = "";
-
+  const expiresIn = 1000 * 60 * 60 * 24 * 5;
   admin
     .auth()
-    .verifyIdToken(token)
-    .then((decodedToken) => {
-      console.log("jwt success");
-      wsClients[token] = ws;
-      wsUserId = decodedToken.uid;
-    })
-    .catch((err) => {
-      console.log(`wt verification failed, error: ${err}`);
-      ws.close();
-    });
+    .createSessionCookie(idToken, { expiresIn })
+    .then(
+      (sessionCookie) => {
+        res.cookie("session", sessionCookie, { maxAge: expiresIn, httpOnly: true, secure: true });
+        res.end(JSON.stringify({ status: "success" }));
+      },
+      (error) => {
+        res.status(401).send("Unauthorized");
+      },
+    );
+});
 
-  // TODO: handle token reverification
-  // TODO: handle closed clients
+/** Event source */
 
-  ws.on("message", (data) => {
-    console.log(`Received message from user ${wsUserId}: ${data}`);
+type EventSourceClient = {
+  id: string;
+  uid: string;
+  res: Response;
+};
 
-    // for (const [token, client] of Object.entries(wsClients)) {
-    //   client.send("hello!");
-    //   jwt.verify(token, jwtSecret, (err, decoded) => {
-    //     if (err) {
-    //       client.send("Error: Your token is no longer valid. Please reauthenticate.");
-    //       client.close();
-    //     } else {
-    //       client.send(wsUserId + ": " + data);
-    //     }
-    //   });
-    // }
+const clients: { [projectId: string]: EventSourceClient[] } = {};
+
+const sendGatewayEvent = (
+  eventName: Gateway.EventName,
+  data: Gateway.Event,
+  client: EventSourceClient,
+) => {
+  client.res.write(`event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`);
+};
+
+app.get("/events", (req, res) => {
+  const projectId = req.query["projectId"] as string;
+  if (!projectId) {
+    res.status(400).send("Project ID not included in request");
+    return;
+  }
+
+  // TODO: validate client has auth on project ID
+
+  console.log("handling events...");
+  console.log(req.query["projectId"]);
+
+  const headers = {
+    "Content-Type": "text/event-stream",
+    Connection: "keep-alive",
+    "Cache-Control": "no-cache",
+  };
+  res.writeHead(200, headers);
+
+  const client = {
+    id: uuidv4(),
+    uid: res.locals.uid,
+    res: res,
+  };
+  if (!clients[projectId]) clients[projectId] = [];
+  clients[projectId].push(client);
+
+  const identifyEvent: Gateway.IdentifyEventSourceClientEvent = {
+    clientId: client.id,
+  };
+  sendGatewayEvent(Gateway.EventName.IDENTIFY_EVENT_SOURCE_CLIENT, identifyEvent, client);
+
+  req.on("close", () => {
+    console.log(`${client.id} connection closed`);
+    clients[projectId] = clients[projectId].filter((c) => c.id !== client.id);
   });
+});
+
+/** REST API */
+
+app.post("/projects/:projectId/tracks/:trackId/cues", (req, res) => {
+  const eventSourceClientId = req.headers["gateway-event-source-client-id"];
+  const { projectId, trackId } = req.params;
+
+  console.log(`Posting cues for project: ${projectId} track: ${trackId}`);
+
+  if (clients[projectId]) {
+    clients[projectId].forEach((client) => {
+      if (client.id !== eventSourceClientId) {
+        console.log(`Sending message to client ${client.id} (uid ${client.uid})`);
+        const gwEvent: Gateway.UpsertCuesEvent = {
+          cues: req.body.cues,
+        };
+        sendGatewayEvent(Gateway.EventName.UPSERT_CUES, gwEvent, client);
+      }
+    });
+  }
+
+  res.end();
+});
+
+const expressServer = app.listen(port, () => {
+  console.log(`Express server listening at http://localhost:${port}`);
 });
