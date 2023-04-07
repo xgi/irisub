@@ -2,11 +2,11 @@ import { Irisub } from "irisub-common";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { currentCueListState, editingCueIdState, editingCueState } from "../../store/states";
-import styles from "../../styles/components/EventTextInput.module.scss";
+import styles from "../../styles/components/CueTextInput.module.scss";
 import { useDebouncedValue } from "../../util/hooks";
 import { classNames } from "../../util/layout";
 import TimeInput from "../TimeInput";
-import EventTextInput from "./CueTextInput";
+import CueTextInput from "./CueTextInput";
 import CueStatusCell from "./CueStatusCell";
 import { shallowEqual } from "../../util/comparison";
 
@@ -98,7 +98,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
       <td>Default</td>
       <td>Steve</td>
       <td style={{ width: "100%" }}>
-        <EventTextInput
+        <CueTextInput
           index={props.index}
           cue={props.cue}
           callback={(newText: string) => setValue({ ...value, text: newText })}

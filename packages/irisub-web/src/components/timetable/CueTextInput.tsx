@@ -2,7 +2,7 @@ import { Irisub } from "irisub-common";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { editingCueIdState, editingCueState } from "../../store/states";
-import styles from "../../styles/components/EventTextInput.module.scss";
+import styles from "../../styles/components/CueTextInput.module.scss";
 
 type Props = {
   index: number;
