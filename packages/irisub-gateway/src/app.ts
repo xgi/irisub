@@ -6,16 +6,17 @@ import admin from "firebase-admin";
 import { handleSessionCookieAuth } from "./middleware/auth_middleware";
 import { Gateway, Irisub } from "irisub-common";
 import { db } from "./db/database";
+import { initializeFirebase } from "./firebase";
 
 const app = express();
-const port = 3003;
+const port = 3123;
 
 app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(/\/((?!sessionLogin).)*/, handleSessionCookieAuth);
 
-admin.initializeApp();
+initializeFirebase();
 
 /** Auth */
 
@@ -32,6 +33,7 @@ app.post("/sessionLogin", (req, res) => {
         res.end(JSON.stringify({ status: "success" }));
       },
       (error) => {
+        console.error(error);
         res.status(401).send("Unauthorized");
       },
     );

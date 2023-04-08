@@ -1,6 +1,6 @@
 import { Gateway, Irisub } from "irisub-common";
 
-const BASE_URL = "//localhost:3003";
+const BASE_URL = "//localhost:3123";
 
 type EventHandler = (event: Gateway.Event) => void;
 
@@ -15,7 +15,6 @@ class GatewayConn {
 
     return new Promise<void>((res, rej) => {
       this.eventSource = new EventSource(`${BASE_URL}/events?projectId=${projectId}`, {
-        // this.eventSource = new EventSource(`//localhost:3003/events`, {
         withCredentials: true,
       });
 
