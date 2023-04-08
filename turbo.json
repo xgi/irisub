@@ -14,6 +14,9 @@
     },
     "dev": {
       "cache": false
+    },
+    "irisub-gateway#migrate": {
+      "cache": false
     }
   }
 }

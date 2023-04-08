@@ -8,6 +8,11 @@ interface Database {
   cue: CueTable;
 }
 
+const dbPath = process.env.SQLITE_DB;
+if (!dbPath) {
+  throw Error("sqlite database path not found; expected in SQLITE_DB environment variable");
+}
+
 export const db = new Kysely<Database>({
   dialect: new SqliteDialect({
     database: new Database("irisub.db"),

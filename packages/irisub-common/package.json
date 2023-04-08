@@ -8,7 +8,8 @@
     "*"
   ],
   "scripts": {
-    "lint": "rome check ."
+    "lint": "rome check .",
+    "dev": "rm -rf dist && tsc"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

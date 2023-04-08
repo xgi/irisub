@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  gateway:
+    container_name: gateway
+    # image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    build:
+      context: .
+      dockerfile: ./packages/irisub-gateway/Dockerfile
+    environment:
+      - SQLITE_DB=/data/irisub.db
+    restart: always
+    ports:
+      - 3003:3003
+    volumes:
+      - dbdata:/data
+
+volumes:
+  dbdata:

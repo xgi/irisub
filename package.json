@@ -9,7 +9,8 @@
     "dev": "dotenv -- turbo dev --parallel",
     "emulators": "firebase emulators:start",
     "build": "turbo build",
-    "lint": "turbo lint"
+    "lint": "turbo lint",
+    "migrate": "dotenv -- turbo migrate"
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
