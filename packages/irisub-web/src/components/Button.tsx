@@ -7,6 +7,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button: React.FC<Props> = (props: Props) => {
   const customProps = { ...props };
+  // rome-ignore lint/performance/noDelete: <explanation>
   delete customProps.accent;
 
   return (

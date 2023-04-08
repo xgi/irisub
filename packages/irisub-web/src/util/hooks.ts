@@ -7,7 +7,7 @@ export function useDebouncedValue<T = any>(value: T, wait: number, options = { l
   const cooldownRef = useRef(false);
 
   const cancel = () => {
-    if (timeoutRef && timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    if (timeoutRef?.current) window.clearTimeout(timeoutRef.current);
   };
 
   useEffect(() => {
