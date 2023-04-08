@@ -14,6 +14,7 @@ async function migrateToLatest() {
   const migrator = new Migrator({
     db,
     provider: new CustomMigrationProvider(),
+    migrationTableSchema: "kysely_migration",
   });
 
   const { error, results } = await migrator.migrateToLatest();

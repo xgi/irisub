@@ -187,7 +187,15 @@ app.post("/projects/:projectId", async (req, res) => {
 
   console.log(`Upserting project with ID ${projectId}`);
 
-  await db.insertInto("project").values(newProject).execute();
+  await db
+    .insertInto("project")
+    .values(newProject)
+    .onConflict((oc) =>
+      oc.column("id").doUpdateSet((eb) => ({
+        title: eb.ref("excluded.title"),
+      })),
+    )
+    .execute();
 
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {
@@ -219,6 +227,12 @@ app.post("/projects/:projectId/tracks/:trackId", async (req, res) => {
   await db
     .insertInto("track")
     .values({ ...newTrack, project_id: projectId })
+    .onConflict((oc) =>
+      oc.column("id").doUpdateSet((eb) => ({
+        name: eb.ref("excluded.name"),
+        language: eb.ref("excluded.language"),
+      })),
+    )
     .execute();
 
   if (clients[projectId]) {
@@ -247,7 +261,7 @@ app.post("/projects/:projectId/tracks/:trackId/cues", async (req, res) => {
     .insertInto("cue")
     .values(newCues.map((cue) => ({ ...cue, project_id: projectId, track_id: trackId })))
     .onConflict((oc) =>
-      oc.doUpdateSet((eb) => ({
+      oc.column("id").doUpdateSet((eb) => ({
         text: eb.ref("excluded.text"),
         start_ms: eb.ref("excluded.start_ms"),
         end_ms: eb.ref("excluded.end_ms"),
