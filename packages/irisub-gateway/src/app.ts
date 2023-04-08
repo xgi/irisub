@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import admin from "firebase-admin";
 import { handleSessionCookieAuth } from "./middleware/auth_middleware";
 import { Gateway, Irisub } from "irisub-common";
-import { db } from "./db";
+import { db } from "./db/database";
 
 const app = express();
 const port = 3003;
@@ -95,47 +95,85 @@ app.get("/events", (req, res) => {
 
 /** REST API */
 
-app.get("/projects", (req, res) => {
+app.get("/projects", async (req, res) => {
   console.log(`Getting projects for user ${res.locals.uid}`);
 
-  const projects = Object.values(db.projects);
+  const projects: Irisub.Project[] = (await db
+    .selectFrom("project")
+    .selectAll()
+    .execute()) satisfies Irisub.Project[];
   res.send({ projects: projects });
 });
 
-app.get("/projects/:projectId", (req, res) => {
+app.get("/projects/:projectId", async (req, res) => {
   const { projectId } = req.params;
 
   console.log(`Getting project ${projectId}`);
 
-  res.send({ project: db.projects[projectId] });
+  const project: Irisub.Project | undefined = await db
+    .selectFrom("project")
+    .where("id", "=", projectId)
+    .selectAll()
+    .executeTakeFirst();
+
+  if (project === undefined) {
+    res.status(404).send("Project not found");
+    return;
+  }
+
+  res.send({ project: project });
 });
 
-app.get("/projects/:projectId/tracks", (req, res) => {
+app.get("/projects/:projectId/tracks", async (req, res) => {
   const { projectId } = req.params;
 
   console.log(`Getting tracks for project ${projectId}`);
 
-  const tracks = Object.values(db.tracks[projectId]);
+  const tracks: Irisub.Track[] = await db
+    .selectFrom("track")
+    .where("project_id", "=", projectId)
+    .selectAll()
+    .execute();
+
   res.send({ tracks: tracks });
 });
 
-app.get("/projects/:projectId/tracks/:trackId", (req, res) => {
+app.get("/projects/:projectId/tracks/:trackId", async (req, res) => {
   const { projectId, trackId } = req.params;
 
   console.log(`Getting track ${trackId}`);
 
-  res.send({ track: db.tracks[projectId][trackId] });
+  const track: Irisub.Track | undefined = await db
+    .selectFrom("track")
+    .where("id", "=", trackId)
+    .where("project_id", "=", projectId)
+    .selectAll()
+    .executeTakeFirst();
+
+  if (track === undefined) {
+    res.status(404).send("Track not found");
+    return;
+  }
+
+  res.send({ track: track });
 });
 
-app.get("/projects/:projectId/tracks/:trackId/cues", (req, res) => {
+app.get("/projects/:projectId/tracks/:trackId/cues", async (req, res) => {
   const { projectId, trackId } = req.params;
 
   console.log(`Getting cues for project ${projectId} track ${trackId}`);
 
-  res.send({ cues: db.cues[projectId][trackId] });
+  const cues: Irisub.Cue[] = await db
+    .selectFrom("cue")
+    .where("project_id", "=", projectId)
+    .where("track_id", "=", trackId)
+    .selectAll()
+    .execute();
+
+  res.send({ cues: cues });
 });
 
-app.post("/projects/:projectId", (req, res) => {
+app.post("/projects/:projectId", async (req, res) => {
   const eventSourceClientId = req.headers["gateway-event-source-client-id"];
   const { projectId } = req.params;
 
@@ -147,11 +185,7 @@ app.post("/projects/:projectId", (req, res) => {
 
   console.log(`Upserting project with ID ${projectId}`);
 
-  db.cues[projectId] = {};
-  db.projects[projectId] = {
-    id: projectId,
-    title: newProject.title,
-  };
+  await db.insertInto("project").values(newProject).execute();
 
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {
@@ -168,7 +202,7 @@ app.post("/projects/:projectId", (req, res) => {
   res.end();
 });
 
-app.post("/projects/:projectId/tracks/:trackId", (req, res) => {
+app.post("/projects/:projectId/tracks/:trackId", async (req, res) => {
   const eventSourceClientId = req.headers["gateway-event-source-client-id"];
   const { projectId, trackId } = req.params;
 
@@ -180,12 +214,10 @@ app.post("/projects/:projectId/tracks/:trackId", (req, res) => {
 
   console.log(`Upserting track with ID ${trackId} on project ${projectId}`);
 
-  db.cues[projectId][trackId] = [];
-
-  if (!db.tracks[projectId]) db.tracks[projectId] = {};
-  db.tracks[projectId][trackId] = {
-    id: trackId,
-  };
+  await db
+    .insertInto("track")
+    .values({ ...newTrack, project_id: projectId })
+    .execute();
 
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {
@@ -202,20 +234,24 @@ app.post("/projects/:projectId/tracks/:trackId", (req, res) => {
   res.end();
 });
 
-app.post("/projects/:projectId/tracks/:trackId/cues", (req, res) => {
+app.post("/projects/:projectId/tracks/:trackId/cues", async (req, res) => {
   const eventSourceClientId = req.headers["gateway-event-source-client-id"];
   const { projectId, trackId } = req.params;
 
   console.log(`Posting cues for project: ${projectId} track: ${trackId}`);
 
-  req.body.cues.forEach((cue: Irisub.Cue) => {
-    const existingIndex = db.cues[projectId][trackId].findIndex((c) => c.id === cue.id);
-    if (existingIndex === -1) {
-      db.cues[projectId][trackId].push(cue);
-    } else {
-      db.cues[projectId][trackId][existingIndex] = cue;
-    }
-  });
+  const newCues: Irisub.Cue[] = req.body.cues;
+  await db
+    .insertInto("cue")
+    .values(newCues.map((cue) => ({ ...cue, project_id: projectId, track_id: trackId })))
+    .onConflict((oc) =>
+      oc.doUpdateSet((eb) => ({
+        text: eb.ref("excluded.text"),
+        start_ms: eb.ref("excluded.start_ms"),
+        end_ms: eb.ref("excluded.end_ms"),
+      })),
+    )
+    .execute();
 
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {

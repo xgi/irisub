@@ -35,6 +35,7 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
     const newTrack: Irisub.Track = {
       id: nanoid(),
       name: "my cool track",
+      language: null,
     };
     await gateway.upsertTrack(newProject.id, newTrack);
 
