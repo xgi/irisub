@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "target": "ES2020",
     "lib": [
-      "ES2015"
+      "ES2020"
     ],
     "module": "CommonJS",
     "outDir": "./dist",
@@ -21,9 +22,10 @@
     "strict": true
   },
   "include": [
-    "src"
+    "src/**/*"
   ],
   "exclude": [
+    "dist",
     "node_modules"
   ]
 }
