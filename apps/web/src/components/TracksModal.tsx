@@ -1,22 +1,31 @@
 import Modal from './Modal';
-import { useRecoilState } from 'recoil';
-import { currentCueListState, currentTrackIdState, currentTrackListState } from '../store/states';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  currentCueListState,
+  currentProjectIdState,
+  currentTrackIdState,
+  currentTrackListState,
+} from '../store/states';
 import { IconDuplicate, IconTrash, IconX } from './Icons';
+import Button from './Button';
 import styles from '../styles/components/TracksModal.module.scss';
 import { useEffect } from 'react';
 import { tracksModalOpenState } from '../store/modals';
 import { Irisub } from '@irisub/shared';
 import { classNames } from '../util/layout';
 import ReactTooltip from 'react-tooltip';
+import { nanoid } from 'nanoid';
+import { gateway } from '../services/gateway';
 
 type Props = {
   onClose?: () => void;
 };
 
 const TracksModal: React.FC<Props> = (props: Props) => {
+  const currentProjectId = useRecoilValue(currentProjectIdState);
   const [tracksModalOpen, setTracksModalOpen] = useRecoilState(tracksModalOpenState);
   const [currentTrackList, setCurrentTrackList] = useRecoilState(currentTrackListState);
-  const [currentCueList, setCurrentCueList] = useRecoilState(currentCueListState);
+  const setCurrentCueList = useSetRecoilState(currentCueListState);
   const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
 
   useEffect(() => {
@@ -35,18 +44,20 @@ const TracksModal: React.FC<Props> = (props: Props) => {
 
     setCurrentTrackId(trackId);
     setCurrentCueList(null);
-    // setCurrentEventList(null);
   };
 
-  const newTrack = () => {
-    // let maxIndex = 0;
-    // if (currentTrackList) {
-    //   for (const track of currentTrackList) {
-    //     if (track.index > maxIndex) maxIndex = track.index;
-    //   }
-    // }
-    // setCurrentTrackList([...(currentTrackList || [{ index: 0 }]), { index: maxIndex + 1 }]);
-    // changeTrack(maxIndex + 1);
+  const newTrack = async () => {
+    if (!currentProjectId) return;
+
+    const newTrack: Irisub.Track = {
+      id: nanoid(),
+      name: 'some new track',
+      language: null,
+    };
+    gateway.upsertTrack(currentProjectId, newTrack).then((res) => {
+      setCurrentTrackList(currentTrackList ? [...currentTrackList, res.track] : [res.track]);
+      changeTrack(res.track.id);
+    });
   };
 
   const renderTrack = (track: Irisub.Track) => {
@@ -92,15 +103,10 @@ const TracksModal: React.FC<Props> = (props: Props) => {
   };
 
   const renderAddButton = () => {
-    // TODO: unenforced limit
-    if (currentTrackList && currentTrackList.length >= 5) return undefined;
-
     return (
-      <button className={styles.add} onClick={newTrack}>
-        <span>
-          <b>Add track</b>
-        </span>
-      </button>
+      <Button className={styles.add} onClick={newTrack}>
+        <span>New Track</span>
+      </Button>
     );
   };
 
@@ -119,10 +125,9 @@ const TracksModal: React.FC<Props> = (props: Props) => {
           </button>
         </div>
 
-        <div className={styles.inner}>
-          {renderTrackList()}
-          {renderAddButton()}
-        </div>
+        <div className={styles.inner}>{renderTrackList()}</div>
+
+        <div className={styles.footer}>{renderAddButton()}</div>
       </div>
     </Modal>
   );

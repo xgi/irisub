@@ -95,19 +95,25 @@ export function syncCueListEffect(): AtomEffect<Irisub.Cue[] | null> {
 
 export function syncProjectEffect(): AtomEffect<Irisub.Project | null> {
   return ({ setSelf, onSet, trigger, getLoadable }) => {
-    if (trigger === 'get') {
+    const _load = () => {
       const projectId = getLoadable(currentProjectIdState).getValue();
+
+      console.log(`Project was null, retrieving with ID: ${projectId}`);
       if (projectId) {
         gateway.getProject(projectId).then((project) => {
           console.log(`Got initial project: ${JSON.stringify(project)}`);
           setSelf(project);
         });
       }
-    }
+    };
+
+    if (trigger === 'get') _load();
 
     onSet((newProject) => {
       if (newProject) {
         gateway.upsertProject(newProject);
+      } else {
+        _load();
       }
     });
 
@@ -121,16 +127,19 @@ export function syncProjectEffect(): AtomEffect<Irisub.Project | null> {
 
 export function syncTrackListEffect(): AtomEffect<Irisub.Track[] | null> {
   return ({ setSelf, onSet, trigger, getLoadable }) => {
-    if (trigger === 'get') {
+    const _load = () => {
       const projectId = getLoadable(currentProjectIdState).getValue();
-      const trackId = getLoadable(currentTrackIdState).getValue();
-      if (projectId && trackId) {
+
+      console.log(`Track list was null, retrieving from project: ${projectId}`);
+      if (projectId) {
         gateway.getTracks(projectId).then((tracks) => {
           console.log(`Got initial tracks: ${JSON.stringify(tracks)}`);
           setSelf(tracks);
         });
       }
-    }
+    };
+
+    if (trigger === 'get') _load();
 
     onSet((newTrackList) => {
       const projectId = getLoadable(currentProjectIdState).getValue();
@@ -138,6 +147,8 @@ export function syncTrackListEffect(): AtomEffect<Irisub.Track[] | null> {
         newTrackList.forEach((newTrack) => {
           gateway.upsertTrack(projectId, newTrack);
         });
+      } else {
+        _load();
       }
     });
 

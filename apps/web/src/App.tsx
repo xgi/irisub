@@ -4,17 +4,25 @@ import './styles/global/scrollbar.scss';
 import './styles/global/reflex.scss';
 import './styles/global/player.scss';
 import './styles/global/tooltip.scss';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import Base from './components/Base';
 
 import { useEffect } from 'react';
-import { currentProjectState, currentTrackListState } from './store/states';
+import {
+  currentCueListState,
+  currentProjectIdState,
+  currentProjectState,
+  currentTrackListState,
+} from './store/states';
 import { themeState, accentState } from './store/theme';
 import LoadingContainer from './components/LoadingContainer';
 
 function App() {
-  const currentProject = useRecoilValue(currentProjectState);
-  const currentTrackList = useRecoilValue(currentTrackListState);
+  const currentProjectId = useRecoilValue(currentProjectIdState);
+  const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
+  const [currentTrackList, setCurrentTrackList] = useRecoilState(currentTrackListState);
+  const setCurrentCueList = useSetRecoilState(currentCueListState);
+
   const theme = useRecoilValue(themeState);
   const accent = useRecoilValue(accentState);
 
@@ -25,6 +33,13 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-accent', accent);
   }, [accent]);
+
+  useEffect(() => {
+    setCurrentProject(null);
+    setCurrentTrackList(null);
+    setCurrentCueList(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentProjectId]);
 
   return currentProject === null || currentTrackList === null ? (
     <div style={{ width: '100vw', height: '100vh' }}>

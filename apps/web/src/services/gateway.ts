@@ -153,6 +153,9 @@ class GatewayConn {
       body: JSON.stringify({
         project: project,
       }),
+    }).then((res) => {
+      if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+      return res.json();
     });
   }
 
@@ -167,6 +170,9 @@ class GatewayConn {
       body: JSON.stringify({
         track: track,
       }),
+    }).then((res) => {
+      if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+      return res.json();
     });
   }
 

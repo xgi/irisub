@@ -1,19 +1,19 @@
-import { ChangeEvent, useRef, useState } from "react";
-import { ReflexContainer, ReflexSplitter, ReflexElement, HandlerProps } from "react-reflex";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { ChangeEvent, useRef } from 'react';
+import { ReflexContainer, ReflexSplitter, ReflexElement, HandlerProps } from 'react-reflex';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   playerDurationState,
   playerPathState,
   playerPlayingState,
   playerProgressState,
-} from "../store/player";
-import styles from "../styles/components/Editor.module.scss";
-import Player from "./Player";
-import Timetable from "./timetable/Timetable";
-import { editorElementSizesState, editorShowMsState } from "../store/states";
-import ReactSlider from "react-slider";
-import ReactPlayer from "react-player";
-import FileDrop from "./FileDrop";
+} from '../store/player';
+import styles from '../styles/components/Editor.module.scss';
+import Player from './Player';
+import Timetable from './timetable/Timetable';
+import { editorElementSizesState, editorShowMsState } from '../store/states';
+import ReactSlider from 'react-slider';
+import ReactPlayer from 'react-player';
+import FileDrop from './FileDrop';
 import {
   Icon10Left,
   Icon10Right,
@@ -21,19 +21,21 @@ import {
   IconPause,
   IconPlay,
   IconSubtitle,
-} from "./Icons";
-import TimeInput from "./TimeInput";
-import { classNames } from "../util/layout";
-import EditorPanel from "./EditorPanel";
-import { EditorElementKeys } from "../util/constants";
-import Button from "./Button";
-import { tracksModalOpenState } from "../store/modals";
+} from './Icons';
+import TimeInput from './TimeInput';
+import { classNames } from '../util/layout';
+import EditorPanel from './EditorPanel';
+import { EditorElementKeys } from '../util/constants';
+import Button from './Button';
+import { tracksModalOpenState } from '../store/modals';
+import { currentTrackSelector } from '../store/selectors';
 
 type Props = {
   hidden?: boolean;
 };
 
 const Editor: React.FC<Props> = (props: Props) => {
+  const currentTrack = useRecoilValue(currentTrackSelector);
   const [editorElementSizes, setEditorElementSizes] = useRecoilState(editorElementSizesState);
   const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
@@ -42,7 +44,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const showMs = useRecoilValue(editorShowMsState);
   const playerRef = useRef<ReactPlayer | null>(null);
   const pickerRef = useRef<HTMLInputElement | null>(null);
-  const [tracksModalOpen, setTracksModalOpen] = useRecoilState(tracksModalOpenState);
+  const setTracksModalOpen = useSetRecoilState(tracksModalOpenState);
 
   // useEffect(() => {
   //   if (database) {
@@ -100,7 +102,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className={styles.container} style={props.hidden ? { display: "none" } : {}}>
+    <div className={styles.container} style={props.hidden ? { display: 'none' } : {}}>
       <div className={styles.controlBar}>
         {/* TODO: move to ControlBar.tsx */}
         <div className={styles.controlsGroup}>
@@ -118,7 +120,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             <Icon10Right width={22} height={22} />
           </a>
           <ReactSlider
-            className={classNames(styles.horizontalSlider, playerPath ? "" : styles.disabled)}
+            className={classNames(styles.horizontalSlider, playerPath ? '' : styles.disabled)}
             thumbClassName={styles.thumb}
             trackClassName={styles.track}
             min={0}
@@ -141,7 +143,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           <Button onClick={() => setTracksModalOpen(true)}>
             <span>
               <IconSubtitle />
-              Track: English
+              {currentTrack ? `Track: ${currentTrack.name}` : 'Tracks'}
             </span>
           </Button>
 
@@ -151,7 +153,7 @@ const Editor: React.FC<Props> = (props: Props) => {
               Select Video
             </span>
             <input
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
               type="file"
               ref={pickerRef}
               onChange={handlePickerChange}
@@ -186,7 +188,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           onStopResize={handleElementResize}
         >
           <div className={styles.pane}>
-            <p style={{ textAlign: "center" }}>Timeline</p>
+            <p style={{ textAlign: 'center' }}>Timeline</p>
           </div>
         </ReflexElement>
         <ReflexSplitter />
@@ -195,7 +197,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           flex={editorElementSizes[EditorElementKeys.Timetable]}
           onStopResize={handleElementResize}
         >
-          <div className={styles.pane} style={{ overflowY: "auto" }}>
+          <div className={styles.pane} style={{ overflowY: 'auto' }}>
             <Timetable handleSeek={handleSeek} />
           </div>
         </ReflexElement>

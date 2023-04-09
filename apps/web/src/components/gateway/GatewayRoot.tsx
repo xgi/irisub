@@ -84,9 +84,16 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
     if (userId !== null) {
       init();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, currentProjectId]);
 
-  return gatewayConnected ? <>{props.children}</> : <LoadingContainer />;
+  return gatewayConnected ? (
+    <>{props.children}</>
+  ) : (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <LoadingContainer />
+    </div>
+  );
 };
 
 export default GatewayRoot;

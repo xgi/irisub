@@ -11,8 +11,12 @@ const Button: React.FC<Props> = (props: Props) => {
 
   return (
     <button
-      className={classNames(styles.button, props.accent ? styles.accent : '')}
       {...customProps}
+      className={classNames(
+        styles.button,
+        props.accent ? styles.accent : '',
+        props.className || ''
+      )}
     />
   );
 };
