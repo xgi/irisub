@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import admin from 'firebase-admin';
 import { handleSessionCookieAuth } from './middleware/auth_middleware';
 import { Gateway, Irisub } from '@irisub/shared';
-import { db } from './db/database';
+import { db } from './db/database.server';
 import { initializeFirebase } from './firebase';
 
 const app = express();

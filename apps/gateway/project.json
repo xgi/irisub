@@ -33,6 +33,7 @@
       "configurations": {
         "development": {},
         "production": {
+          "bundle": true,
           "esbuildOptions": {
             "sourcemap": false,
             "outExtension": {
@@ -104,6 +105,12 @@
           "codeCoverage": true
         }
       }
+    },
+    "docker-build": {
+      "dependsOn": [
+        "build"
+      ],
+      "command": "docker build -f apps/gateway/Dockerfile . -t gateway --label \"runnumber=${GITHUB_RUN_ID}\""
     }
   },
   "tags": []
