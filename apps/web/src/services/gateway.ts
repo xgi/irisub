@@ -4,6 +4,17 @@ const BASE_URL = '//localhost:3123';
 
 type EventHandler = (event: Gateway.Event) => void;
 
+class GatewayResponseError extends Error {
+  code: number;
+
+  constructor(msg: string, code: number) {
+    super(msg);
+    Object.setPrototypeOf(this, GatewayResponseError.prototype);
+
+    this.code = code;
+  }
+}
+
 class GatewayConn {
   eventSource: EventSource | null = null;
   eventSourceClientId: string | null = null;
@@ -64,7 +75,10 @@ class GatewayConn {
         'gateway-event-source-client-id': this.eventSourceClientId || '',
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+        return res.json();
+      })
       .then((data) => data.projects);
   }
 
@@ -76,7 +90,10 @@ class GatewayConn {
         'gateway-event-source-client-id': this.eventSourceClientId || '',
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+        return res.json();
+      })
       .then((data) => data.tracks);
   }
 
@@ -88,7 +105,10 @@ class GatewayConn {
         'gateway-event-source-client-id': this.eventSourceClientId || '',
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+        return res.json();
+      })
       .then((data) => data.cues);
   }
 
@@ -100,7 +120,10 @@ class GatewayConn {
         'gateway-event-source-client-id': this.eventSourceClientId || '',
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+        return res.json();
+      })
       .then((data) => data.project);
   }
 
@@ -112,7 +135,10 @@ class GatewayConn {
         'gateway-event-source-client-id': this.eventSourceClientId || '',
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+        return res.json();
+      })
       .then((data) => data.track);
   }
 

@@ -1,14 +1,13 @@
-import { AtomEffect } from "recoil";
-import { gateway } from "../services/gateway";
-import { Gateway, Irisub } from "@irisub/shared";
-import { shallowEqual } from "../util/comparison";
+import { AtomEffect } from 'recoil';
+import { gateway } from '../services/gateway';
+import { Gateway, Irisub } from '@irisub/shared';
+import { shallowEqual } from '../util/comparison';
 import {
   currentCueListState,
   currentProjectIdState,
-  currentProjectState,
   currentTrackIdState,
   currentTrackListState,
-} from "./states";
+} from './states';
 
 export function localStorageEffect<T>(storeKey: string): AtomEffect<T> {
   return ({ setSelf, onSet }) => {
@@ -27,7 +26,7 @@ export function localStorageEffect<T>(storeKey: string): AtomEffect<T> {
 
 export function syncCueListEffect(): AtomEffect<Irisub.Cue[]> {
   return ({ setSelf, onSet, trigger, getLoadable }) => {
-    if (trigger === "get") {
+    if (trigger === 'get') {
       const projectId = getLoadable(currentProjectIdState).getValue();
       const trackId = getLoadable(currentTrackIdState).getValue();
 
@@ -57,7 +56,7 @@ export function syncCueListEffect(): AtomEffect<Irisub.Cue[]> {
         gateway.upsertCues(projectId, trackId, modifiedCues);
       } else {
         console.log(`projectId: ${projectId} trackId: ${trackId}`);
-        throw "Tried to upsert cues, but projectId or trackId was null";
+        throw Error('Tried to upsert cues, but projectId or trackId was null');
       }
     });
 
@@ -83,7 +82,7 @@ export function syncCueListEffect(): AtomEffect<Irisub.Cue[]> {
 
 export function syncProjectEffect(): AtomEffect<Irisub.Project | null> {
   return ({ setSelf, onSet, trigger, getLoadable }) => {
-    if (trigger === "get") {
+    if (trigger === 'get') {
       const projectId = getLoadable(currentProjectIdState).getValue();
       if (projectId) {
         gateway.getProject(projectId).then((project) => {
@@ -109,7 +108,7 @@ export function syncProjectEffect(): AtomEffect<Irisub.Project | null> {
 
 export function syncTrackListEffect(): AtomEffect<Irisub.Track[] | null> {
   return ({ setSelf, onSet, trigger, getLoadable }) => {
-    if (trigger === "get") {
+    if (trigger === 'get') {
       const projectId = getLoadable(currentProjectIdState).getValue();
       const trackId = getLoadable(currentTrackIdState).getValue();
       if (projectId && trackId) {
