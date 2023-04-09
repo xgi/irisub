@@ -36,6 +36,9 @@
           "bundle": true,
           "esbuildOptions": {
             "sourcemap": false,
+            "external": [
+              "pg-native"
+            ],
             "outExtension": {
               ".js": ".js"
             }

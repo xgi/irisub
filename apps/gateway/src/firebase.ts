@@ -1,4 +1,4 @@
-import admin, { ServiceAccount } from "firebase-admin";
+import admin, { ServiceAccount } from 'firebase-admin';
 
 const {
   GOOGLE_SERVICE_ACCOUNT_PROJECT_ID,
@@ -14,7 +14,7 @@ if (
 ) {
   serviceAccount = {
     projectId: process.env.GOOGLE_SERVICE_ACCOUNT_PROJECT_ID,
-    privateKey: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/gm, "\n"),
+    privateKey: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/gm, '\n'),
     clientEmail: process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL,
   };
 }
@@ -25,6 +25,6 @@ export const initializeFirebase = () => {
       ? {
           credential: admin.credential.cert(serviceAccount),
         }
-      : undefined,
+      : undefined
   );
 };
