@@ -23,7 +23,7 @@ export interface CueTable {
   track_id: string;
 }
 
-export interface CollaborationTable {
+export interface CollaboratorTable {
   user_id: string;
   project_id: string;
 }

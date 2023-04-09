@@ -60,13 +60,13 @@ const checkProjectPermission = async (
   if (project === undefined) return { permission: 'doesnotexist' };
   if (project.owner_user_id === userId) return { permission: 'owner', project: project };
 
-  const collaboration = await db
-    .selectFrom('collaboration')
+  const collaborator = await db
+    .selectFrom('collaborator')
     .where('project_id', '=', projectId)
     .where('user_id', '=', userId)
     .executeTakeFirst();
 
-  if (collaboration === undefined) return { permission: 'unauthorized', project: project };
+  if (collaborator === undefined) return { permission: 'unauthorized', project: project };
   return { permission: 'collaborator', project: project };
 };
 
@@ -136,11 +136,11 @@ app.get('/events', async (req, res) => {
 app.get('/projects', async (req, res) => {
   const joinedProjectIds = (
     await db
-      .selectFrom('collaboration')
+      .selectFrom('collaborator')
       .where('user_id', '=', res.locals.uid)
       .select('project_id')
       .execute()
-  ).map((collaboration) => collaboration.project_id);
+  ).map((collaborator) => collaborator.project_id);
 
   const projects: Irisub.Project[] = await db
     .selectFrom('project')
@@ -281,6 +281,7 @@ app.post('/projects/:projectId', async (req, res) => {
     });
   }
 
+  res.send({ project: newProject });
   res.end();
 });
 
@@ -327,6 +328,7 @@ app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
     });
   }
 
+  res.send({ track: newTrack });
   res.end();
 });
 

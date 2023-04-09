@@ -33,7 +33,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 
   await db.schema
-    .createTable('collaboration')
+    .createTable('collaborator')
     .addColumn('user_id', 'varchar', (col) => col.notNull())
     .addColumn('project_id', 'varchar', (col) =>
       col.references('project.id').onDelete('cascade').notNull()
@@ -46,8 +46,8 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema.createIndex('cue_track_id_index').on('cue').column('track_id').execute();
 
   await db.schema
-    .createIndex('collaboration_project_id_index')
-    .on('collaboration')
+    .createIndex('collaborator_project_id_index')
+    .on('collaborator')
     .column('project_id')
     .execute();
 }
@@ -56,5 +56,5 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable('project').execute();
   await db.schema.dropTable('track').execute();
   await db.schema.dropTable('cue').execute();
-  await db.schema.dropTable('collaboration').execute();
+  await db.schema.dropTable('collaborator').execute();
 }
