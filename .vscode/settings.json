@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.packageManager": "pnpm",
+  "eslint.validate": [
+    "vue",
+    "html",
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact"
+  ]
+}

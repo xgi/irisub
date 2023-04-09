@@ -1,0 +1,22 @@
+FROM node:18-alpine
+WORKDIR /srv
+# ENV HOME=/home/node
+EXPOSE 4000
+EXPOSE 4400
+EXPOSE 4500
+EXPOSE 5000
+EXPOSE 5001
+EXPOSE 8080
+EXPOSE 8085
+EXPOSE 9000
+EXPOSE 9005
+EXPOSE 9099
+EXPOSE 9199
+RUN apk --no-cache add openjdk11-jre bash && \
+  yarn global add firebase-tools@latest && \
+  yarn cache clean && \
+  firebase -V && \
+  java -version
+COPY firebase.json firebase.json
+COPY .firebaserc .firebaserc
+CMD firebase emulators:start

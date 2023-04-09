@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+
+  firebase-emu:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.firebase
+    ports:
+      - 4000:4000
+      - 4400:4400
+      - 4500:4500
+      - 9099:9099
+
+volumes:
+  postgres-data:
