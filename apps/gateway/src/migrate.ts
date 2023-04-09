@@ -9,6 +9,8 @@ class CustomMigrationProvider implements MigrationProvider {
 }
 
 export async function migrateToLatest() {
+  console.log('Starting migrateToLatest...');
+
   const migrator = new Migrator({
     db,
     provider: new CustomMigrationProvider(),
@@ -30,4 +32,7 @@ export async function migrateToLatest() {
     console.error(error);
     process.exit(1);
   }
+
+  console.log('migrateToLatest complete');
+  process.exit(0);
 }

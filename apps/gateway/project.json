@@ -50,6 +50,8 @@
       "executor": "@nrwl/js:node",
       "defaultConfiguration": "development",
       "options": {
+        "inspect": false,
+        "watch": false,
         "buildTarget": "gateway:build",
         "args": [
           "--migrate-db-only"
