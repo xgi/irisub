@@ -5,6 +5,7 @@ import styles from '../../styles/components/Timetable.module.scss';
 import { nanoid } from 'nanoid';
 import { Irisub } from '@irisub/shared';
 import CueRow from './CueRow';
+import LoadingContainer from '../LoadingContainer';
 
 type Props = {
   handleSeek: (value: number) => void;
@@ -96,27 +97,32 @@ const Timetable: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div style={{ width: '100%' }}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th />
-            <th>#</th>
-            <th style={{ whiteSpace: 'nowrap' }}>Start</th>
-            <th>End</th>
-            <th title="Characters Per Second">CPS</th>
-            <th>Style</th>
-            <th>Actor</th>
-            <th style={{ textAlign: 'left', paddingLeft: '6px' }}>Text</th>
-          </tr>
-        </thead>
-        <tbody>
-          {renderRows()}
-          <tr className={styles.add} onClick={() => createNewCue()}>
-            <td colSpan={8}>+++</td>
-          </tr>
-        </tbody>
-      </table>
+    <div style={{ width: '100%', height: '100%' }}>
+      {currentCueList === null ? (
+        <LoadingContainer />
+      ) : (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th />
+              <th>#</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Start</th>
+              <th>End</th>
+              <th title="Characters Per Second">CPS</th>
+              <th>Style</th>
+              <th>Actor</th>
+              <th style={{ textAlign: 'left', paddingLeft: '6px' }}>Text</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {renderRows()}
+            <tr className={styles.add} onClick={() => createNewCue()}>
+              <td colSpan={8}>+++</td>
+            </tr>
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

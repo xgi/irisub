@@ -1,13 +1,13 @@
-import Modal from "./Modal";
-import { useRecoilState } from "recoil";
-import { currentTrackIdState, currentTrackListState } from "../store/states";
-import { IconDuplicate, IconTrash, IconX } from "./Icons";
-import styles from "../styles/components/TracksModal.module.scss";
-import { useEffect } from "react";
-import { tracksModalOpenState } from "../store/modals";
-import { Irisub } from "@irisub/shared";
-import { classNames } from "../util/layout";
-import ReactTooltip from "react-tooltip";
+import Modal from './Modal';
+import { useRecoilState } from 'recoil';
+import { currentCueListState, currentTrackIdState, currentTrackListState } from '../store/states';
+import { IconDuplicate, IconTrash, IconX } from './Icons';
+import styles from '../styles/components/TracksModal.module.scss';
+import { useEffect } from 'react';
+import { tracksModalOpenState } from '../store/modals';
+import { Irisub } from '@irisub/shared';
+import { classNames } from '../util/layout';
+import ReactTooltip from 'react-tooltip';
 
 type Props = {
   onClose?: () => void;
@@ -16,6 +16,7 @@ type Props = {
 const TracksModal: React.FC<Props> = (props: Props) => {
   const [tracksModalOpen, setTracksModalOpen] = useRecoilState(tracksModalOpenState);
   const [currentTrackList, setCurrentTrackList] = useRecoilState(currentTrackListState);
+  const [currentCueList, setCurrentCueList] = useRecoilState(currentCueListState);
   const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ const TracksModal: React.FC<Props> = (props: Props) => {
     if (trackId === currentTrackId) return;
 
     setCurrentTrackId(trackId);
+    setCurrentCueList(null);
     // setCurrentEventList(null);
   };
 
@@ -54,12 +56,12 @@ const TracksModal: React.FC<Props> = (props: Props) => {
     return (
       <div
         key={track.id}
-        className={classNames(styles.track, track.id === currentTrackId ? styles.active : "")}
+        className={classNames(styles.track, track.id === currentTrackId ? styles.active : '')}
         onClick={() => changeTrack(track.id)}
       >
         <button>
           <span>
-            {track.id} - {track.name || "Unnamed track"} - {track.language || "No language"}
+            {track.id} - {track.name || 'Unnamed track'} - {track.language || 'No language'}
           </span>
         </button>
         <div className={styles.actions}>

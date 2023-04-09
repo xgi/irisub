@@ -7,14 +7,13 @@ import { useRecoilValue } from 'recoil';
 import Base from './components/Base';
 
 import { useEffect } from 'react';
-import { currentCueListState, currentProjectState, currentTrackListState } from './store/states';
+import { currentProjectState, currentTrackListState } from './store/states';
 import { themeState, accentState } from './store/theme';
-import LoadingPage from './components/LoadingPage';
+import LoadingContainer from './components/LoadingContainer';
 
 function App() {
   const currentProject = useRecoilValue(currentProjectState);
   const currentTrackList = useRecoilValue(currentTrackListState);
-  const currentCueList = useRecoilValue(currentCueListState);
   const theme = useRecoilValue(themeState);
   const accent = useRecoilValue(accentState);
 
@@ -26,8 +25,10 @@ function App() {
     document.documentElement.setAttribute('data-accent', accent);
   }, [accent]);
 
-  return currentProject === null || currentTrackList === null || currentCueList === null ? (
-    <LoadingPage />
+  return currentProject === null || currentTrackList === null ? (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <LoadingContainer />
+    </div>
   ) : (
     <Base />
   );

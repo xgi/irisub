@@ -1,6 +1,6 @@
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from 'react';
 import {
   EmailAuthProvider,
   getAuth,
@@ -8,11 +8,11 @@ import {
   linkWithCredential,
   onAuthStateChanged,
   signInAnonymously,
-  signInWithCredential
-} from "firebase/auth";
-import { currentProjectIdState, currentTrackIdState, userIdState } from "../../store/states";
-import LoadingPage from "../LoadingPage";
-import { gateway } from "../../services/gateway";
+  signInWithCredential,
+} from 'firebase/auth';
+import { currentProjectIdState, currentTrackIdState, userIdState } from '../../store/states';
+import LoadingContainer from '../LoadingContainer';
+import { gateway } from '../../services/gateway';
 
 type Props = {
   children?: ReactNode;
@@ -25,9 +25,9 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
   const setCurrentTrackId = useSetRecoilState(currentTrackIdState);
 
   const handleEmailLogin = () => {
-    let email = window.localStorage.getItem("emailForSignIn");
+    let email = window.localStorage.getItem('emailForSignIn');
     if (!email) {
-      email = window.prompt("Please provide your email for confirmation");
+      email = window.prompt('Please provide your email for confirmation');
       console.log(`got email: ${email}`);
       if (!email) return;
     }
@@ -39,11 +39,11 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
 
     linkWithCredential(currentUser, credential)
       .then((result) => {
-        window.localStorage.removeItem("emailForSignIn");
+        window.localStorage.removeItem('emailForSignIn');
         // window.location.href = "google.com/good";
       })
       .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
+        if (error.code === 'auth/email-already-in-use') {
           // TODO: the anonymous user will be lost -- should prompt that they will lose their
           // current project, or migrate it here
 
@@ -54,13 +54,13 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
         // window.location.href = "google.com/bad";
       })
       .finally(() => {
-        window.history.pushState({}, document.title, "/");
+        window.history.pushState({}, document.title, '/');
       });
   };
 
   useEffect(() => {
     onAuthStateChanged(getAuth(), (user) => {
-      console.log(`auth state changed, now: ${user ? user.uid : "null"}`);
+      console.log(`auth state changed, now: ${user ? user.uid : 'null'}`);
 
       setAuthenticated(false);
       setUserId(user ? user.uid : null);
@@ -94,7 +94,7 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
     });
   }, []);
 
-  return authenticated ? <>{props.children}</> : <LoadingPage />;
+  return authenticated ? <>{props.children}</> : <LoadingContainer />;
 };
 
 export default AuthRoot;

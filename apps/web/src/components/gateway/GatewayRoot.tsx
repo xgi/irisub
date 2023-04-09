@@ -7,7 +7,7 @@ import {
   gatewayConnectedState,
   userIdState,
 } from '../../store/states';
-import LoadingPage from '../LoadingPage';
+import LoadingContainer from '../LoadingContainer';
 import { gateway } from '../../services/gateway';
 import { nanoid } from 'nanoid';
 import { Irisub } from '@irisub/shared';
@@ -86,7 +86,7 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
     }
   }, [userId, currentProjectId]);
 
-  return gatewayConnected ? <>{props.children}</> : <LoadingPage />;
+  return gatewayConnected ? <>{props.children}</> : <LoadingContainer />;
 };
 
 export default GatewayRoot;
