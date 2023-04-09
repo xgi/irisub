@@ -113,7 +113,7 @@
       "dependsOn": [
         "build"
       ],
-      "command": "docker build -f apps/gateway/Dockerfile . -t gateway --label \"runnumber=${GITHUB_RUN_ID}\""
+      "command": "docker build -f apps/gateway/Dockerfile . -t irisub-gateway --label \"runnumber=${GITHUB_RUN_ID}\""
     }
   },
   "tags": []
