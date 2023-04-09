@@ -1,14 +1,14 @@
-import { Irisub } from "@irisub/shared";
-import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { currentCueListState, editingCueIdState, editingCueState } from "../../store/states";
-import styles from "../../styles/components/CueTextInput.module.scss";
-import { useDebouncedValue } from "../../util/hooks";
-import { classNames } from "../../util/layout";
-import TimeInput from "../TimeInput";
-import CueTextInput from "./CueTextInput";
-import CueStatusCell from "./CueStatusCell";
-import { shallowEqual } from "../../util/comparison";
+import { Irisub } from '@irisub/shared';
+import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { currentCueListState, editingCueIdState, editingCueState } from '../../store/states';
+import styles from '../../styles/components/CueTextInput.module.scss';
+import { useDebouncedValue } from '../../util/hooks';
+import { classNames } from '../../util/layout';
+import TimeInput from '../TimeInput';
+import CueTextInput from './CueTextInput';
+import CueStatusCell from './CueStatusCell';
+import { shallowEqual } from '../../util/comparison';
 
 type Props = {
   index: number;
@@ -31,7 +31,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (debounced !== props.cue) {
-      const newCueList = [...currentCueList];
+      const newCueList = currentCueList ? [...currentCueList] : [];
       const indexToModify = newCueList.findIndex((cue) => cue.id === debounced.id);
 
       if (indexToModify !== -1) {
@@ -41,7 +41,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
         }
       } else {
         console.error(
-          `Attempted to modify cue, but could not find existing with ID: ${debounced.id}`,
+          `Attempted to modify cue, but could not find existing with ID: ${debounced.id}`
         );
       }
     }
@@ -60,18 +60,18 @@ const CueRow: React.FC<Props> = (props: Props) => {
   return (
     <tr
       key={props.cue.id}
-      className={classNames(editingCueId === props.cue.id ? styles.editing : "")}
+      className={classNames(editingCueId === props.cue.id ? styles.editing : '')}
       onClick={() => setEditingCueId(props.cue.id)}
     >
       <CueStatusCell cue={props.cue} handleSeek={props.handleSeek} />
-      <td style={{ textAlign: "right" }}>{props.index + 1}</td>
+      <td style={{ textAlign: 'right' }}>{props.index + 1}</td>
       <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
         <TimeInput
           id={`timetable-input-starttime-${props.cue.id}`}
           className={styles.input}
           tabIndex={props.index + 1}
           data-index={props.index}
-          style={{ minWidth: "8em", textAlign: "center" }}
+          style={{ minWidth: '8em', textAlign: 'center' }}
           valueMs={value.start_ms}
           callback={(newStartMs: number) => {
             const newEndMs = value.end_ms < newStartMs ? newStartMs : value.end_ms;
@@ -88,7 +88,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
           className={styles.input}
           tabIndex={props.index + 1}
           data-index={props.index}
-          style={{ minWidth: "8em", textAlign: "center" }}
+          style={{ minWidth: '8em', textAlign: 'center' }}
           valueMs={value.end_ms}
           callback={(newEndMs: number) => {
             const newStartMs = value.start_ms > newEndMs ? newEndMs : value.start_ms;
@@ -102,7 +102,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
       <td>{getCPS(editingCueId === props.cue.id && editingCue ? editingCue : value)}</td>
       <td>Default</td>
       <td>Steve</td>
-      <td style={{ width: "100%" }}>
+      <td style={{ width: '100%' }}>
         <CueTextInput
           index={props.index}
           cue={props.cue}

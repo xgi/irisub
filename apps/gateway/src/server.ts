@@ -369,6 +369,7 @@ app.post('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
         console.log(`Sending message to client ${client.id} (uid ${client.uid})`);
         const gwEvent: Gateway.UpsertCuesEvent = {
           cues: req.body.cues,
+          trackId: trackId,
         };
         sendGatewayEvent(Gateway.EventName.UPSERT_CUES, gwEvent, client);
       }

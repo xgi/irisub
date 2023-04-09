@@ -1,51 +1,22 @@
-import React from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  currentProjectIdState,
-  currentCueListState,
-  gatewayConnectedState,
-  currentTrackIdState,
-} from "../../store/states";
-import styles from "../../styles/components/Timetable.module.scss";
-import { nanoid } from "nanoid";
-import { Irisub } from "@irisub/shared";
-import CueRow from "./CueRow";
+import React from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { currentCueListState, currentTrackIdState } from '../../store/states';
+import styles from '../../styles/components/Timetable.module.scss';
+import { nanoid } from 'nanoid';
+import { Irisub } from '@irisub/shared';
+import CueRow from './CueRow';
 
 type Props = {
   handleSeek: (value: number) => void;
 };
 
 const Timetable: React.FC<Props> = (props: Props) => {
-  const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
-  const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
-
+  const currentTrackId = useRecoilValue(currentTrackIdState);
   const [currentCueList, setCurrentCueList] = useRecoilState(currentCueListState);
 
-  // useEffect(() => {
-  //   if (eventList && eventList.length === 0) {
-  //     if (currentTrackIndex === 0 || currentTrackIndex === null) {
-  //       const introEvents = [
-  //         "Welcome to Irisub! This is the first subtitle.",
-  //         "To get started, click Select Video to choose a file or Youtube/Vimeo/etc. video.",
-  //         "You can resize the panels on this page by clicking and dragging the dividers.",
-  //         "Split text into multiple lines with Shift+Enter.\nThis is the second line.",
-  //       ];
+  const createNewCue = (text = '') => {
+    if (currentCueList === null) return;
 
-  //       setCurrentEventList(
-  //         introEvents.map((text, index) => ({
-  //           index: index,
-  //           text: text,
-  //           start_ms: index * 3000,
-  //           end_ms: (index + 1) * 3000,
-  //         }))
-  //       );
-  //     } else {
-  //       addEvent();
-  //     }
-  //   }
-  // }, [eventList]);
-
-  const createNewCue = (text = "") => {
     let startMs = 0;
     let endMs = 3000;
 
@@ -67,14 +38,16 @@ const Timetable: React.FC<Props> = (props: Props) => {
   };
 
   const handleInputMoveFocus = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (currentCueList === null) return;
+
     let delta = 0;
 
-    if (e.key === "ArrowUp") delta = -1;
-    if (e.key === "ArrowDown" || e.key === "Enter") delta = 1;
+    if (e.key === 'ArrowUp') delta = -1;
+    if (e.key === 'ArrowDown' || e.key === 'Enter') delta = 1;
 
     if (delta !== 0) {
       const inputId = e.currentTarget.id;
-      const splitIdx = inputId.lastIndexOf("-");
+      const splitIdx = inputId.lastIndexOf('-');
       const cueIdx = parseInt(inputId.substring(splitIdx + 1, inputId.length));
 
       const newCueIdx = cueIdx + delta;
@@ -92,7 +65,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
 
       if (newCueIdx >= 0 && newCueIdx < currentCueList.length) {
         _move();
-      } else if (newCueIdx >= currentCueList.length && e.key === "Enter") {
+      } else if (newCueIdx >= currentCueList.length && e.key === 'Enter') {
         createNewCue();
         setTimeout(() => _move(), 0);
       }
@@ -100,7 +73,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
   };
 
   const renderRows = () => {
-    if (currentTrackId === null) return;
+    if (currentTrackId === null || currentCueList === null) return;
 
     const sortedCueList = currentCueList
       .slice()
@@ -123,26 +96,21 @@ const Timetable: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: '100%' }}>
       <table className={styles.table}>
         <thead>
           <tr>
             <th />
             <th>#</th>
-            <th style={{ whiteSpace: "nowrap" }}>Start</th>
+            <th style={{ whiteSpace: 'nowrap' }}>Start</th>
             <th>End</th>
             <th title="Characters Per Second">CPS</th>
             <th>Style</th>
             <th>Actor</th>
-            <th style={{ textAlign: "left", paddingLeft: "6px" }}>Text</th>
+            <th style={{ textAlign: 'left', paddingLeft: '6px' }}>Text</th>
           </tr>
         </thead>
         <tbody>
-          {/* <tr className={styles.comment}>
-            <td colSpan={99}>
-              <span>something here</span>
-            </td>
-          </tr> */}
           {renderRows()}
           <tr className={styles.add} onClick={() => createNewCue()}>
             <td colSpan={8}>+++</td>

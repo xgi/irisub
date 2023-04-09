@@ -1,14 +1,14 @@
-import { Irisub } from "./irisub";
+import { Irisub } from './irisub';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Gateway {
   export enum EventName {
-    IDENTIFY_EVENT_SOURCE_CLIENT = "IDENTIFY_EVENT_SOURCE_CLIENT",
-    UPSERT_CUES = "UPSERT_CUES",
-    UPSERT_PROJECT = "UPSERT_PROJECT",
-    UPSERT_TRACK = "UPSERT_TRACK",
-    UPDATE_MODIFYING_CUE = "UPDATE_MODIFYING_CUE",
-    GET_AVAILABLE_PROJECTS = "GET_AVAILABLE_PROJECTS",
+    IDENTIFY_EVENT_SOURCE_CLIENT = 'IDENTIFY_EVENT_SOURCE_CLIENT',
+    UPSERT_CUES = 'UPSERT_CUES',
+    UPSERT_PROJECT = 'UPSERT_PROJECT',
+    UPSERT_TRACK = 'UPSERT_TRACK',
+    UPDATE_MODIFYING_CUE = 'UPDATE_MODIFYING_CUE',
+    GET_AVAILABLE_PROJECTS = 'GET_AVAILABLE_PROJECTS',
   }
 
   export type IdentifyEventSourceClientEvent = {
@@ -17,6 +17,7 @@ export namespace Gateway {
 
   export type UpsertCuesEvent = {
     cues: Irisub.Cue[];
+    trackId: string;
   };
 
   export type UpsertProjectEvent = {

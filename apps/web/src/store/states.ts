@@ -1,56 +1,56 @@
-import { Irisub } from "@irisub/shared";
-import { atom } from "recoil";
-import { NavPage, EditorPanelTab, EditorElementKeys } from "../util/constants";
+import { Irisub } from '@irisub/shared';
+import { atom } from 'recoil';
+import { NavPage, EditorPanelTab, EditorElementKeys } from '../util/constants';
 import {
   localStorageEffect,
   syncCueListEffect,
   syncProjectEffect,
   syncTrackListEffect,
-} from "./effects";
-import storeKeys from "../constants/storeKeys.json";
+} from './effects';
+import storeKeys from '../constants/storeKeys.json';
 
 export const userIdState = atom<string | null>({
-  key: "userIdState",
+  key: 'userIdState',
   default: null,
 });
 
 export const currentNavPageState = atom<NavPage>({
-  key: "currentNavPageState",
+  key: 'currentNavPageState',
   default: NavPage.Editor,
 });
 
 export const currentEditorPanelTabState = atom<EditorPanelTab>({
-  key: "currentEditorPanelTabState",
+  key: 'currentEditorPanelTabState',
   default: EditorPanelTab.Text,
 });
 
 export const currentProjectIdState = atom<string | null>({
-  key: "currentProjectIdState",
+  key: 'currentProjectIdState',
   default: null,
   effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_PROJECT_ID)],
 });
 
 export const currentTrackIdState = atom<string | null>({
-  key: "currentTrackIdState",
+  key: 'currentTrackIdState',
   default: null,
   effects: [localStorageEffect(storeKeys.WORKSPACE.CURRENT_TRACK_ID)],
 });
 
 export const currentProjectState = atom<Irisub.Project | null>({
-  key: "currentProjectState",
+  key: 'currentProjectState',
   default: null,
   effects: [syncProjectEffect()],
 });
 
 export const currentTrackListState = atom<Irisub.Track[] | null>({
-  key: "currentTrackListState",
+  key: 'currentTrackListState',
   default: null,
   effects: [syncTrackListEffect()],
 });
 
-export const currentCueListState = atom<Irisub.Cue[]>({
-  key: "currentCueListState",
-  default: [],
+export const currentCueListState = atom<Irisub.Cue[] | null>({
+  key: 'currentCueListState',
+  default: null,
   effects: [
     // localStorageEffect(storeKeys.WORKSPACE.CURRENT_PROJECT_ID)
     syncCueListEffect(),
@@ -58,17 +58,17 @@ export const currentCueListState = atom<Irisub.Cue[]>({
 });
 
 export const editingCueIdState = atom<string | null>({
-  key: "editingCueIdState",
+  key: 'editingCueIdState',
   default: null,
 });
 
 export const editingCueState = atom<Irisub.Cue | null>({
-  key: "editingCueState",
+  key: 'editingCueState',
   default: null,
 });
 
 export const editorElementSizesState = atom<{ [key: string]: number }>({
-  key: "editorElementSizesState",
+  key: 'editorElementSizesState',
   default: {
     [EditorElementKeys.Player]: 0.55,
     [EditorElementKeys.Timeline]: 0.125,
@@ -78,12 +78,12 @@ export const editorElementSizesState = atom<{ [key: string]: number }>({
 });
 
 export const editorShowMsState = atom<boolean>({
-  key: "editorShowMsState",
+  key: 'editorShowMsState',
   default: true,
   effects: [localStorageEffect(storeKeys.WORKSPACE.EDITOR_SHOW_MS)],
 });
 
 export const gatewayConnectedState = atom<boolean>({
-  key: "gatewayConnectedState",
+  key: 'gatewayConnectedState',
   default: false,
 });

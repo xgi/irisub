@@ -24,19 +24,26 @@ export function localStorageEffect<T>(storeKey: string): AtomEffect<T> {
   };
 }
 
-export function syncCueListEffect(): AtomEffect<Irisub.Cue[]> {
+export function syncCueListEffect(): AtomEffect<Irisub.Cue[] | null> {
   return ({ setSelf, onSet, trigger, getLoadable }) => {
-    if (trigger === 'get') {
+    const _load = () => {
       const projectId = getLoadable(currentProjectIdState).getValue();
       const trackId = getLoadable(currentTrackIdState).getValue();
 
-      console.log(`Initial load for cue list, with project: ${projectId} track: ${trackId}`);
+      console.log(`Cue list was null, retrieving from project: ${projectId} track: ${trackId}`);
       if (projectId && trackId) {
         gateway.getCues(projectId, trackId).then((cues) => setSelf(cues));
       }
-    }
+    };
+
+    if (trigger === 'get') _load();
 
     onSet((newCueList, oldCueList) => {
+      if (newCueList === null) {
+        _load();
+        return;
+      }
+
       const oldCueMap: { [key: string]: Irisub.Cue } = {};
       Object.values(oldCueList as Irisub.Cue[]).forEach((oldCue) => {
         oldCueMap[oldCue.id] = { ...oldCue };
@@ -61,8 +68,14 @@ export function syncCueListEffect(): AtomEffect<Irisub.Cue[]> {
     });
 
     const unsubscribe = gateway.subscribe(Gateway.EventName.UPSERT_CUES, (gwEvent) => {
-      const current = [...getLoadable(currentCueListState).getValue()];
-      const updatedCues = (gwEvent as Gateway.UpsertCuesEvent).cues;
+      const upsertEvent = gwEvent as Gateway.UpsertCuesEvent;
+
+      const currentTrackId = getLoadable(currentTrackIdState).getValue();
+      if (currentTrackId !== upsertEvent.trackId) return;
+
+      const currentCueList = getLoadable(currentCueListState).getValue();
+      const current = currentCueList ? [...currentCueList] : [];
+      const updatedCues = upsertEvent.cues;
 
       updatedCues.forEach((updatedCue) => {
         const originalCueIndex = current.findIndex((c) => c.id === updatedCue.id);
