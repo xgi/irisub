@@ -7,6 +7,8 @@ import { handleSessionCookieAuth } from './middleware/auth_middleware';
 import { Gateway, Irisub } from '@irisub/shared';
 import { db } from './db/database.server';
 import { initializeFirebase } from './firebase';
+import { ProjectTable } from './db/tables';
+import { Selectable } from 'kysely';
 
 const app = express();
 const port = 3123;
@@ -41,6 +43,33 @@ app.post('/sessionLogin', (req, res) => {
     );
 });
 
+/** Helpers */
+
+type ProjectPermission = 'owner' | 'collaborator' | 'doesnotexist' | 'unauthorized';
+
+const checkProjectPermission = async (
+  projectId: string,
+  userId: string
+): Promise<{ permission: ProjectPermission; project?: Selectable<ProjectTable> }> => {
+  const project = await db
+    .selectFrom('project')
+    .where('id', '=', projectId)
+    .selectAll()
+    .executeTakeFirst();
+
+  if (project === undefined) return { permission: 'doesnotexist' };
+  if (project.owner_user_id === userId) return { permission: 'owner', project: project };
+
+  const collaboration = await db
+    .selectFrom('collaboration')
+    .where('project_id', '=', projectId)
+    .where('user_id', '=', userId)
+    .executeTakeFirst();
+
+  if (collaboration === undefined) return { permission: 'unauthorized', project: project };
+  return { permission: 'collaborator', project: project };
+};
+
 /** Event source */
 
 type EventSourceClient = {
@@ -59,17 +88,22 @@ const sendGatewayEvent = (
   client.res.write(`event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`);
 };
 
-app.get('/events', (req, res) => {
+app.get('/events', async (req, res) => {
   const projectId = req.query['projectId'] as string;
   if (!projectId) {
     res.status(400).send('Project ID not included in request');
     return;
   }
 
-  // TODO: validate client has auth on project ID
-
-  console.log('handling events...');
-  console.log(req.query['projectId']);
+  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+  if (permission === 'doesnotexist') {
+    res.status(404).send('Project not found');
+    return;
+  }
+  if (permission === 'unauthorized') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
 
   const headers = {
     'Content-Type': 'text/event-stream',
@@ -100,25 +134,36 @@ app.get('/events', (req, res) => {
 /** REST API */
 
 app.get('/projects', async (req, res) => {
-  console.log(`Getting projects for user ${res.locals.uid}`);
+  const joinedProjectIds = (
+    await db
+      .selectFrom('collaboration')
+      .where('user_id', '=', res.locals.uid)
+      .select('project_id')
+      .execute()
+  ).map((collaboration) => collaboration.project_id);
 
-  const projects: Irisub.Project[] = await db.selectFrom('project').selectAll().execute();
+  const projects: Irisub.Project[] = await db
+    .selectFrom('project')
+    .where(({ or, cmpr }) =>
+      or([cmpr('id', 'in', joinedProjectIds), cmpr('owner_user_id', '=', res.locals.uid)])
+    )
+    .select('id')
+    .select('title')
+    .execute();
+
   res.send({ projects: projects });
 });
 
 app.get('/projects/:projectId', async (req, res) => {
   const { projectId } = req.params;
 
-  console.log(`Getting project ${projectId}`);
-
-  const project: Irisub.Project | undefined = await db
-    .selectFrom('project')
-    .where('id', '=', projectId)
-    .selectAll()
-    .executeTakeFirst();
-
-  if (project === undefined) {
+  const { permission, project } = await checkProjectPermission(projectId, res.locals.uid);
+  if (permission === 'doesnotexist') {
     res.status(404).send('Project not found');
+    return;
+  }
+  if (permission === 'unauthorized') {
+    res.status(401).send('Unauthorized');
     return;
   }
 
@@ -128,7 +173,15 @@ app.get('/projects/:projectId', async (req, res) => {
 app.get('/projects/:projectId/tracks', async (req, res) => {
   const { projectId } = req.params;
 
-  console.log(`Getting tracks for project ${projectId}`);
+  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+  if (permission === 'doesnotexist') {
+    res.status(404).send('Project not found');
+    return;
+  }
+  if (permission === 'unauthorized') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
 
   const tracks: Irisub.Track[] = await db
     .selectFrom('track')
@@ -142,7 +195,15 @@ app.get('/projects/:projectId/tracks', async (req, res) => {
 app.get('/projects/:projectId/tracks/:trackId', async (req, res) => {
   const { projectId, trackId } = req.params;
 
-  console.log(`Getting track ${trackId}`);
+  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+  if (permission === 'doesnotexist') {
+    res.status(404).send('Project not found');
+    return;
+  }
+  if (permission === 'unauthorized') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
 
   const track: Irisub.Track | undefined = await db
     .selectFrom('track')
@@ -162,7 +223,15 @@ app.get('/projects/:projectId/tracks/:trackId', async (req, res) => {
 app.get('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
   const { projectId, trackId } = req.params;
 
-  console.log(`Getting cues for project ${projectId} track ${trackId}`);
+  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+  if (permission === 'doesnotexist') {
+    res.status(404).send('Project not found');
+    return;
+  }
+  if (permission === 'unauthorized') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
 
   const cues: Irisub.Cue[] = await db
     .selectFrom('cue')
@@ -184,11 +253,15 @@ app.post('/projects/:projectId', async (req, res) => {
     return;
   }
 
-  console.log(`Upserting project with ID ${projectId}`);
+  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+  if (permission === 'unauthorized') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
 
   await db
     .insertInto('project')
-    .values(newProject)
+    .values({ ...newProject, owner_user_id: res.locals.uid })
     .onConflict((oc) =>
       oc.column('id').doUpdateSet((eb) => ({
         title: eb.ref('excluded.title'),
@@ -221,7 +294,15 @@ app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
     return;
   }
 
-  console.log(`Upserting track with ID ${trackId} on project ${projectId}`);
+  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+  if (permission === 'doesnotexist') {
+    res.status(404).send('Project not found');
+    return;
+  }
+  if (permission === 'unauthorized') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
 
   await db
     .insertInto('track')
@@ -253,7 +334,15 @@ app.post('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
   const eventSourceClientId = req.headers['gateway-event-source-client-id'];
   const { projectId, trackId } = req.params;
 
-  console.log(`Posting cues for project: ${projectId} track: ${trackId}`);
+  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+  if (permission === 'doesnotexist') {
+    res.status(404).send('Project not found');
+    return;
+  }
+  if (permission === 'unauthorized') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
 
   const newCues: Irisub.Cue[] = req.body.cues;
   await db

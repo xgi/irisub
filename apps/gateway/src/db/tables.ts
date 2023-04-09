@@ -1,6 +1,8 @@
 export interface ProjectTable {
   id: string;
   title: string;
+
+  owner_user_id: string;
 }
 
 export interface TrackTable {
@@ -19,4 +21,9 @@ export interface CueTable {
 
   project_id: string;
   track_id: string;
+}
+
+export interface CollaborationTable {
+  user_id: string;
+  project_id: string;
 }
