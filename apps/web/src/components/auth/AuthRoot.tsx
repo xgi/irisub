@@ -94,7 +94,13 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
     });
   }, []);
 
-  return authenticated ? <>{props.children}</> : <LoadingContainer />;
+  return authenticated ? (
+    <>{props.children}</>
+  ) : (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <LoadingContainer />
+    </div>
+  );
 };
 
 export default AuthRoot;

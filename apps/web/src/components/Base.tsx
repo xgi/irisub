@@ -9,6 +9,7 @@ import { NavPage } from '../util/constants';
 import TracksModal from './TracksModal';
 import Settings from './settings/Settings';
 import ImportExportModal from './ImportExportModal';
+import Projects from './projects/Projects';
 
 type Props = unknown;
 
@@ -31,9 +32,7 @@ const Base: React.FC<Props> = (props: Props) => {
             is generated.
           */}
           <Editor hidden={currentNavPage !== NavPage.Editor} />
-          <div style={currentNavPage !== NavPage.Projects ? { display: 'none' } : {}}>
-            projects page
-          </div>
+          <Projects hidden={currentNavPage !== NavPage.Projects} />
           <Settings hidden={currentNavPage !== NavPage.Settings} />
         </div>
         <Footer />

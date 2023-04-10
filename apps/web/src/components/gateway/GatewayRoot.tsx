@@ -1,7 +1,8 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { ReactNode, useEffect } from 'react';
 import {
+  currentNavPageState,
   currentProjectIdState,
   currentTrackIdState,
   gatewayConnectedState,
@@ -11,6 +12,7 @@ import LoadingContainer from '../LoadingContainer';
 import { gateway } from '../../services/gateway';
 import { nanoid } from 'nanoid';
 import { Irisub } from '@irisub/shared';
+import { NavPage } from '../../util/constants';
 
 type Props = {
   children?: ReactNode;
@@ -20,8 +22,8 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
   const userId = useRecoilValue(userIdState);
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
-
   const [gatewayConnected, setGatewayConnected] = useRecoilState(gatewayConnectedState);
+  const setCurrentNavPage = useSetRecoilState(currentNavPageState);
 
   const createNewProject = async () => {
     console.log('Creating new project...');
@@ -84,10 +86,13 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
     if (userId !== null) {
       init();
     }
+
+    setCurrentNavPage(NavPage.Editor);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, currentProjectId]);
 
   return gatewayConnected ? (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
     <>{props.children}</>
   ) : (
     <div style={{ width: '100vw', height: '100vh' }}>

@@ -142,16 +142,26 @@ app.get('/projects', async (req, res) => {
       .execute()
   ).map((collaborator) => collaborator.project_id);
 
-  const projects: Irisub.Project[] = await db
+  const owned: Irisub.Project[] = await db
     .selectFrom('project')
-    .where(({ or, cmpr }) =>
-      or([cmpr('id', 'in', joinedProjectIds), cmpr('owner_user_id', '=', res.locals.uid)])
-    )
+    .where('owner_user_id', '=', res.locals.uid)
     .select('id')
     .select('title')
     .execute();
 
-  res.send({ projects: projects });
+  console.log(joinedProjectIds);
+
+  const joined: Irisub.Project[] =
+    joinedProjectIds.length > 0
+      ? await db
+          .selectFrom('project')
+          .where('id', 'in', joinedProjectIds)
+          .select('id')
+          .select('title')
+          .execute()
+      : [];
+
+  res.send({ owned: owned, joined: joined });
 });
 
 app.get('/projects/:projectId', async (req, res) => {
