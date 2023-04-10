@@ -17,6 +17,7 @@ import FileDrop from './FileDrop';
 import {
   Icon10Left,
   Icon10Right,
+  IconArrowsRightLeft,
   IconFileUpload,
   IconPause,
   IconPlay,
@@ -27,7 +28,7 @@ import { classNames } from '../util/layout';
 import EditorPanel from './EditorPanel';
 import { EditorElementKeys } from '../util/constants';
 import Button from './Button';
-import { tracksModalOpenState } from '../store/modals';
+import { importExportModalOpenState, tracksModalOpenState } from '../store/modals';
 import { currentTrackSelector } from '../store/selectors';
 
 type Props = {
@@ -45,14 +46,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const playerRef = useRef<ReactPlayer | null>(null);
   const pickerRef = useRef<HTMLInputElement | null>(null);
   const setTracksModalOpen = useSetRecoilState(tracksModalOpenState);
-
-  // useEffect(() => {
-  //   if (database) {
-  //     database
-  //       .getAll(DB_STORES.EVENT)
-  //       .then((events) => setCurrentEventList(events.sort((a, b) => a.index - b.index)));
-  //   }
-  // }, [database]);
+  const setImportExportModalOpen = useSetRecoilState(importExportModalOpenState);
 
   const handleElementResize = (event: HandlerProps) => {
     const { name, flex } = event.component.props;
@@ -158,6 +152,13 @@ const Editor: React.FC<Props> = (props: Props) => {
               ref={pickerRef}
               onChange={handlePickerChange}
             />
+          </Button>
+
+          <Button onClick={() => setImportExportModalOpen(true)}>
+            <span>
+              <IconArrowsRightLeft />
+              Import / Export
+            </span>
           </Button>
         </div>
       </div>

@@ -8,6 +8,7 @@ import { currentNavPageState } from '../store/states';
 import { NavPage } from '../util/constants';
 import TracksModal from './TracksModal';
 import Settings from './settings/Settings';
+import ImportExportModal from './ImportExportModal';
 
 type Props = unknown;
 
@@ -17,6 +18,7 @@ const Base: React.FC<Props> = (props: Props) => {
   return (
     <div className={styles.container}>
       <TracksModal />
+      <ImportExportModal />
 
       <div className={styles.column}>
         <Header />
