@@ -1,4 +1,4 @@
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { useRecoilState } from 'recoil';
 import { currentEditorPanelTabState } from '../store/states';
 import styles from '../styles/components/EditorPanelSidebar.module.scss';
@@ -21,8 +21,8 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
               currentEditorPanelTab === EditorPanelTab.Text ? styles.active : ''
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Text)}
-            data-tip
-            data-for="tooltipText"
+            data-tooltip-id="tt-editor-panel-text"
+            data-tooltip-content="Edit Text"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -40,24 +40,14 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
               />
             </svg>
           </a>
-          <ReactTooltip
-            id="tooltipText"
-            className="tooltip"
-            effect="solid"
-            place="left"
-            arrowColor="transparent"
-          >
-            <span>Edit Text</span>
-          </ReactTooltip>
+          <Tooltip id="tt-editor-panel-text" className="tooltip" place="right" />
           <a
             className={classNames(
-              currentEditorPanelTab === EditorPanelTab.Styles
-                ? styles.active
-                : ''
+              currentEditorPanelTab === EditorPanelTab.Styles ? styles.active : ''
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Styles)}
-            data-tip
-            data-for="tooltipStyles"
+            data-tooltip-id="tt-editor-panel-styles"
+            data-tooltip-content="Styles"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -75,20 +65,10 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
               />
             </svg>
           </a>
-          <ReactTooltip
-            id="tooltipStyles"
-            className="tooltip"
-            effect="solid"
-            place="left"
-            arrowColor="transparent"
-          >
-            <span>Styles</span>
-          </ReactTooltip>
+          <Tooltip id="tt-editor-panel-styles" className="tooltip" place="right" />
           <a
             className={classNames(
-              currentEditorPanelTab === EditorPanelTab.Debug
-                ? styles.active
-                : ''
+              currentEditorPanelTab === EditorPanelTab.Debug ? styles.active : ''
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Debug)}
           >

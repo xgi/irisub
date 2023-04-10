@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil';
 import { currentNavPageState } from '../store/states';
 import { NavPage } from '../util/constants';
 import TracksModal from './TracksModal';
+import Settings from './settings/Settings';
 
 type Props = unknown;
 
@@ -28,20 +29,10 @@ const Base: React.FC<Props> = (props: Props) => {
             is generated.
           */}
           <Editor hidden={currentNavPage !== NavPage.Editor} />
-          <div
-            style={
-              currentNavPage !== NavPage.Projects ? { display: 'none' } : {}
-            }
-          >
+          <div style={currentNavPage !== NavPage.Projects ? { display: 'none' } : {}}>
             projects page
           </div>
-          <div
-            style={
-              currentNavPage !== NavPage.Settings ? { display: 'none' } : {}
-            }
-          >
-            settings page
-          </div>
+          <Settings hidden={currentNavPage !== NavPage.Settings} />
         </div>
         <Footer />
       </div>

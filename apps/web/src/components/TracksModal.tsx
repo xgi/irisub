@@ -13,7 +13,6 @@ import { useEffect } from 'react';
 import { tracksModalOpenState } from '../store/modals';
 import { Irisub } from '@irisub/shared';
 import { classNames } from '../util/layout';
-import ReactTooltip from 'react-tooltip';
 import { nanoid } from 'nanoid';
 import { gateway } from '../services/gateway';
 
@@ -61,9 +60,6 @@ const TracksModal: React.FC<Props> = (props: Props) => {
   };
 
   const renderTrack = (track: Irisub.Track) => {
-    const tooltipIdDelete = `tooltip-track-${track.id}-delete`;
-    const tooltipIdDuplicate = `tooltip-track-${track.id}-duplicate`;
-
     return (
       <div
         key={track.id}
@@ -76,28 +72,9 @@ const TracksModal: React.FC<Props> = (props: Props) => {
           </span>
         </button>
         <div className={styles.actions}>
-          <IconDuplicate width={20} height={20} data-tip data-for={tooltipIdDuplicate} />
-          <IconTrash width={20} height={20} data-tip data-for={tooltipIdDelete} />
+          <IconDuplicate width={20} height={20} />
+          <IconTrash width={20} height={20} />
         </div>
-
-        <ReactTooltip
-          id={tooltipIdDuplicate}
-          className="tooltip"
-          effect="solid"
-          place="right"
-          arrowColor="transparent"
-        >
-          <span>Duplicate</span>
-        </ReactTooltip>
-        <ReactTooltip
-          id={tooltipIdDelete}
-          className="tooltip"
-          effect="solid"
-          place="right"
-          arrowColor="transparent"
-        >
-          <span>Delete</span>
-        </ReactTooltip>
       </div>
     );
   };

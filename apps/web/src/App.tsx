@@ -1,3 +1,4 @@
+import 'react-tooltip/dist/react-tooltip.css';
 import './styles/global/colors.scss';
 import './styles/global/general.scss';
 import './styles/global/scrollbar.scss';

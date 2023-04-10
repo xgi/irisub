@@ -62,8 +62,8 @@ importers:
         specifier: ^2.0.4
         version: 2.0.4(react@18.2.0)
       react-tooltip:
-        specifier: ^4.5.1
-        version: 4.5.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^5.9.1
+        version: 5.9.1(react-dom@18.2.0)(react@18.2.0)
       react-use-websocket:
         specifier: ^4.3.1
         version: 4.3.1(react-dom@18.2.0)(react@18.2.0)
@@ -2596,6 +2596,16 @@ packages:
 
   /@firebase/webchannel-wrapper@0.9.0:
     resolution: {integrity: sha512-BpiZLBWdLFw+qFel9p3Zs1jD6QmH7Ii4aTDu6+vx8ShdidChZUXqDhYJly4ZjSgQh54miXbBgBrk0S+jTIh/Qg==}
+    dev: false
+
+  /@floating-ui/core@1.2.6:
+    resolution: {integrity: sha512-EvYTiXet5XqweYGClEmpu3BoxmsQ4hkj3QaYA6qEnigCWffTP3vNRwBReTdrwDwo7OoJ3wM8Uoe9Uk4n+d4hfg==}
+    dev: false
+
+  /@floating-ui/dom@1.2.3:
+    resolution: {integrity: sha512-lK9cZUrHSJLMVAdCvDqs6Ug8gr0wmqksYiaoj/bxj2gweRQkSuhg2/V6Jswz2KiQ0RAULbqw1oQDJIMpQ5GfGA==}
+    dependencies:
+      '@floating-ui/core': 1.2.6
     dev: false
 
   /@google-cloud/firestore@4.15.1:
@@ -5514,6 +5524,10 @@ packages:
   /cjs-module-lexer@1.2.2:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
     dev: true
+
+  /classnames@2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
+    dev: false
 
   /clean-stack@2.2.0:
     resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
@@ -11015,17 +11029,16 @@ packages:
       scheduler: 0.23.0
     dev: true
 
-  /react-tooltip@4.5.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-Zo+CSFUGXar1uV+bgXFFDe7VeS2iByeIp5rTgTcc2HqtuOS5D76QapejNNfx320MCY91TlhTQat36KGFTqgcvw==}
-    engines: {npm: '>=6.13'}
+  /react-tooltip@5.9.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-/lt6ZOr6MI2D/TqTq6Obd3/1LqQ10Ifxw90HLnH8reGoqQKMICe0QRyWhxjxMfRqjsH5TVQulb33ZbrjohZnuw==}
     peerDependencies:
-      react: '>=16.0.0'
-      react-dom: '>=16.0.0'
+      react: '>=16.14.0'
+      react-dom: '>=16.14.0'
     dependencies:
-      prop-types: 15.8.1
+      '@floating-ui/dom': 1.2.3
+      classnames: 2.3.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      uuid: 7.0.3
     dev: false
 
   /react-use-websocket@4.3.1(react-dom@18.2.0)(react@18.2.0):
@@ -12414,11 +12427,6 @@ packages:
   /utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
-
-  /uuid@7.0.3:
-    resolution: {integrity: sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==}
-    hasBin: true
-    dev: false
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}

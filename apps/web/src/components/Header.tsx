@@ -1,11 +1,7 @@
 import { getAuth } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import {
-  currentProjectIdState,
-  currentProjectState,
-  userIdState,
-} from '../store/states';
+import { currentProjectIdState, currentProjectState, userIdState } from '../store/states';
 import styles from '../styles/components/Header.module.scss';
 import InviteModal from './auth/InviteModal';
 import LoginModal from './auth/LoginModal';
@@ -15,15 +11,13 @@ import { IconCloud, IconInvite, IconPencil } from './Icons';
 type Props = unknown;
 
 const Header: React.FC<Props> = (props: Props) => {
-  const [currentProject, setCurrentProject] =
-    useRecoilState(currentProjectState);
+  const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const currentProjectId = useRecoilValue(currentProjectIdState);
   const userId = useRecoilValue(userIdState);
   const [editingProjectTitle, setEditingProjectTitle] = useState(false);
   const [tempProjectTitle, setTempProjectTitle] = useState('');
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [loginModalCallback, setLoginModalCallback] =
-    useState<() => void | undefined>();
+  const [loginModalCallback, setLoginModalCallback] = useState<() => void | undefined>();
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
   const updateProjectTitle = () => {
@@ -34,8 +28,7 @@ const Header: React.FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
-    if (editingProjectTitle && currentProject)
-      setTempProjectTitle(currentProject.title || '');
+    if (editingProjectTitle && currentProject) setTempProjectTitle(currentProject.title || '');
   }, [editingProjectTitle]);
 
   const renderProjectTitle = () => {
@@ -63,10 +56,7 @@ const Header: React.FC<Props> = (props: Props) => {
       );
     } else {
       return (
-        <span
-          onClick={() => setEditingProjectTitle(true)}
-          className={styles.project}
-        >
+        <span onClick={() => setEditingProjectTitle(true)} className={styles.project}>
           <span>{currentProject?.title || 'Untitled project'}</span>
           <IconPencil />
         </span>
@@ -76,10 +66,7 @@ const Header: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={styles.container}>
-      <InviteModal
-        isOpen={inviteModalOpen}
-        handleClose={() => setInviteModalOpen(false)}
-      />
+      <InviteModal isOpen={inviteModalOpen} handleClose={() => setInviteModalOpen(false)} />
       <LoginModal
         isOpen={loginModalOpen}
         handleClose={() => {

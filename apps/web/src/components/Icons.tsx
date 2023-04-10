@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 interface BaseIconProps extends React.SVGAttributes<SVGSVGElement> {
   children: React.ReactNode;
@@ -20,7 +20,7 @@ const Icon: React.FC<BaseIconProps> = (props: BaseIconProps) => {
 };
 
 export const IconStart: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -30,7 +30,7 @@ export const IconStart: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconDoubleArrowLeft: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -40,7 +40,7 @@ export const IconDoubleArrowLeft: React.FC<React.SVGAttributes<SVGSVGElement>> =
 };
 
 export const Icon10Left: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -58,7 +58,7 @@ export const Icon10Left: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const Icon10Right: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -74,7 +74,7 @@ export const Icon10Right: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconDoubleArrowRight: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -84,7 +84,7 @@ export const IconDoubleArrowRight: React.FC<React.SVGAttributes<SVGSVGElement>> 
 };
 
 export const IconPlay: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon
@@ -97,7 +97,7 @@ export const IconPlay: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconPause: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -107,7 +107,7 @@ export const IconPause: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconFileUpload: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -117,7 +117,7 @@ export const IconFileUpload: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconCloud: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -127,7 +127,7 @@ export const IconCloud: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconInvite: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -137,7 +137,7 @@ export const IconInvite: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconSubtitle: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -147,7 +147,7 @@ export const IconSubtitle: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconPencil: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -157,7 +157,7 @@ export const IconPencil: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconX: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon {...props}>
@@ -171,7 +171,7 @@ export const IconX: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconGoogle: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon viewBox="0 0 512 512" {...props}>
@@ -184,7 +184,7 @@ export const IconGoogle: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconMicrosoft: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon viewBox="0 0 512 512" {...props}>
@@ -197,7 +197,7 @@ export const IconMicrosoft: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconGitHub: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon viewBox="0 0 512 512" {...props}>
@@ -211,7 +211,7 @@ export const IconGitHub: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconEmail: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon viewBox="0 0 24 24" {...props}>
@@ -222,7 +222,7 @@ export const IconEmail: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconArrowLeft: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon viewBox="0 0 24 24" {...props}>
@@ -236,7 +236,7 @@ export const IconArrowLeft: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconTrash: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon viewBox="0 0 24 24" {...props}>
@@ -250,12 +250,42 @@ export const IconTrash: React.FC<React.SVGAttributes<SVGSVGElement>> = (
 };
 
 export const IconDuplicate: React.FC<React.SVGAttributes<SVGSVGElement>> = (
-  props: React.SVGAttributes<SVGSVGElement>,
+  props: React.SVGAttributes<SVGSVGElement>
 ) => {
   return (
     <Icon viewBox="0 0 24 24" {...props}>
       <path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 013.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0121 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 017.5 16.125V3.375z" />
       <path d="M15 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0017.25 7.5h-1.875A.375.375 0 0115 7.125V5.25zM4.875 6H6v10.125A3.375 3.375 0 009.375 19.5H16.5v1.125c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 013 20.625V7.875C3 6.839 3.84 6 4.875 6z" />
+    </Icon>
+  );
+};
+
+export const IconSun: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
+  return (
+    <Icon viewBox="0 0 24 24" {...props}>
+      <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" />
+    </Icon>
+  );
+};
+
+export const IconMoon: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
+  return (
+    <Icon viewBox="0 0 24 24" {...props}>
+      <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+    </Icon>
+  );
+};
+
+export const IconComputer: React.FC<React.SVGAttributes<SVGSVGElement>> = (
+  props: React.SVGAttributes<SVGSVGElement>
+) => {
+  return (
+    <Icon viewBox="0 0 24 24" {...props}>
+      <path d="M2.25 5.25a3 3 0 013-3h13.5a3 3 0 013 3V15a3 3 0 01-3 3h-3v.257c0 .597.237 1.17.659 1.591l.621.622a.75.75 0 01-.53 1.28h-9a.75.75 0 01-.53-1.28l.621-.622a2.25 2.25 0 00.659-1.59V18h-3a3 3 0 01-3-3V5.25zm1.5 0v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5z" />
     </Icon>
   );
 };
