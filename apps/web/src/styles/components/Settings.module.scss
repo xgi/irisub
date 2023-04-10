@@ -2,7 +2,8 @@
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 
   color: var(--secondary-light-color);
   background-color: var(--primary-color);
@@ -16,6 +17,10 @@
 
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    &:not(:first-child) {
+      border-top: 1px solid var(--divider-color);
+    }
 
     .left {
       grid-column: span 1 / span 1;
@@ -37,13 +42,14 @@
       }
 
       p {
+        font-weight: 600;
         margin-top: 0.5rem;
       }
 
       .optionsRow {
         display: flex;
 
-        > button {
+        button {
           cursor: pointer;
           padding: 0.3rem;
 

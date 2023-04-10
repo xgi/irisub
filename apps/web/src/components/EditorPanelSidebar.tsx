@@ -66,14 +66,6 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
             </svg>
           </a>
           <Tooltip id="tt-editor-panel-styles" className="tooltip" place="right" />
-          <a
-            className={classNames(
-              currentEditorPanelTab === EditorPanelTab.Debug ? styles.active : ''
-            )}
-            onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Debug)}
-          >
-            D
-          </a>
         </nav>
       </aside>
     </div>
