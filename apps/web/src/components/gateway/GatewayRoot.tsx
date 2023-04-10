@@ -25,6 +25,8 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
 
   const init = async () => {
     if (currentProjectId === null) {
+      // TODO: should try to open an existing one first instead
+
       gateway.setupNewProject().then(({ project, track }) => {
         setCurrentProjectId(project.id);
         setCurrentTrackId(track.id);

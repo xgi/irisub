@@ -8,8 +8,7 @@ import { classNames } from '../../util/layout';
 type Props = unknown;
 
 const Sidebar: React.FC<Props> = (props: Props) => {
-  const [currentNavPage, setCurrentNavPage] =
-    useRecoilState(currentNavPageState);
+  const [currentNavPage, setCurrentNavPage] = useRecoilState(currentNavPageState);
   const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
 
   const goToPage = (navPage: NavPage) => {
@@ -22,9 +21,7 @@ const Sidebar: React.FC<Props> = (props: Props) => {
       <aside className={styles.aside}>
         <nav>
           <a
-            className={classNames(
-              currentNavPage === NavPage.Editor ? styles.active : ''
-            )}
+            className={classNames(currentNavPage === NavPage.Editor ? styles.active : '')}
             onClick={() => goToPage(NavPage.Editor)}
           >
             <svg
@@ -42,12 +39,10 @@ const Sidebar: React.FC<Props> = (props: Props) => {
                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
               />
             </svg>
-            <span>Editor</span>
+            <span style={{ fontWeight: 600 }}>Editor</span>
           </a>
           <a
-            className={classNames(
-              currentNavPage === NavPage.Projects ? styles.active : ''
-            )}
+            className={classNames(currentNavPage === NavPage.Projects ? styles.active : '')}
             onClick={() => goToPage(NavPage.Projects)}
           >
             <svg
@@ -65,12 +60,10 @@ const Sidebar: React.FC<Props> = (props: Props) => {
                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
               />
             </svg>
-            <span>Projects</span>
+            <span style={{ fontWeight: 600 }}>Projects</span>
           </a>
           <a
-            className={classNames(
-              currentNavPage === NavPage.Settings ? styles.active : ''
-            )}
+            className={classNames(currentNavPage === NavPage.Settings ? styles.active : '')}
             onClick={() => goToPage(NavPage.Settings)}
           >
             <svg
@@ -94,7 +87,7 @@ const Sidebar: React.FC<Props> = (props: Props) => {
                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
               />
             </svg>
-            <span>Settings</span>
+            <span style={{ fontWeight: 600 }}>Settings</span>
           </a>
         </nav>
       </aside>

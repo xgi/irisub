@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import styles from '../styles/components/Base.module.scss';
 import Footer from './Footer';
 import Header from './Header';
@@ -16,6 +17,12 @@ type Props = unknown;
 const Base: React.FC<Props> = (props: Props) => {
   const currentNavPage = useRecoilValue(currentNavPageState);
 
+  const renderPage = () => {
+    if (currentNavPage === NavPage.Editor) return <Editor />;
+    if (currentNavPage === NavPage.Projects) return <Projects />;
+    if (currentNavPage === NavPage.Settings) return <Settings />;
+  };
+
   return (
     <div className={styles.container}>
       <TracksModal />
@@ -25,15 +32,7 @@ const Base: React.FC<Props> = (props: Props) => {
         <Header />
         <div className={styles.middle}>
           <Sidebar />
-          {/* 
-            Opting to render all pages with display:none for inactive ones in order to reduce
-            render times when switching pages (especially when going to the editor) and dealing
-            with triggers when component are first rendered -- e.g. when the <video> component
-            is generated.
-          */}
-          <Editor hidden={currentNavPage !== NavPage.Editor} />
-          <Projects hidden={currentNavPage !== NavPage.Projects} />
-          <Settings hidden={currentNavPage !== NavPage.Settings} />
+          {renderPage()}
         </div>
         <Footer />
       </div>
