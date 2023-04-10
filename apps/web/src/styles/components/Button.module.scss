@@ -33,6 +33,10 @@
     }
   }
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   span {
     display: inline-flex;
     justify-content: center;

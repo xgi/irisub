@@ -10,8 +10,6 @@ import {
 } from '../../store/states';
 import LoadingContainer from '../LoadingContainer';
 import { gateway } from '../../services/gateway';
-import { nanoid } from 'nanoid';
-import { Irisub } from '@irisub/shared';
 import { NavPage } from '../../util/constants';
 
 type Props = {
@@ -25,44 +23,12 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
   const [gatewayConnected, setGatewayConnected] = useRecoilState(gatewayConnectedState);
   const setCurrentNavPage = useSetRecoilState(currentNavPageState);
 
-  const createNewProject = async () => {
-    console.log('Creating new project...');
-
-    const newProject: Irisub.Project = {
-      id: nanoid(),
-      title: 'my cool project',
-    };
-    await gateway.upsertProject(newProject);
-
-    const newTrack: Irisub.Track = {
-      id: nanoid(),
-      name: 'my cool track',
-      language: null,
-    };
-    await gateway.upsertTrack(newProject.id, newTrack);
-
-    const introCueTextList = [
-      'Welcome to Irisub! This is the first subtitle.',
-      'To get started, click Select Video to choose a file or video from YouTube/Vimeo.',
-      'You can resize the panels on this page by clicking and dragging the dividers.',
-      'Split text into multiple lines with Shift+Enter.\nThis is the second line.',
-      'This session is temporary by default. Click Save Workspace in the top right to keep your work.',
-    ];
-    const newCueList: Irisub.Cue[] = introCueTextList.map((text, index) => ({
-      id: nanoid(),
-      text: text,
-      start_ms: index * 3000,
-      end_ms: (index + 1) * 3000,
-    }));
-    await gateway.upsertCues(newProject.id, newTrack.id, newCueList);
-
-    setCurrentProjectId(newProject.id);
-    setCurrentTrackId(newTrack.id);
-  };
-
   const init = async () => {
     if (currentProjectId === null) {
-      createNewProject();
+      gateway.setupNewProject().then(({ project, track }) => {
+        setCurrentProjectId(project.id);
+        setCurrentTrackId(track.id);
+      });
       return;
     }
 

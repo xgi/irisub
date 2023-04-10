@@ -5,8 +5,9 @@ import LoadingContainer from '../LoadingContainer';
 import { gateway } from '../../services/gateway';
 import Button from '../Button';
 import { useSetRecoilState } from 'recoil';
-import { currentProjectIdState } from '../../store/states';
+import { currentProjectIdState, currentTrackIdState } from '../../store/states';
 import { IconBars3 } from '../Icons';
+import { Tooltip } from 'react-tooltip';
 
 type Props = {
   hidden?: boolean;
@@ -14,9 +15,11 @@ type Props = {
 
 const Projects: React.FC<Props> = (props: Props) => {
   const setCurrentProjectId = useSetRecoilState(currentProjectIdState);
+  const setCurrentTrackId = useSetRecoilState(currentTrackIdState);
   const [ownedProjects, setOwnedProjects] = useState<Irisub.Project[]>([]);
   const [joinedProjects, setJoinedProjects] = useState<Irisub.Project[]>([]);
   const [loading, setLoading] = useState(false);
+  const [creatingNewProject, setCreatingNewProject] = useState(false);
 
   useEffect(() => {
     if (!props.hidden) {
@@ -29,6 +32,18 @@ const Projects: React.FC<Props> = (props: Props) => {
       });
     }
   }, [props.hidden]);
+
+  const handleNewProject = () => {
+    setCreatingNewProject(true);
+
+    gateway
+      .setupNewProject()
+      .then(({ project, track }) => {
+        setCurrentProjectId(project.id);
+        setCurrentTrackId(track.id);
+      })
+      .finally(() => setCreatingNewProject(false));
+  };
 
   const handleClickProjectMenu = (project: Irisub.Project) => {
     console.log(`menu for project ${project.id}`);
@@ -53,6 +68,8 @@ const Projects: React.FC<Props> = (props: Props) => {
               <td>{project.title}</td>
               <td style={{ textAlign: 'right' }}>
                 <button
+                  data-tooltip-id={`tt-project-actions-${project.id}`}
+                  data-tooltip-content={'Project Actions'}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleClickProjectMenu(project);
@@ -62,6 +79,8 @@ const Projects: React.FC<Props> = (props: Props) => {
                     <IconBars3 width={24} height={24} />
                   </span>
                 </button>
+
+                <Tooltip id={`tt-project-actions-${project.id}`} className="tooltip" place="left" />
               </td>
             </tr>
           ))}
@@ -87,8 +106,13 @@ const Projects: React.FC<Props> = (props: Props) => {
               ) : (
                 <p>You haven't created any projects.</p>
               )}
-              <Button accent className={styles.newProject}>
-                New Project
+              <Button
+                accent
+                className={styles.newProject}
+                onClick={handleNewProject}
+                disabled={creatingNewProject}
+              >
+                {creatingNewProject ? 'Loading...' : 'New Project'}
               </Button>
             </div>
           </section>

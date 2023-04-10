@@ -1,4 +1,6 @@
 import { Gateway, Irisub } from '@irisub/shared';
+import { nanoid } from 'nanoid';
+import { randomProjectName } from '../util/random';
 
 const BASE_URL = '//localhost:3123';
 
@@ -65,6 +67,40 @@ class GatewayConn {
         idToken: idToken,
       }),
     });
+  }
+
+  async setupNewProject(): Promise<{ project: Irisub.Project; track: Irisub.Track }> {
+    console.log('Creating new project...');
+
+    const newProject: Irisub.Project = {
+      id: nanoid(),
+      title: randomProjectName(),
+    };
+    await gateway.upsertProject(newProject);
+
+    const newTrack: Irisub.Track = {
+      id: nanoid(),
+      name: 'English',
+      language: null,
+    };
+    await gateway.upsertTrack(newProject.id, newTrack);
+
+    const introCueTextList = [
+      'Welcome to Irisub! This is the first subtitle.',
+      'To get started, click Select Video to choose a file or video from YouTube/Vimeo.',
+      'You can resize the panels on this page by clicking and dragging the dividers.',
+      'Split text into multiple lines with Shift+Enter.\nThis is the second line.',
+      'This session is temporary by default. Click Save Workspace in the top right to keep your work.',
+    ];
+    const newCueList: Irisub.Cue[] = introCueTextList.map((text, index) => ({
+      id: nanoid(),
+      text: text,
+      start_ms: index * 3000,
+      end_ms: (index + 1) * 3000,
+    }));
+    await gateway.upsertCues(newProject.id, newTrack.id, newCueList);
+
+    return { project: newProject, track: newTrack };
   }
 
   getProjects(): Promise<{ owned: Irisub.Project[]; joined: Irisub.Project[] }> {
