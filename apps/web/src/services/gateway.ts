@@ -103,17 +103,17 @@ class GatewayConn {
     return { project: newProject, track: newTrack };
   }
 
-  getProjects(): Promise<{ owned: Irisub.Project[]; joined: Irisub.Project[] }> {
-    return fetch(`${BASE_URL}/projects`, {
+  async getProjects(): Promise<Gateway.GetProjectsResponseBody> {
+    const resp = await fetch(`${BASE_URL}/projects`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         'gateway-event-source-client-id': this.eventSourceClientId || '',
       },
-    }).then((res) => {
-      if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
-      return res.json();
     });
+
+    if (!resp.ok) throw new GatewayResponseError(resp.statusText, resp.status);
+    return resp.json();
   }
 
   getTracks(projectId: string): Promise<Irisub.Track[]> {

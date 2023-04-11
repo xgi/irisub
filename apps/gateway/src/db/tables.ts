@@ -3,6 +3,9 @@ export interface ProjectTable {
   title: string;
 
   owner_user_id: string;
+
+  created_at: string;
+  updated_at: string;
 }
 
 export interface TrackTable {
@@ -11,6 +14,9 @@ export interface TrackTable {
   language: string | null;
 
   project_id: string;
+
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CueTable {
@@ -21,9 +27,15 @@ export interface CueTable {
 
   project_id: string;
   track_id: string;
+
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CollaboratorTable {
   user_id: string;
   project_id: string;
+
+  created_at: string;
+  updated_at: string;
 }

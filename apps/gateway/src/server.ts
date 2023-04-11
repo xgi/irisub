@@ -133,125 +133,132 @@ app.get('/events', async (req, res) => {
 
 /** REST API */
 
-app.get('/projects', async (req, res) => {
-  const joinedProjectIds = (
-    await db
-      .selectFrom('collaborator')
-      .where('user_id', '=', res.locals.uid)
-      .select('project_id')
-      .execute()
-  ).map((collaborator) => collaborator.project_id);
+app.get(
+  '/projects',
+  async (req, res: Response<Gateway.GetProjectsResponseBody | Gateway.ErrorResponseBody>) => {
+    const joinedProjectIds = (
+      await db
+        .selectFrom('collaborator')
+        .where('user_id', '=', res.locals.uid)
+        .select('project_id')
+        .execute()
+    ).map((collaborator) => collaborator.project_id);
 
-  const owned: Irisub.Project[] = await db
-    .selectFrom('project')
-    .where('owner_user_id', '=', res.locals.uid)
-    .select('id')
-    .select('title')
-    .execute();
+    const owned = await db
+      .selectFrom('project')
+      .where('owner_user_id', '=', res.locals.uid)
+      .selectAll()
+      .execute();
 
-  console.log(joinedProjectIds);
+    const joined =
+      joinedProjectIds.length > 0
+        ? await db.selectFrom('project').where('id', 'in', joinedProjectIds).selectAll().execute()
+        : [];
 
-  const joined: Irisub.Project[] =
-    joinedProjectIds.length > 0
-      ? await db
-          .selectFrom('project')
-          .where('id', 'in', joinedProjectIds)
-          .select('id')
-          .select('title')
-          .execute()
-      : [];
-
-  res.send({ owned: owned, joined: joined });
-});
-
-app.get('/projects/:projectId', async (req, res) => {
-  const { projectId } = req.params;
-
-  const { permission, project } = await checkProjectPermission(projectId, res.locals.uid);
-  if (permission === 'doesnotexist') {
-    res.status(404).send('Project not found');
-    return;
+    res.send({ owned: owned, joined: joined });
   }
-  if (permission === 'unauthorized') {
-    res.status(401).send('Unauthorized');
-    return;
+);
+
+app.get(
+  '/projects/:projectId',
+  async (req, res: Response<Gateway.GetProjectResponseBody | Gateway.ErrorResponseBody>) => {
+    const { projectId } = req.params;
+
+    const { permission, project } = await checkProjectPermission(projectId, res.locals.uid);
+    if (permission === 'doesnotexist') {
+      res.status(404).send({ errorMessage: 'Project not found' });
+      return;
+    }
+    if (permission === 'unauthorized') {
+      res.status(401).send({ errorMessage: 'Unauthorized' });
+      return;
+    }
+
+    res.send({ project: project });
   }
+);
 
-  res.send({ project: project });
-});
+app.get(
+  '/projects/:projectId/tracks',
+  async (req, res: Response<Gateway.GetTracksResponseBody | Gateway.ErrorResponseBody>) => {
+    const { projectId } = req.params;
 
-app.get('/projects/:projectId/tracks', async (req, res) => {
-  const { projectId } = req.params;
+    const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+    if (permission === 'doesnotexist') {
+      res.status(404).send({ errorMessage: 'Project not found' });
+      return;
+    }
+    if (permission === 'unauthorized') {
+      res.status(401).send({ errorMessage: 'Unauthorized' });
+      return;
+    }
 
-  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
-  if (permission === 'doesnotexist') {
-    res.status(404).send('Project not found');
-    return;
+    const tracks = await db
+      .selectFrom('track')
+      .where('project_id', '=', projectId)
+      .selectAll()
+      .execute();
+
+    res.send({ tracks: tracks });
   }
-  if (permission === 'unauthorized') {
-    res.status(401).send('Unauthorized');
-    return;
+);
+
+app.get(
+  '/projects/:projectId/tracks/:trackId',
+  async (req, res: Response<Gateway.GetTrackResponseBody | Gateway.ErrorResponseBody>) => {
+    const { projectId, trackId } = req.params;
+
+    const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+    if (permission === 'doesnotexist') {
+      res.status(404).send({ errorMessage: 'Project not found' });
+      return;
+    }
+    if (permission === 'unauthorized') {
+      res.status(401).send({ errorMessage: 'Unauthorized' });
+      return;
+    }
+
+    const track = await db
+      .selectFrom('track')
+      .where('id', '=', trackId)
+      .where('project_id', '=', projectId)
+      .selectAll()
+      .executeTakeFirst();
+
+    if (track === undefined) {
+      res.status(404).send({ errorMessage: 'Track not found' });
+      return;
+    }
+
+    res.send({ track: track });
   }
+);
 
-  const tracks: Irisub.Track[] = await db
-    .selectFrom('track')
-    .where('project_id', '=', projectId)
-    .selectAll()
-    .execute();
+app.get(
+  '/projects/:projectId/tracks/:trackId/cues',
+  async (req, res: Response<Gateway.GetCuesResponseBody | Gateway.ErrorResponseBody>) => {
+    const { projectId, trackId } = req.params;
 
-  res.send({ tracks: tracks });
-});
+    const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+    if (permission === 'doesnotexist') {
+      res.status(404).send({ errorMessage: 'Project not found' });
+      return;
+    }
+    if (permission === 'unauthorized') {
+      res.status(401).send({ errorMessage: 'Unauthorized' });
+      return;
+    }
 
-app.get('/projects/:projectId/tracks/:trackId', async (req, res) => {
-  const { projectId, trackId } = req.params;
+    const cues: Irisub.Cue[] = await db
+      .selectFrom('cue')
+      .where('project_id', '=', projectId)
+      .where('track_id', '=', trackId)
+      .selectAll()
+      .execute();
 
-  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
-  if (permission === 'doesnotexist') {
-    res.status(404).send('Project not found');
-    return;
+    res.send({ cues: cues });
   }
-  if (permission === 'unauthorized') {
-    res.status(401).send('Unauthorized');
-    return;
-  }
-
-  const track: Irisub.Track | undefined = await db
-    .selectFrom('track')
-    .where('id', '=', trackId)
-    .where('project_id', '=', projectId)
-    .selectAll()
-    .executeTakeFirst();
-
-  if (track === undefined) {
-    res.status(404).send('Track not found');
-    return;
-  }
-
-  res.send({ track: track });
-});
-
-app.get('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
-  const { projectId, trackId } = req.params;
-
-  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
-  if (permission === 'doesnotexist') {
-    res.status(404).send('Project not found');
-    return;
-  }
-  if (permission === 'unauthorized') {
-    res.status(401).send('Unauthorized');
-    return;
-  }
-
-  const cues: Irisub.Cue[] = await db
-    .selectFrom('cue')
-    .where('project_id', '=', projectId)
-    .where('track_id', '=', trackId)
-    .selectAll()
-    .execute();
-
-  res.send({ cues: cues });
-});
+);
 
 app.post('/projects/:projectId', async (req, res) => {
   const eventSourceClientId = req.headers['gateway-event-source-client-id'];

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styles from '../../styles/components/Projects.module.scss';
-import { Irisub } from '@irisub/shared';
+import { Gateway, Irisub } from '@irisub/shared';
 import LoadingContainer from '../LoadingContainer';
 import { gateway } from '../../services/gateway';
 import Button from '../Button';
@@ -8,16 +8,23 @@ import { useSetRecoilState } from 'recoil';
 import { currentProjectIdState, currentTrackIdState } from '../../store/states';
 import { IconBars3 } from '../Icons';
 import { Tooltip } from 'react-tooltip';
+import { formatDate } from '../../util/layout';
 
 type Props = {
   hidden?: boolean;
 };
 
+type GetProjectsResponseBodyProjects =
+  | Gateway.GetProjectsResponseBody['owned']
+  | Gateway.GetProjectsResponseBody['joined'];
+
 const Projects: React.FC<Props> = (props: Props) => {
   const setCurrentProjectId = useSetRecoilState(currentProjectIdState);
   const setCurrentTrackId = useSetRecoilState(currentTrackIdState);
-  const [ownedProjects, setOwnedProjects] = useState<Irisub.Project[]>([]);
-  const [joinedProjects, setJoinedProjects] = useState<Irisub.Project[]>([]);
+  const [ownedProjects, setOwnedProjects] = useState<Gateway.GetProjectsResponseBody['owned']>([]);
+  const [joinedProjects, setJoinedProjects] = useState<Gateway.GetProjectsResponseBody['joined']>(
+    []
+  );
   const [loading, setLoading] = useState(false);
   const [creatingNewProject, setCreatingNewProject] = useState(false);
 
@@ -25,7 +32,7 @@ const Projects: React.FC<Props> = (props: Props) => {
     if (!props.hidden) {
       setLoading(true);
 
-      gateway.getProjects().then((data) => {
+      gateway.getProjects().then((data: Gateway.GetProjectsResponseBody) => {
         setOwnedProjects(data.owned);
         setJoinedProjects(data.joined);
         setLoading(false);
@@ -53,19 +60,21 @@ const Projects: React.FC<Props> = (props: Props) => {
     setCurrentProjectId(project.id);
   };
 
-  const renderProjects = (projects: Irisub.Project[]) => {
+  const renderProjects = (projects: GetProjectsResponseBodyProjects) => {
     return (
-      <table>
+      <table style={{ tableLayout: 'fixed', width: '100%' }}>
         <thead>
           <tr>
             <th style={{ width: '100%' }}>Name</th>
-            <th />
+            <th style={{ width: '300px' }}>Created</th>
+            <th style={{ width: '80px' }} />
           </tr>
         </thead>
         <tbody>
           {projects.map((project) => (
             <tr key={project.id} onClick={() => handleClickProject(project)}>
               <td>{project.title}</td>
+              <td>{formatDate(new Date(project.created_at))}</td>
               <td style={{ textAlign: 'right' }}>
                 <button
                   data-tooltip-id={`tt-project-actions-${project.id}`}

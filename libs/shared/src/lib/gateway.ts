@@ -33,4 +33,34 @@ export namespace Gateway {
     | UpsertCuesEvent
     | UpsertProjectEvent
     | UpsertTrackEvent;
+
+  type Timestamps = {
+    created_at: string;
+    updated_at: string;
+  };
+
+  export interface ErrorResponseBody {
+    errorMessage: string;
+  }
+
+  export interface GetProjectsResponseBody {
+    owned: (Irisub.Project & Timestamps)[];
+    joined: (Irisub.Project & Timestamps)[];
+  }
+
+  export interface GetTracksResponseBody {
+    tracks: (Irisub.Track & Timestamps)[];
+  }
+
+  export interface GetProjectResponseBody {
+    project: Irisub.Project & Timestamps;
+  }
+
+  export interface GetTrackResponseBody {
+    track: Irisub.Track & Timestamps;
+  }
+
+  export interface GetCuesResponseBody {
+    cues: Irisub.Cue[];
+  }
 }
