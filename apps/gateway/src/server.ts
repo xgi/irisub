@@ -9,6 +9,7 @@ import { db } from './db/database.server';
 import { initializeFirebase } from './firebase';
 import { ProjectTable } from './db/tables';
 import { Selectable } from 'kysely';
+import { logger } from './logger';
 
 const app = express();
 const port = 3123;
@@ -32,7 +33,8 @@ app.use((req, res, next) => {
       duration: now - start_time,
       modifiedRows: res.locals.modified_rows || 0,
     };
-    console.log(JSON.stringify(logObj));
+
+    logger.info(JSON.stringify(logObj));
   });
 
   next();
@@ -57,7 +59,7 @@ app.post('/sessionLogin', (req, res) => {
         res.end(JSON.stringify({ status: 'success' }));
       },
       (error) => {
-        console.error(error);
+        logger.error(error);
         res.status(401).send('Unauthorized');
       }
     );
@@ -146,7 +148,7 @@ app.get('/events', async (req, res) => {
   sendGatewayEvent(Gateway.EventName.IDENTIFY_EVENT_SOURCE_CLIENT, identifyEvent, client);
 
   req.on('close', () => {
-    console.log(`${client.id} connection closed`);
+    logger.info(`${client.id} connection closed`);
     clients[projectId] = clients[projectId].filter((c) => c.id !== client.id);
   });
 });
@@ -313,7 +315,7 @@ app.post('/projects/:projectId', async (req, res) => {
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {
       if (client.id !== eventSourceClientId) {
-        console.log(`Sending message to client ${client.id} (uid ${client.uid})`);
+        logger.info(`Sending message to client ${client.id} (uid ${client.uid})`);
         const gwEvent: Gateway.UpsertProjectEvent = {
           project: newProject,
         };
@@ -364,7 +366,7 @@ app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {
       if (client.id !== eventSourceClientId) {
-        console.log(`Sending message to client ${client.id} (uid ${client.uid})`);
+        logger.info(`Sending message to client ${client.id} (uid ${client.uid})`);
         const gwEvent: Gateway.UpsertTrackEvent = {
           track: newTrack,
         };
@@ -417,7 +419,7 @@ app.post('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {
       if (client.id !== eventSourceClientId) {
-        console.log(`Sending message to client ${client.id} (uid ${client.uid})`);
+        logger.info(`Sending message to client ${client.id} (uid ${client.uid})`);
         const gwEvent: Gateway.UpsertCuesEvent = {
           cues: req.body.cues,
           trackId: trackId,
@@ -433,6 +435,6 @@ app.post('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
 export const startServer = () => {
   initializeFirebase();
   return app.listen(port, () => {
-    console.log(`Express server listening at http://localhost:${port}`);
+    logger.info(`Express server listening at http://localhost:${port}`);
   });
 };

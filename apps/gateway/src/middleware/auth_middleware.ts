@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import admin from 'firebase-admin';
+import { logger } from '../logger';
 
 export async function handleSessionCookieAuth(req: Request, res: Response, next: NextFunction) {
   const sessionCookie = req.cookies.session || '';
@@ -12,8 +13,7 @@ export async function handleSessionCookieAuth(req: Request, res: Response, next:
       return true;
     })
     .catch((err) => {
-      console.log(`Failed to validate session cookie: ${sessionCookie}`);
-      console.error(err);
+      logger.error(`Failed to validate session cookie: ${sessionCookie}`, err);
       return false;
     });
 
