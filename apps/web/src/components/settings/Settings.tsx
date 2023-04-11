@@ -131,7 +131,7 @@ const Settings: React.FC<Props> = (props: Props) => {
           {/* <p>Configure the editor behavior.</p> */}
         </div>
         <div className={styles.right}>
-          <h4>Table</h4>
+          <h4>Timetable</h4>
           <Toggle
             value={showMs}
             label={'Show milliseconds in timestamps'}

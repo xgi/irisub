@@ -18,6 +18,26 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(/\/((?!sessionLogin).)*/, handleSessionCookieAuth);
 
+app.use((req, res, next) => {
+  const start_time = Date.now();
+
+  res.on('close', async () => {
+    const now = Date.now();
+    const logObj = {
+      method: req.method,
+      path: req.route.path,
+      url: decodeURI(req.url),
+      statusCode: res.statusCode,
+      statusMessage: res.statusMessage,
+      duration: now - start_time,
+      modifiedRows: res.locals.modified_rows || 0,
+    };
+    console.log(JSON.stringify(logObj));
+  });
+
+  next();
+});
+
 /** Auth */
 
 app.post('/sessionLogin', (req, res) => {
@@ -276,7 +296,7 @@ app.post('/projects/:projectId', async (req, res) => {
     return;
   }
 
-  await db
+  const insertResult = await db
     .insertInto('project')
     .values({ ...newProject, owner_user_id: res.locals.uid })
     .onConflict((oc) =>
@@ -285,6 +305,10 @@ app.post('/projects/:projectId', async (req, res) => {
       }))
     )
     .execute();
+  res.locals.modified_rows = insertResult.reduce(
+    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
+    0
+  );
 
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {
@@ -322,7 +346,7 @@ app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
     return;
   }
 
-  await db
+  const insertResult = await db
     .insertInto('track')
     .values({ ...newTrack, project_id: projectId })
     .onConflict((oc) =>
@@ -332,6 +356,10 @@ app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
       }))
     )
     .execute();
+  res.locals.modified_rows = insertResult.reduce(
+    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
+    0
+  );
 
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {
@@ -364,7 +392,7 @@ app.post('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
   }
 
   const newCues: Irisub.Cue[] = req.body.cues;
-  await db
+  const insertResult = await db
     .insertInto('cue')
     .values(
       newCues.map((cue) => ({
@@ -381,6 +409,10 @@ app.post('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
       }))
     )
     .execute();
+  res.locals.modified_rows = insertResult.reduce(
+    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
+    0
+  );
 
   if (clients[projectId]) {
     clients[projectId].forEach((client) => {
