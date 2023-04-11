@@ -1,19 +1,18 @@
 import { getAuth } from 'firebase/auth';
 import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentProjectIdState, currentProjectState, userIdState } from '../store/states';
+import { useRecoilState } from 'recoil';
+import { currentProjectState } from '../store/states';
 import styles from '../styles/components/Header.module.scss';
 import InviteModal from './auth/InviteModal';
 import LoginModal from './auth/LoginModal';
 import Button from './Button';
 import { IconCloud, IconInvite, IconPencil } from './Icons';
+import UserProfileButton from './UserProfileButton';
 
 type Props = unknown;
 
 const Header: React.FC<Props> = (props: Props) => {
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
-  const currentProjectId = useRecoilValue(currentProjectIdState);
-  const userId = useRecoilValue(userIdState);
   const [editingProjectTitle, setEditingProjectTitle] = useState(false);
   const [tempProjectTitle, setTempProjectTitle] = useState('');
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -29,6 +28,7 @@ const Header: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (editingProjectTitle && currentProject) setTempProjectTitle(currentProject.title || '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editingProjectTitle]);
 
   const renderProjectTitle = () => {
@@ -81,10 +81,8 @@ const Header: React.FC<Props> = (props: Props) => {
             <span>IRISUB</span>
           </a>
           {renderProjectTitle()}
-          {currentProjectId}
         </div>
         <div className={styles.group}>
-          {userId}
           <Button
             onClick={() => {
               const user = getAuth().currentUser;
@@ -101,12 +99,16 @@ const Header: React.FC<Props> = (props: Props) => {
               Invite Members
             </span>
           </Button>
-          <Button accent={true} onClick={() => setLoginModalOpen(true)}>
-            <span>
-              <IconCloud />
-              Save Workspace
-            </span>
-          </Button>
+          {!getAuth().currentUser || getAuth().currentUser?.isAnonymous ? (
+            <Button accent={true} onClick={() => setLoginModalOpen(true)}>
+              <span>
+                <IconCloud />
+                Save Workspace
+              </span>
+            </Button>
+          ) : (
+            <UserProfileButton />
+          )}
         </div>
       </header>
     </div>

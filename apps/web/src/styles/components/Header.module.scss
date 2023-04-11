@@ -45,6 +45,9 @@
 
   .project {
     font-size: 1.2em;
+    > span {
+      font-weight: bold;
+    }
   }
 
   form.project {
