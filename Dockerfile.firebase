@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18.15-alpine
 WORKDIR /srv
 # ENV HOME=/home/node
 EXPOSE 4000
