@@ -1,6 +1,8 @@
+import * as Tabs from '@radix-ui/react-tabs';
 import Modal from '../Modal';
 import styles from '../../styles/components/InviteModal.module.scss';
 import { IconX } from '../Icons';
+import InviteModalCreateTeam from './InviteModalCreateTeam';
 
 type Props = {
   isOpen: boolean;
@@ -17,13 +19,23 @@ const InviteModal: React.FC<Props> = (props: Props) => {
             <IconX width={22} height={22} />
           </button>
         </div>
-        <p>this is the invitation modal</p>
-        <div className={styles.footer}>
-          <span>
-            Your name and email address will be shared with the invitee.
-            {/* Your basic information (name and email address) will be shared with the invitee */}
-          </span>
-        </div>
+
+        <Tabs.Root className={styles.tabsRoot} defaultValue="tabCreateTeam">
+          <Tabs.List className={styles.tabsList}>
+            <Tabs.Trigger className={styles.tabsTrigger} value="tabCreateTeam">
+              Create Team
+            </Tabs.Trigger>
+            <Tabs.Trigger className={styles.tabsTrigger} value="tabExistingTeam">
+              Existing Team
+            </Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content className={styles.tabsContent} value="tabCreateTeam">
+            <InviteModalCreateTeam />
+          </Tabs.Content>
+          <Tabs.Content className={styles.tabsContent} value="tabExistingTeam">
+            <p>Change your password here. After saving, you'll be logged out.</p>
+          </Tabs.Content>
+        </Tabs.Root>
       </div>
     </Modal>
   );
