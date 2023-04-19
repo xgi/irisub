@@ -110,6 +110,21 @@ const sendGatewayEvent = (
   client.res.write(`event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`);
 };
 
+const broadcastEvent = (
+  eventName: Gateway.EventName,
+  data: Gateway.Event,
+  projectId: string,
+  ignoreClientId = ''
+) => {
+  if (clients[projectId]) {
+    clients[projectId].forEach((client) => {
+      if (!ignoreClientId || client.id !== ignoreClientId) {
+        sendGatewayEvent(eventName, data, client);
+      }
+    });
+  }
+};
+
 app.get('/events', async (req, res) => {
   const projectId = req.query['projectId'] as string;
   if (!projectId) {
@@ -283,7 +298,7 @@ app.get(
 );
 
 app.post('/projects/:projectId', async (req, res) => {
-  const eventSourceClientId = req.headers['gateway-event-source-client-id'];
+  const eventSourceClientId = req.headers['gateway-event-source-client-id'] as string;
   const { projectId } = req.params;
 
   const newProject: Irisub.Project = req.body.project;
@@ -312,24 +327,17 @@ app.post('/projects/:projectId', async (req, res) => {
     0
   );
 
-  if (clients[projectId]) {
-    clients[projectId].forEach((client) => {
-      if (client.id !== eventSourceClientId) {
-        logger.info(`Sending message to client ${client.id} (uid ${client.uid})`);
-        const gwEvent: Gateway.UpsertProjectEvent = {
-          project: newProject,
-        };
-        sendGatewayEvent(Gateway.EventName.UPSERT_PROJECT, gwEvent, client);
-      }
-    });
-  }
+  const gwEvent: Gateway.UpsertProjectEvent = {
+    project: newProject,
+  };
+  broadcastEvent(Gateway.EventName.UPSERT_PROJECT, gwEvent, projectId, eventSourceClientId);
 
   res.send({ project: newProject });
   res.end();
 });
 
 app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
-  const eventSourceClientId = req.headers['gateway-event-source-client-id'];
+  const eventSourceClientId = req.headers['gateway-event-source-client-id'] as string;
   const { projectId, trackId } = req.params;
 
   const newTrack: Irisub.Track = req.body.track;
@@ -363,24 +371,17 @@ app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
     0
   );
 
-  if (clients[projectId]) {
-    clients[projectId].forEach((client) => {
-      if (client.id !== eventSourceClientId) {
-        logger.info(`Sending message to client ${client.id} (uid ${client.uid})`);
-        const gwEvent: Gateway.UpsertTrackEvent = {
-          track: newTrack,
-        };
-        sendGatewayEvent(Gateway.EventName.UPSERT_TRACK, gwEvent, client);
-      }
-    });
-  }
+  const gwEvent: Gateway.UpsertTrackEvent = {
+    track: newTrack,
+  };
+  broadcastEvent(Gateway.EventName.UPSERT_TRACK, gwEvent, projectId, eventSourceClientId);
 
   res.send({ track: newTrack });
   res.end();
 });
 
 app.post('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
-  const eventSourceClientId = req.headers['gateway-event-source-client-id'];
+  const eventSourceClientId = req.headers['gateway-event-source-client-id'] as string;
   const { projectId, trackId } = req.params;
 
   const { permission } = await checkProjectPermission(projectId, res.locals.uid);
@@ -416,18 +417,11 @@ app.post('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
     0
   );
 
-  if (clients[projectId]) {
-    clients[projectId].forEach((client) => {
-      if (client.id !== eventSourceClientId) {
-        logger.info(`Sending message to client ${client.id} (uid ${client.uid})`);
-        const gwEvent: Gateway.UpsertCuesEvent = {
-          cues: req.body.cues,
-          trackId: trackId,
-        };
-        sendGatewayEvent(Gateway.EventName.UPSERT_CUES, gwEvent, client);
-      }
-    });
-  }
+  const gwEvent: Gateway.UpsertCuesEvent = {
+    cues: req.body.cues,
+    trackId: trackId,
+  };
+  broadcastEvent(Gateway.EventName.UPSERT_CUES, gwEvent, projectId, eventSourceClientId);
 
   res.end();
 });
