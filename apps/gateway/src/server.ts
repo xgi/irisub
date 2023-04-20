@@ -210,6 +210,51 @@ app.get(
 );
 
 app.get(
+  '/teams',
+  async (req, res: Response<Gateway.GetTeamsResponseBody | Gateway.ErrorResponseBody>) => {
+    const team_ids = (
+      await db
+        .selectFrom('collaborator')
+        .where('user_id', '=', res.locals.uid)
+        .select('team_id')
+        .execute()
+    ).map((team) => team.team_id);
+
+    const result: Gateway.GetTeamsResponseBody['teams'] = [];
+
+    await Promise.all(
+      team_ids.map(async (team_id) => {
+        const team = await db
+          .selectFrom('team')
+          .where('id', '=', team_id)
+          .selectAll()
+          .executeTakeFirstOrThrow();
+
+        const collaborators = await db
+          .selectFrom('collaborator')
+          .where('team_id', '=', team_id)
+          .selectAll()
+          .execute();
+
+        result.push({
+          id: team.id,
+          name: team.name,
+          members: collaborators.map((collaborator) => ({
+            id: collaborator.user_id,
+            email: collaborator.email,
+            role: collaborator.role,
+          })),
+          created_at: team.created_at,
+          updated_at: team.updated_at,
+        });
+      })
+    );
+
+    res.send({ teams: result });
+  }
+);
+
+app.get(
   '/projects/:projectId',
   async (req, res: Response<Gateway.GetProjectResponseBody | Gateway.ErrorResponseBody>) => {
     const { projectId } = req.params;
@@ -365,6 +410,11 @@ app.post('/teams/:teamId', async (req, res) => {
     return;
   }
 
+  if (!res.locals.user_email) {
+    res.status(400).send('User does not have associated email address');
+    return;
+  }
+
   const insertTeamResult = await db
     .insertInto('team')
     .values({ ...newTeam })
@@ -381,7 +431,12 @@ app.post('/teams/:teamId', async (req, res) => {
 
   const insertCollaboratorResult = await db
     .insertInto('collaborator')
-    .values({ user_id: res.locals.uid, team_id: teamId, role: 'owner' })
+    .values({
+      user_id: res.locals.uid,
+      team_id: teamId,
+      email: res.locals.user_email,
+      role: 'owner',
+    })
     .execute();
   res.locals.modified_rows = insertCollaboratorResult.reduce(
     (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),

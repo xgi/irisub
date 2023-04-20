@@ -45,6 +45,7 @@ export interface CollaboratorTable {
   user_id: string;
   team_id: string;
 
+  email: string;
   role: 'owner' | 'editor';
 
   created_at: string;

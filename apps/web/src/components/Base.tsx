@@ -11,6 +11,7 @@ import TracksModal from './TracksModal';
 import Settings from './settings/Settings';
 import ImportExportModal from './ImportExportModal';
 import Projects from './projects/Projects';
+import Teams from './Teams';
 
 type Props = unknown;
 
@@ -20,6 +21,7 @@ const Base: React.FC<Props> = (props: Props) => {
   const renderPage = () => {
     if (currentNavPage === NavPage.Editor) return <Editor />;
     if (currentNavPage === NavPage.Projects) return <Projects />;
+    if (currentNavPage === NavPage.Teams) return <Teams />;
     if (currentNavPage === NavPage.Settings) return <Settings />;
   };
 

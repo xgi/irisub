@@ -4,6 +4,7 @@ export const MAX_TIMESTAMP_MS = 35999999;
 export enum NavPage {
   Editor = 'Editor',
   Projects = 'Projects',
+  Teams = 'Teams',
   Settings = 'Settings',
 }
 

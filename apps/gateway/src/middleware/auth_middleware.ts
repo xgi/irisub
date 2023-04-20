@@ -10,6 +10,7 @@ export async function handleSessionCookieAuth(req: Request, res: Response, next:
     .verifySessionCookie(sessionCookie, true)
     .then((decodedClaims) => {
       res.locals.uid = decodedClaims.uid;
+      res.locals.user_email = decodedClaims.email;
       return true;
     })
     .catch((err) => {

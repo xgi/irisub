@@ -63,4 +63,16 @@ export namespace Gateway {
   export interface GetCuesResponseBody {
     cues: Irisub.Cue[];
   }
+
+  export interface GetTeamsResponseBody {
+    teams: ({
+      id: string;
+      name: string;
+      members: {
+        id: string;
+        email: string;
+        role: 'owner' | 'editor';
+      }[];
+    } & Timestamps)[];
+  }
 }

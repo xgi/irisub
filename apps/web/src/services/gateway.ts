@@ -108,7 +108,18 @@ class GatewayConn {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'gateway-event-source-client-id': this.eventSourceClientId || '',
+      },
+    });
+
+    if (!resp.ok) throw new GatewayResponseError(resp.statusText, resp.status);
+    return resp.json();
+  }
+
+  async getTeams(): Promise<Gateway.GetTeamsResponseBody> {
+    const resp = await fetch(`${BASE_URL}/teams`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
     });
 

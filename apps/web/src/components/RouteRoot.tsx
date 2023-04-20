@@ -18,6 +18,7 @@ const RouteRoot: React.FC<Props> = (props: Props) => {
 
     if (currentWindowPath === '') setCurrentNavPage(NavPage.Editor);
     if (currentWindowPath === 'projects') setCurrentNavPage(NavPage.Projects);
+    if (currentWindowPath === 'teams') setCurrentNavPage(NavPage.Teams);
     if (currentWindowPath === 'settings') setCurrentNavPage(NavPage.Settings);
 
     const urlSearchParams = new URLSearchParams(window.location.search);
@@ -32,6 +33,7 @@ const RouteRoot: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     if (currentNavPage === NavPage.Editor) history.replaceState({}, 'editor', '/');
     if (currentNavPage === NavPage.Projects) history.replaceState({}, 'projects', '/projects');
+    if (currentNavPage === NavPage.Teams) history.replaceState({}, 'teams', '/teams');
     if (currentNavPage === NavPage.Settings) history.replaceState({}, 'settings', '/settings');
   }, [currentNavPage]);
 

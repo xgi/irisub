@@ -106,6 +106,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('team_id', 'varchar', (col) =>
       col.references('team.id').onDelete('cascade').notNull()
     )
+    .addColumn('email', 'varchar', (col) => col.notNull())
     .addColumn('role', 'varchar', (col) => col.notNull())
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
