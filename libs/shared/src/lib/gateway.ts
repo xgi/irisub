@@ -45,7 +45,7 @@ export namespace Gateway {
 
   export interface GetProjectsResponseBody {
     owned: (Irisub.Project & Timestamps)[];
-    joined: (Irisub.Project & Timestamps)[];
+    teams: { teamName: string; projects: (Irisub.Project & Timestamps)[] }[];
   }
 
   export interface GetTracksResponseBody {

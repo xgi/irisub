@@ -2,7 +2,8 @@ export interface ProjectTable {
   id: string;
   title: string;
 
-  owner_user_id: string;
+  creator_user_id: string;
+  team_id: string | null;
 
   created_at: string;
   updated_at: string;
@@ -32,9 +33,19 @@ export interface CueTable {
   updated_at: string;
 }
 
+export interface TeamTable {
+  id: string;
+  name: string;
+
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CollaboratorTable {
   user_id: string;
-  project_id: string;
+  team_id: string;
+
+  role: 'owner' | 'editor';
 
   created_at: string;
   updated_at: string;

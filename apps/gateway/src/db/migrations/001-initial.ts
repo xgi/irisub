@@ -18,7 +18,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable('project')
     .addColumn('id', 'varchar', (col) => col.primaryKey())
     .addColumn('title', 'varchar', (col) => col.notNull())
-    .addColumn('owner_user_id', 'varchar', (col) => col.notNull())
+    .addColumn('creator_user_id', 'varchar', (col) => col.notNull())
+    .addColumn('team_id', 'varchar')
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
     )
@@ -82,11 +83,30 @@ export async function up(db: Kysely<any>): Promise<void> {
   );
 
   await db.schema
+    .createTable('team')
+    .addColumn('id', 'varchar', (col) => col.primaryKey())
+    .addColumn('name', 'varchar', (col) => col.notNull())
+    .addColumn('created_at', 'timestamptz', (col) =>
+      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
+    )
+    .addColumn('updated_at', 'timestamptz', (col) =>
+      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
+    )
+    .execute();
+  await db.executeQuery(
+    sql`
+          CREATE TRIGGER update_team_updated_at BEFORE UPDATE
+          ON team FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+    `.compile(db)
+  );
+
+  await db.schema
     .createTable('collaborator')
     .addColumn('user_id', 'varchar', (col) => col.notNull())
-    .addColumn('project_id', 'varchar', (col) =>
-      col.references('project.id').onDelete('cascade').notNull()
+    .addColumn('team_id', 'varchar', (col) =>
+      col.references('team.id').onDelete('cascade').notNull()
     )
+    .addColumn('role', 'varchar', (col) => col.notNull())
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
     )
@@ -105,9 +125,9 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema.createIndex('cue_project_id_index').on('cue').column('project_id').execute();
   await db.schema.createIndex('cue_track_id_index').on('cue').column('track_id').execute();
   await db.schema
-    .createIndex('collaborator_project_id_index')
+    .createIndex('collaborator_team_id_index')
     .on('collaborator')
-    .column('project_id')
+    .column('team_id')
     .execute();
 }
 

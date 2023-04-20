@@ -93,6 +93,17 @@
       button.newProject {
         margin-top: 1rem;
       }
+
+      .team {
+        &:not(:first-child) {
+          margin-top: 1rem;
+        }
+
+        p {
+          color: var(--secondary-dark-color);
+          margin-bottom: 0.5rem;
+        }
+      }
     }
   }
 }

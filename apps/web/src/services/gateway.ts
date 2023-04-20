@@ -176,7 +176,23 @@ class GatewayConn {
       .then((data) => data.track);
   }
 
-  upsertProject(project: Irisub.Project) {
+  upsertTeam(team: Irisub.Team) {
+    return fetch(`${BASE_URL}/teams/${team.id}`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        team: team,
+      }),
+    }).then((res) => {
+      if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+      return res.json();
+    });
+  }
+
+  upsertProject(project: Irisub.Project, teamId?: string) {
     return fetch(`${BASE_URL}/projects/${project.id}`, {
       method: 'POST',
       credentials: 'include',
@@ -186,6 +202,7 @@ class GatewayConn {
       },
       body: JSON.stringify({
         project: project,
+        teamId: teamId,
       }),
     }).then((res) => {
       if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);

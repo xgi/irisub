@@ -1,11 +1,12 @@
 import { Pool } from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
-import { ProjectTable, TrackTable, CueTable, CollaboratorTable } from './tables';
+import { ProjectTable, TrackTable, CueTable, CollaboratorTable, TeamTable } from './tables';
 
 interface Database {
   project: ProjectTable;
   track: TrackTable;
   cue: CueTable;
+  team: TeamTable;
   collaborator: CollaboratorTable;
 }
 

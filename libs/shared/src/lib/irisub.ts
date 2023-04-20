@@ -45,4 +45,9 @@ export namespace Irisub {
       styles: { [key: string]: string };
     }[];
   };
+
+  export type Team = {
+    id: string;
+    name: string;
+  };
 }

@@ -30,7 +30,7 @@ const InviteModal: React.FC<Props> = (props: Props) => {
             </Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content className={styles.tabsContent} value="tabCreateTeam">
-            <InviteModalCreateTeam />
+            <InviteModalCreateTeam close={props.handleClose} />
           </Tabs.Content>
           <Tabs.Content className={styles.tabsContent} value="tabExistingTeam">
             <p>Change your password here. After saving, you'll be logged out.</p>

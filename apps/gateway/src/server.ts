@@ -67,7 +67,7 @@ app.post('/sessionLogin', (req, res) => {
 
 /** Helpers */
 
-type ProjectPermission = 'owner' | 'collaborator' | 'doesnotexist' | 'unauthorized';
+type ProjectPermission = 'owner' | 'editor' | 'doesnotexist' | 'unauthorized';
 
 const checkProjectPermission = async (
   projectId: string,
@@ -80,16 +80,19 @@ const checkProjectPermission = async (
     .executeTakeFirst();
 
   if (project === undefined) return { permission: 'doesnotexist' };
-  if (project.owner_user_id === userId) return { permission: 'owner', project: project };
+  if (project.creator_user_id === userId) return { permission: 'owner', project: project };
 
-  const collaborator = await db
-    .selectFrom('collaborator')
-    .where('project_id', '=', projectId)
-    .where('user_id', '=', userId)
-    .executeTakeFirst();
+  if (project.team_id) {
+    const collaborator = await db
+      .selectFrom('collaborator')
+      .where('team_id', '=', project.team_id)
+      .where('user_id', '=', userId)
+      .select('role')
+      .executeTakeFirst();
+    if (collaborator !== undefined) return { permission: collaborator.role, project: project };
+  }
 
-  if (collaborator === undefined) return { permission: 'unauthorized', project: project };
-  return { permission: 'collaborator', project: project };
+  return { permission: 'unauthorized', project: project };
 };
 
 /** Event source */
@@ -173,26 +176,36 @@ app.get('/events', async (req, res) => {
 app.get(
   '/projects',
   async (req, res: Response<Gateway.GetProjectsResponseBody | Gateway.ErrorResponseBody>) => {
-    const joinedProjectIds = (
-      await db
-        .selectFrom('collaborator')
-        .where('user_id', '=', res.locals.uid)
-        .select('project_id')
-        .execute()
-    ).map((collaborator) => collaborator.project_id);
+    const collaborators = await db
+      .selectFrom('collaborator')
+      .where('user_id', '=', res.locals.uid)
+      .select('team_id')
+      .execute();
+
+    const joined: { teamName: string; projects: ProjectTable[] }[] = [];
+    await Promise.all(
+      collaborators.map(async (collaborator) => {
+        const team = await db
+          .selectFrom('team')
+          .where('id', '=', collaborator.team_id)
+          .selectAll()
+          .executeTakeFirstOrThrow();
+        const team_projects = await db
+          .selectFrom('project')
+          .where('team_id', '=', collaborator.team_id)
+          .selectAll()
+          .execute();
+        joined.push({ teamName: team.name, projects: team_projects });
+      })
+    );
 
     const owned = await db
       .selectFrom('project')
-      .where('owner_user_id', '=', res.locals.uid)
+      .where('creator_user_id', '=', res.locals.uid)
       .selectAll()
       .execute();
 
-    const joined =
-      joinedProjectIds.length > 0
-        ? await db.selectFrom('project').where('id', 'in', joinedProjectIds).selectAll().execute()
-        : [];
-
-    res.send({ owned: owned, joined: joined });
+    res.send({ owned: owned, teams: joined });
   }
 );
 
@@ -313,12 +326,19 @@ app.post('/projects/:projectId', async (req, res) => {
     return;
   }
 
+  const newValues = { ...newProject, creator_user_id: res.locals.uid };
+
+  if (permission === 'owner' && req.body.teamId) {
+    newValues['team_id'] = req.body.teamId;
+  }
+
   const insertResult = await db
     .insertInto('project')
-    .values({ ...newProject, owner_user_id: res.locals.uid })
+    .values(newValues)
     .onConflict((oc) =>
       oc.column('id').doUpdateSet((eb) => ({
         title: eb.ref('excluded.title'),
+        team_id: eb.ref('excluded.team_id'),
       }))
     )
     .execute();
@@ -333,6 +353,42 @@ app.post('/projects/:projectId', async (req, res) => {
   broadcastEvent(Gateway.EventName.UPSERT_PROJECT, gwEvent, projectId, eventSourceClientId);
 
   res.send({ project: newProject });
+  res.end();
+});
+
+app.post('/teams/:teamId', async (req, res) => {
+  const { teamId } = req.params;
+
+  const newTeam: Irisub.Team = req.body.team;
+  if (newTeam.id !== teamId) {
+    res.status(400).send('Team ID in body does not match URL parameter');
+    return;
+  }
+
+  const insertTeamResult = await db
+    .insertInto('team')
+    .values({ ...newTeam })
+    .onConflict((oc) =>
+      oc.column('id').doUpdateSet((eb) => ({
+        name: eb.ref('excluded.name'),
+      }))
+    )
+    .execute();
+  res.locals.modified_rows = insertTeamResult.reduce(
+    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
+    0
+  );
+
+  const insertCollaboratorResult = await db
+    .insertInto('collaborator')
+    .values({ user_id: res.locals.uid, team_id: teamId, role: 'owner' })
+    .execute();
+  res.locals.modified_rows = insertCollaboratorResult.reduce(
+    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
+    0
+  );
+
+  res.send({ team: newTeam });
   res.end();
 });
 

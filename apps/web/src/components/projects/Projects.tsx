@@ -14,17 +14,13 @@ type Props = {
   hidden?: boolean;
 };
 
-type GetProjectsResponseBodyProjects =
-  | Gateway.GetProjectsResponseBody['owned']
-  | Gateway.GetProjectsResponseBody['joined'];
+type GetProjectsResponseBodyProjects = Gateway.GetProjectsResponseBody['owned'];
 
 const Projects: React.FC<Props> = (props: Props) => {
   const setCurrentProjectId = useSetRecoilState(currentProjectIdState);
   const setCurrentTrackId = useSetRecoilState(currentTrackIdState);
   const [ownedProjects, setOwnedProjects] = useState<Gateway.GetProjectsResponseBody['owned']>([]);
-  const [joinedProjects, setJoinedProjects] = useState<Gateway.GetProjectsResponseBody['joined']>(
-    []
-  );
+  const [teams, setTeams] = useState<Gateway.GetProjectsResponseBody['teams']>([]);
   const [loading, setLoading] = useState(false);
   const [creatingNewProject, setCreatingNewProject] = useState(false);
 
@@ -34,7 +30,7 @@ const Projects: React.FC<Props> = (props: Props) => {
 
       gateway.getProjects().then((data: Gateway.GetProjectsResponseBody) => {
         setOwnedProjects(data.owned);
-        setJoinedProjects(data.joined);
+        setTeams(data.teams);
         setLoading(false);
       });
     }
@@ -127,13 +123,18 @@ const Projects: React.FC<Props> = (props: Props) => {
           </section>
           <section>
             <div className={styles.left}>
-              <h3>Shared With You</h3>
+              <h3>Team Projects</h3>
             </div>
             <div className={styles.right}>
-              {joinedProjects.length > 0 ? (
-                renderProjects(joinedProjects)
+              {teams.length > 0 ? (
+                teams.map((team) => (
+                  <div key={team.teamName} className={styles.team}>
+                    <p>{team.teamName}</p>
+                    {renderProjects(team.projects)}
+                  </div>
+                ))
               ) : (
-                <p>You haven't joined any projects.</p>
+                <p>You haven't joined any teams.</p>
               )}
             </div>
           </section>

@@ -5,6 +5,11 @@ import { IconCheck, IconChevronDown, IconPlus, IconTrash } from '../Icons';
 import Button from '../Button';
 import { randomProjectName } from '../../util/random';
 import React from 'react';
+import { gateway } from '../../services/gateway';
+import { nanoid } from 'nanoid';
+import { useRecoilValue } from 'recoil';
+import { currentProjectState } from '../../store/states';
+import { Irisub } from '@irisub/shared';
 
 const TEAM_NAME_PLACEHOLDER = randomProjectName();
 
@@ -13,11 +18,31 @@ type Member = {
   role: 'owner' | 'editor';
 };
 
-type Props = unknown;
+type Props = {
+  close: () => void;
+};
 
-const InviteModalCreateTeam: React.FC<Props> = () => {
+const InviteModalCreateTeam: React.FC<Props> = (props: Props) => {
   const [newTeamName, setNewTeamName] = useState('');
   const [members, setMembers] = useState<Member[]>([{ email: '', role: 'editor' }]);
+  const currentProject = useRecoilValue(currentProjectState);
+  const [loading, setLoading] = useState(false);
+
+  const createTeam = () => {
+    setLoading(true);
+
+    const newTeam: Irisub.Team = { id: nanoid(), name: newTeamName };
+
+    gateway
+      .upsertTeam(newTeam)
+      .then(() => {
+        if (currentProject) gateway.upsertProject(currentProject, newTeam.id);
+      })
+      .finally(() => {
+        setLoading(false);
+        props.close();
+      });
+  };
 
   const updateMember = (index: number, newMember: Member) => {
     const temp = [...members];
@@ -109,7 +134,9 @@ const InviteModalCreateTeam: React.FC<Props> = () => {
       </div>
       <div className={styles.footer}>
         <Button>Cancel</Button>
-        <Button accent>Create Team</Button>
+        <Button accent disabled={loading} onClick={createTeam}>
+          Create Team
+        </Button>
       </div>
     </>
   );
