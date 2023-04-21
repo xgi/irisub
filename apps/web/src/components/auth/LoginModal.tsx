@@ -1,4 +1,4 @@
-import Modal from "../Modal";
+import Modal from '../Modal';
 import {
   getAuth,
   GithubAuthProvider,
@@ -7,39 +7,34 @@ import {
   OAuthProvider,
   sendSignInLinkToEmail,
   signInWithCredential,
-} from "firebase/auth";
-import { useRecoilValue } from "recoil";
-import { currentProjectIdState } from "../../store/states";
-import { IconArrowLeft, IconEmail, IconGitHub, IconGoogle, IconMicrosoft, IconX } from "../Icons";
-import styles from "../../styles/components/LoginModal.module.scss";
-import { useState } from "react";
+} from 'firebase/auth';
+import { useRecoilState } from 'recoil';
+import { IconArrowLeft, IconEmail, IconGitHub, IconGoogle, IconMicrosoft, IconX } from '../Icons';
+import styles from '../../styles/components/LoginModal.module.scss';
+import { useState } from 'react';
+import { loginModalOpenState } from '../../store/modals';
 
 enum ProviderName {
-  GOOGLE = "GOOGLE",
-  MICROSOFT = "MICROSOFT",
-  GITHUB = "GITHUB",
+  GOOGLE = 'GOOGLE',
+  MICROSOFT = 'MICROSOFT',
+  GITHUB = 'GITHUB',
 }
 
-type Props = {
-  isOpen: boolean;
-  handleClose: () => void;
-  callback?: () => void;
-};
+type Props = unknown;
 
-const LoginModal: React.FC<Props> = (props: Props) => {
-  const currentProjectId = useRecoilValue(currentProjectIdState);
+const LoginModal: React.FC<Props> = () => {
+  const [loginModalOpen, setLoginModalOpen] = useRecoilState(loginModalOpenState);
   const [showingEmailForm, setShowingEmailForm] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const close = (successful = true) => {
-    setEmail("");
+    setEmail('');
     setShowingEmailForm(false);
     setMagicLinkSent(false);
 
-    props.handleClose();
-    if (successful && props.callback) props.callback();
+    setLoginModalOpen(false);
   };
 
   const getProvider = (providerName: ProviderName) => {
@@ -47,7 +42,7 @@ const LoginModal: React.FC<Props> = (props: Props) => {
       case ProviderName.GOOGLE:
         return new GoogleAuthProvider();
       case ProviderName.MICROSOFT:
-        return new OAuthProvider("microsoft.com");
+        return new OAuthProvider('microsoft.com');
       case ProviderName.GITHUB:
         return new GithubAuthProvider();
     }
@@ -65,7 +60,7 @@ const LoginModal: React.FC<Props> = (props: Props) => {
       })
       .then(() => close())
       .catch((error) => {
-        if (error.code === "auth/credential-already-in-use") {
+        if (error.code === 'auth/credential-already-in-use') {
           // User had already been linked with a different account, so sign-in to it instead.
           // TODO: this means the current anon user is lost -- should prompt that they will
           // lose their current project, or migrate it here
@@ -93,20 +88,23 @@ const LoginModal: React.FC<Props> = (props: Props) => {
     setLoading(true);
 
     const actionCodeSettings = {
-      url: "http://localhost:5173/finishSignUp?cartId=1234",
+      url: 'http://localhost:5173/finishSignUp?cartId=1234',
       handleCodeInApp: true,
     };
 
     const auth = getAuth();
     sendSignInLinkToEmail(auth, email, actionCodeSettings)
       .then(() => {
-        window.localStorage.setItem("emailForSignIn", email);
+        window.localStorage.setItem('emailForSignIn', email);
         setMagicLinkSent(true);
       })
       .catch((error) => {
         console.error(error);
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoginModalOpen(false);
+        setLoading(false);
+      });
   };
 
   const renderOptionButtons = () => {
@@ -155,7 +153,7 @@ const LoginModal: React.FC<Props> = (props: Props) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") handleEmailPasswordless();
+            if (e.key === 'Enter') handleEmailPasswordless();
           }}
           autoFocus
         />
@@ -180,8 +178,8 @@ const LoginModal: React.FC<Props> = (props: Props) => {
     );
   };
 
-  return !props.isOpen ? null : (
-    <Modal isOpen={props.isOpen} handleClose={() => close(false)}>
+  return (
+    <Modal isOpen={loginModalOpen} handleClose={() => close(false)}>
       <div className={styles.container}>
         <div className={styles.header}>
           <h3>Login to Irisub</h3>
@@ -196,7 +194,7 @@ const LoginModal: React.FC<Props> = (props: Props) => {
 
         <div className={styles.footer}>
           <span>
-            By signing in, you agree to our <a href="#">Terms of Service</a> and{" "}
+            By signing in, you agree to our <a href="#">Terms of Service</a> and{' '}
             <a href="#">Privacy Policy</a>.
           </span>
         </div>

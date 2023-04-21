@@ -3,15 +3,21 @@ import styles from '../styles/components/Teams.module.scss';
 import { Gateway } from '@irisub/shared';
 import LoadingContainer from './LoadingContainer';
 import { gateway } from '../services/gateway';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userIdState } from '../store/states';
 import { IconBars3 } from './Icons';
 import { Tooltip } from 'react-tooltip';
+import { getAuth } from 'firebase/auth';
+import { inviteModalOpenState, loginModalOpenState } from '../store/modals';
+import Button from './Button';
 
 type Props = unknown;
 
 const Teams: React.FC<Props> = () => {
   const userId = useRecoilValue(userIdState);
+  const setLoginModalOpen = useSetRecoilState(loginModalOpenState);
+  const setInviteModalOpen = useSetRecoilState(inviteModalOpenState);
+  const [isAnon, setIsAnon] = useState(true);
   const [teams, setTeams] = useState<Gateway.GetTeamsResponseBody['teams']>([]);
   const [loading, setLoading] = useState(false);
 
@@ -23,6 +29,11 @@ const Teams: React.FC<Props> = () => {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    const user = getAuth().currentUser;
+    setIsAnon(!user || user.isAnonymous);
+  }, [userId]);
 
   const renderMembers = (
     teamId: string,
@@ -41,7 +52,8 @@ const Teams: React.FC<Props> = () => {
           {members.map((member) => (
             <tr key={member.id}>
               <td>
-                {member.email} {member.id === userId ? '(you)' : ''}{' '}
+                {member.email}{' '}
+                {member.id === userId ? <span className={styles.sub}>(you)</span> : ''}
               </td>
               <td style={{ textTransform: 'capitalize' }}>{member.role}</td>
               <td style={{ textAlign: 'right' }}>
@@ -71,27 +83,33 @@ const Teams: React.FC<Props> = () => {
     <div className={styles.container}>
       {loading ? (
         <LoadingContainer />
+      ) : isAnon ? (
+        <div className={styles.anonMessage}>
+          <span>
+            Please <a onClick={() => setLoginModalOpen(true)}>sign in</a> to join or create a team.
+          </span>
+        </div>
       ) : (
-        <>
-          {' '}
-          <section>
-            <div className={styles.left}>
-              <h3>Your Teams</h3>
-            </div>
-            <div className={styles.right}>
-              {teams.length > 0 ? (
-                teams.map((team) => (
-                  <div key={team.id} className={styles.team}>
-                    <p>{team.name}</p>
-                    {renderMembers(team.id, team.members)}
-                  </div>
-                ))
-              ) : (
-                <p>You haven't joined any teams.</p>
-              )}
-            </div>
-          </section>
-        </>
+        <section>
+          <div className={styles.left}>
+            <h3>Your Teams</h3>
+          </div>
+          <div className={styles.right}>
+            {teams.length > 0 ? (
+              teams.map((team) => (
+                <div key={team.id} className={styles.team}>
+                  <p>{team.name}</p>
+                  {renderMembers(team.id, team.members)}
+                </div>
+              ))
+            ) : (
+              <p>You haven't joined any teams.</p>
+            )}
+            <Button accent className={styles.newTeam} onClick={() => setInviteModalOpen(true)}>
+              Create Team
+            </Button>
+          </div>
+        </section>
       )}
     </div>
   );

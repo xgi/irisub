@@ -9,3 +9,13 @@ export const importExportModalOpenState = atom<boolean>({
   key: 'importExportModalOpenState',
   default: false,
 });
+
+export const loginModalOpenState = atom<boolean>({
+  key: 'loginModalOpenState',
+  default: false,
+});
+
+export const inviteModalOpenState = atom<boolean>({
+  key: 'inviteModalOpenState',
+  default: false,
+});

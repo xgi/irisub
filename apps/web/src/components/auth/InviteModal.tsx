@@ -3,19 +3,22 @@ import Modal from '../Modal';
 import styles from '../../styles/components/InviteModal.module.scss';
 import { IconX } from '../Icons';
 import InviteModalCreateTeam from './InviteModalCreateTeam';
+import { useRecoilState } from 'recoil';
+import { inviteModalOpenState } from '../../store/modals';
 
-type Props = {
-  isOpen: boolean;
-  handleClose: () => void;
-};
+type Props = unknown;
 
 const InviteModal: React.FC<Props> = (props: Props) => {
-  return !props.isOpen ? null : (
-    <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
+  const [inviteModalOpen, setInviteModalOpen] = useRecoilState(inviteModalOpenState);
+
+  const close = () => setInviteModalOpen(false);
+
+  return (
+    <Modal isOpen={inviteModalOpen} handleClose={close}>
       <div className={styles.container}>
         <div className={styles.header}>
           <h3>Invite Members</h3>
-          <button className={styles.exit} onClick={() => props.handleClose()}>
+          <button className={styles.exit} onClick={close}>
             <IconX width={22} height={22} />
           </button>
         </div>
@@ -30,7 +33,7 @@ const InviteModal: React.FC<Props> = (props: Props) => {
             </Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content className={styles.tabsContent} value="tabCreateTeam">
-            <InviteModalCreateTeam close={props.handleClose} />
+            <InviteModalCreateTeam close={close} />
           </Tabs.Content>
           <Tabs.Content className={styles.tabsContent} value="tabExistingTeam">
             <p>Change your password here. After saving, you'll be logged out.</p>

@@ -1,13 +1,12 @@
 import { getAuth } from 'firebase/auth';
 import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { currentProjectState } from '../store/states';
 import styles from '../styles/components/Header.module.scss';
-import InviteModal from './auth/InviteModal';
-import LoginModal from './auth/LoginModal';
 import Button from './Button';
 import { IconCloud, IconInvite, IconPencil } from './Icons';
 import UserProfileButton from './UserProfileButton';
+import { inviteModalOpenState, loginModalOpenState } from '../store/modals';
 
 type Props = unknown;
 
@@ -15,9 +14,8 @@ const Header: React.FC<Props> = (props: Props) => {
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [editingProjectTitle, setEditingProjectTitle] = useState(false);
   const [tempProjectTitle, setTempProjectTitle] = useState('');
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [loginModalCallback, setLoginModalCallback] = useState<() => void | undefined>();
-  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const setLoginModalOpen = useSetRecoilState(loginModalOpenState);
+  const setInviteModalOpen = useSetRecoilState(inviteModalOpenState);
 
   const updateProjectTitle = () => {
     setEditingProjectTitle(false);
@@ -66,15 +64,6 @@ const Header: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={styles.container}>
-      <InviteModal isOpen={inviteModalOpen} handleClose={() => setInviteModalOpen(false)} />
-      <LoginModal
-        isOpen={loginModalOpen}
-        handleClose={() => {
-          setLoginModalOpen(false);
-          setLoginModalCallback(undefined);
-        }}
-        callback={loginModalCallback}
-      />
       <header className={styles.header}>
         <div className={styles.group}>
           <a href="/" className={styles.brand}>
@@ -88,7 +77,6 @@ const Header: React.FC<Props> = (props: Props) => {
               const user = getAuth().currentUser;
               if (!user || user.isAnonymous) {
                 setLoginModalOpen(true);
-                setLoginModalCallback(() => () => setInviteModalOpen(true));
               } else {
                 setInviteModalOpen(true);
               }

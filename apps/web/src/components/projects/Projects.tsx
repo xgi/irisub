@@ -75,7 +75,12 @@ const Projects: React.FC<Props> = (props: Props) => {
           {projects.map((project) => (
             <tr key={project.id} onClick={() => handleClickProject(project)}>
               <td>
-                {project.title} {project.id === currentProject?.id ? '(current)' : ''}
+                {project.title}{' '}
+                {project.id === currentProject?.id ? (
+                  <span className={styles.sub}>(current)</span>
+                ) : (
+                  ''
+                )}
               </td>
               <td>{formatDate(new Date(project.created_at))}</td>
               <td style={{ textAlign: 'right' }}>

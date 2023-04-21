@@ -69,6 +69,11 @@
           height: 3rem;
           border-top: 1px solid var(--divider-dark-color);
           color: var(--secondary-dark-color);
+
+          > span.sub {
+            color: var(--secondary-color);
+            font-size: var(--font-size-tiny);
+          }
         }
 
         tbody > tr {

@@ -11,6 +11,8 @@ import ImportExportModal from './ImportExportModal';
 import Projects from './projects/Projects';
 import Teams from './Teams';
 import NotFoundPage from './NotFoundPage';
+import LoginModal from './auth/LoginModal';
+import InviteModal from './auth/InviteModal';
 
 type Props = unknown;
 
@@ -19,6 +21,8 @@ const Base: React.FC<Props> = () => {
     <div className={styles.container}>
       <TracksModal />
       <ImportExportModal />
+      <LoginModal />
+      <InviteModal />
 
       <div className={styles.column}>
         <Header />
