@@ -4,8 +4,12 @@ import { Gateway, Irisub } from '@irisub/shared';
 import LoadingContainer from '../LoadingContainer';
 import { gateway } from '../../services/gateway';
 import Button from '../Button';
-import { useSetRecoilState } from 'recoil';
-import { currentProjectIdState, currentTrackIdState } from '../../store/states';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  currentProjectIdState,
+  currentProjectState,
+  currentTrackIdState,
+} from '../../store/states';
 import { IconBars3 } from '../Icons';
 import { Tooltip } from 'react-tooltip';
 import { formatDate } from '../../util/layout';
@@ -19,6 +23,7 @@ type GetProjectsResponseBodyProjects = Gateway.GetProjectsResponseBody['owned'];
 const Projects: React.FC<Props> = (props: Props) => {
   const setCurrentProjectId = useSetRecoilState(currentProjectIdState);
   const setCurrentTrackId = useSetRecoilState(currentTrackIdState);
+  const currentProject = useRecoilValue(currentProjectState);
   const [ownedProjects, setOwnedProjects] = useState<Gateway.GetProjectsResponseBody['owned']>([]);
   const [teams, setTeams] = useState<Gateway.GetProjectsResponseBody['teams']>([]);
   const [loading, setLoading] = useState(false);
@@ -69,7 +74,9 @@ const Projects: React.FC<Props> = (props: Props) => {
         <tbody>
           {projects.map((project) => (
             <tr key={project.id} onClick={() => handleClickProject(project)}>
-              <td>{project.title}</td>
+              <td>
+                {project.title} {project.id === currentProject?.id ? '(current)' : ''}
+              </td>
               <td>{formatDate(new Date(project.created_at))}</td>
               <td style={{ textAlign: 'right' }}>
                 <button

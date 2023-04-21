@@ -1,29 +1,15 @@
-import { useRecoilState } from 'recoil';
-import { playerPlayingState } from '../../store/player';
-import { currentNavPageState } from '../../store/states';
 import styles from '../../styles/components/Sidebar.module.scss';
-import { NavPage } from '../../util/constants';
-import { classNames } from '../../util/layout';
+import { Link, LinkProps, useRoute } from 'wouter';
+import { PropsWithChildren } from 'react';
 
 type Props = unknown;
 
-const Sidebar: React.FC<Props> = (props: Props) => {
-  const [currentNavPage, setCurrentNavPage] = useRecoilState(currentNavPageState);
-  const [playerPlaying, setPlayerPlaying] = useRecoilState(playerPlayingState);
-
-  const goToPage = (navPage: NavPage) => {
-    setCurrentNavPage(navPage);
-    if (playerPlaying) setPlayerPlaying(false);
-  };
-
+const Sidebar: React.FC<Props> = () => {
   return (
     <div className={styles.container}>
       <aside className={styles.aside}>
         <nav>
-          <button
-            className={classNames(currentNavPage === NavPage.Editor ? styles.active : '')}
-            onClick={() => goToPage(NavPage.Editor)}
-          >
+          <SidebarLink href="/">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -40,11 +26,8 @@ const Sidebar: React.FC<Props> = (props: Props) => {
               />
             </svg>
             <span>Editor</span>
-          </button>
-          <button
-            className={classNames(currentNavPage === NavPage.Projects ? styles.active : '')}
-            onClick={() => goToPage(NavPage.Projects)}
-          >
+          </SidebarLink>
+          <SidebarLink href="/projects">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -61,11 +44,8 @@ const Sidebar: React.FC<Props> = (props: Props) => {
               />
             </svg>
             <span>Projects</span>
-          </button>
-          <button
-            className={classNames(currentNavPage === NavPage.Teams ? styles.active : '')}
-            onClick={() => goToPage(NavPage.Teams)}
-          >
+          </SidebarLink>
+          <SidebarLink href="/teams">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -82,11 +62,8 @@ const Sidebar: React.FC<Props> = (props: Props) => {
             </svg>
 
             <span>Teams</span>
-          </button>
-          <button
-            className={classNames(currentNavPage === NavPage.Settings ? styles.active : '')}
-            onClick={() => goToPage(NavPage.Settings)}
-          >
+          </SidebarLink>
+          <SidebarLink href="/settings">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -109,10 +86,19 @@ const Sidebar: React.FC<Props> = (props: Props) => {
               />
             </svg>
             <span>Settings</span>
-          </button>
+          </SidebarLink>
         </nav>
       </aside>
     </div>
+  );
+};
+
+const SidebarLink = (props: PropsWithChildren<LinkProps>) => {
+  const [isActive] = useRoute(props.href || '');
+  return (
+    <Link {...props}>
+      <button className={isActive ? styles.active : ''}>{props.children}</button>
+    </Link>
   );
 };
 

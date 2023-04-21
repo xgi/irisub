@@ -1,8 +1,7 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { ReactNode, useEffect } from 'react';
 import {
-  currentNavPageState,
   currentProjectIdState,
   currentTrackIdState,
   gatewayConnectedState,
@@ -10,7 +9,6 @@ import {
 } from '../../store/states';
 import LoadingContainer from '../LoadingContainer';
 import { gateway } from '../../services/gateway';
-import { NavPage } from '../../util/constants';
 
 type Props = {
   children?: ReactNode;
@@ -21,7 +19,6 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
   const [currentProjectId, setCurrentProjectId] = useRecoilState(currentProjectIdState);
   const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
   const [gatewayConnected, setGatewayConnected] = useRecoilState(gatewayConnectedState);
-  const setCurrentNavPage = useSetRecoilState(currentNavPageState);
 
   const init = async () => {
     if (currentProjectId === null) {
@@ -54,8 +51,6 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
     if (userId !== null) {
       init();
     }
-
-    setCurrentNavPage(NavPage.Editor);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, currentProjectId]);
 

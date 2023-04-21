@@ -11,14 +11,12 @@ import Base from './components/Base';
 import { useEffect } from 'react';
 import {
   currentCueListState,
-  currentNavPageState,
   currentProjectIdState,
   currentProjectState,
   currentTrackListState,
 } from './store/states';
 import { themeState, accentState } from './store/theme';
 import LoadingContainer from './components/LoadingContainer';
-import { NavPage } from './util/constants';
 import { playerPathState } from './store/player';
 
 function App() {
@@ -26,7 +24,6 @@ function App() {
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [currentTrackList, setCurrentTrackList] = useRecoilState(currentTrackListState);
   const setCurrentCueList = useSetRecoilState(currentCueListState);
-  const setCurrentNavPage = useSetRecoilState(currentNavPageState);
   const setPlayerPath = useSetRecoilState(playerPathState);
 
   const theme = useRecoilValue(themeState);
@@ -45,7 +42,6 @@ function App() {
     setCurrentTrackList(null);
     setCurrentCueList(null);
 
-    setCurrentNavPage(NavPage.Editor);
     setPlayerPath('');
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

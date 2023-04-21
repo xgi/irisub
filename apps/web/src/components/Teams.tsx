@@ -4,29 +4,25 @@ import { Gateway } from '@irisub/shared';
 import LoadingContainer from './LoadingContainer';
 import { gateway } from '../services/gateway';
 import { useRecoilValue } from 'recoil';
-import { currentNavPageState, userIdState } from '../store/states';
+import { userIdState } from '../store/states';
 import { IconBars3 } from './Icons';
 import { Tooltip } from 'react-tooltip';
-import { NavPage } from '../util/constants';
 
 type Props = unknown;
 
 const Teams: React.FC<Props> = () => {
   const userId = useRecoilValue(userIdState);
-  const currentNavPage = useRecoilValue(currentNavPageState);
   const [teams, setTeams] = useState<Gateway.GetTeamsResponseBody['teams']>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (currentNavPage === NavPage.Teams) {
-      setLoading(true);
+    setLoading(true);
 
-      gateway.getTeams().then((data) => {
-        setTeams(data.teams);
-        setLoading(false);
-      });
-    }
-  }, [currentNavPage]);
+    gateway.getTeams().then((data) => {
+      setTeams(data.teams);
+      setLoading(false);
+    });
+  }, []);
 
   const renderMembers = (
     teamId: string,

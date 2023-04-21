@@ -1,6 +1,6 @@
 import { Irisub } from '@irisub/shared';
 import { atom } from 'recoil';
-import { NavPage, EditorPanelTab, EditorElementKeys } from '../util/constants';
+import { EditorPanelTab, EditorElementKeys } from '../util/constants';
 import {
   localStorageEffect,
   syncCueListEffect,
@@ -12,11 +12,6 @@ import storeKeys from '../constants/storeKeys.json';
 export const userIdState = atom<string | null>({
   key: 'userIdState',
   default: null,
-});
-
-export const currentNavPageState = atom<NavPage>({
-  key: 'currentNavPageState',
-  default: NavPage.Editor,
 });
 
 export const currentEditorPanelTabState = atom<EditorPanelTab>({

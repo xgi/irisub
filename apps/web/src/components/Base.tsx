@@ -4,27 +4,17 @@ import Footer from './Footer';
 import Header from './Header';
 import Sidebar from './sidebar/Sidebar';
 import Editor from './Editor';
-import { useRecoilValue } from 'recoil';
-import { currentNavPageState } from '../store/states';
-import { NavPage } from '../util/constants';
+import { Route, Switch } from 'wouter';
 import TracksModal from './TracksModal';
 import Settings from './settings/Settings';
 import ImportExportModal from './ImportExportModal';
 import Projects from './projects/Projects';
 import Teams from './Teams';
+import NotFoundPage from './NotFoundPage';
 
 type Props = unknown;
 
-const Base: React.FC<Props> = (props: Props) => {
-  const currentNavPage = useRecoilValue(currentNavPageState);
-
-  const renderPage = () => {
-    if (currentNavPage === NavPage.Editor) return <Editor />;
-    if (currentNavPage === NavPage.Projects) return <Projects />;
-    if (currentNavPage === NavPage.Teams) return <Teams />;
-    if (currentNavPage === NavPage.Settings) return <Settings />;
-  };
-
+const Base: React.FC<Props> = () => {
   return (
     <div className={styles.container}>
       <TracksModal />
@@ -34,7 +24,25 @@ const Base: React.FC<Props> = (props: Props) => {
         <Header />
         <div className={styles.middle}>
           <Sidebar />
-          {renderPage()}
+
+          <Switch>
+            <Route path="/">
+              <Editor />
+            </Route>
+            <Route path="/projects">
+              <Projects />
+            </Route>
+            <Route path="/teams">
+              <Teams />
+            </Route>
+            <Route path="/settings">
+              <Settings />
+            </Route>
+
+            <Route path="/:rest*">
+              <NotFoundPage />
+            </Route>
+          </Switch>
         </div>
         <Footer />
       </div>
