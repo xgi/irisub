@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import * as Select from '@radix-ui/react-select';
+import * as Checkbox from '@radix-ui/react-checkbox';
 import styles from '../../styles/components/InviteModalCreateTeam.module.scss';
 import { IconCheck, IconChevronDown, IconPlus, IconTrash } from '../Icons';
 import Button from '../Button';
@@ -25,6 +26,7 @@ type Props = {
 const InviteModalCreateTeam: React.FC<Props> = (props: Props) => {
   const [newTeamName, setNewTeamName] = useState('');
   const [members, setMembers] = useState<Member[]>([{ email: '', role: 'editor' }]);
+  const [shareProject, setShareProject] = useState(true);
   const currentProject = useRecoilValue(currentProjectState);
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +38,7 @@ const InviteModalCreateTeam: React.FC<Props> = (props: Props) => {
     gateway
       .upsertTeam(newTeam)
       .then(() => {
-        if (currentProject) gateway.upsertProject(currentProject, newTeam.id);
+        if (currentProject && shareProject) gateway.upsertProject(currentProject, newTeam.id);
       })
       .finally(() => {
         setLoading(false);
@@ -131,9 +133,29 @@ const InviteModalCreateTeam: React.FC<Props> = (props: Props) => {
           </div>
           {renderMemberRows()}
         </div>
+
+        <div className={styles.shareTeams}>
+          <span className={styles.header}>Share project</span>
+          <div className={styles.checkboxRow}>
+            <Checkbox.Root
+              className={styles.checkboxRoot}
+              id="shareTeamCurrentCheck"
+              checked={shareProject}
+              onCheckedChange={(checked) => setShareProject(checked === true)}
+            >
+              <Checkbox.Indicator className={styles.checkboxIndicator}>
+                <IconCheck width={20} height={20} />
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+            <label htmlFor="shareTeamCurrentCheck">
+              Share <span className={styles.projectTitle}>{currentProject?.title}</span> with this
+              team
+            </label>
+          </div>
+        </div>
       </div>
       <div className={styles.footer}>
-        <Button>Cancel</Button>
+        <Button onClick={props.close}>Cancel</Button>
         <Button accent disabled={loading} onClick={createTeam}>
           Create Team
         </Button>

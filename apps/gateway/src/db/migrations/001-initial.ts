@@ -19,7 +19,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('id', 'varchar', (col) => col.primaryKey())
     .addColumn('title', 'varchar', (col) => col.notNull())
     .addColumn('creator_user_id', 'varchar', (col) => col.notNull())
-    .addColumn('team_id', 'varchar')
+    .addColumn('team_id', 'varchar', (col) => col.references('team.id').onDelete('restrict'))
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
     )
