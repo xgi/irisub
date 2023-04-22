@@ -127,19 +127,17 @@ class GatewayConn {
     return resp.json();
   }
 
-  getTracks(projectId: string): Promise<Irisub.Track[]> {
+  getTracks(projectId: string): Promise<Gateway.GetTracksResponseBody> {
     return fetch(`${BASE_URL}/projects/${projectId}/tracks`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         'gateway-event-source-client-id': this.eventSourceClientId || '',
       },
-    })
-      .then((res) => {
-        if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
-        return res.json();
-      })
-      .then((data) => data.tracks);
+    }).then((res) => {
+      if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+      return res.json();
+    });
   }
 
   getCues(projectId: string, trackId: string): Promise<Irisub.Cue[]> {

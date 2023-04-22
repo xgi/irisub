@@ -14,7 +14,7 @@ const Header: React.FC<Props> = (props: Props) => {
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [editingProjectTitle, setEditingProjectTitle] = useState(false);
   const [tempProjectTitle, setTempProjectTitle] = useState('');
-  const setLoginModalOpen = useSetRecoilState(loginModalOpenState);
+  const [loginModalOpen, setLoginModalOpen] = useRecoilState(loginModalOpenState);
   const setInviteModalOpen = useSetRecoilState(inviteModalOpenState);
 
   const updateProjectTitle = () => {

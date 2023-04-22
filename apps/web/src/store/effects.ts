@@ -132,7 +132,8 @@ export function syncTrackListEffect(): AtomEffect<Irisub.Track[] | null> {
 
       console.log(`Track list was null, retrieving from project: ${projectId}`);
       if (projectId) {
-        gateway.getTracks(projectId).then((tracks) => {
+        gateway.getTracks(projectId).then((tracksResp) => {
+          const tracks = tracksResp.tracks;
           console.log(`Got initial tracks: ${JSON.stringify(tracks)}`);
           setSelf(tracks);
         });

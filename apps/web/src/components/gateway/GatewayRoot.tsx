@@ -22,7 +22,18 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
 
   const init = async () => {
     if (currentProjectId === null) {
-      // TODO: should try to open an existing one first instead
+      const existingData = await gateway.getProjects();
+      const projects = existingData.owned;
+      existingData.teams.forEach((team) => projects.push(...team.projects));
+
+      if (projects.length > 0) {
+        const project = projects.sort(
+          (a, b) => new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
+        )[0];
+        console.log(`Loading existing project: ${project.id}`);
+        setCurrentProjectId(project.id);
+        return;
+      }
 
       gateway.setupNewProject().then(({ project, track }) => {
         setCurrentProjectId(project.id);
@@ -32,9 +43,12 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
     }
 
     // Get tracks on the current project. This will also verify that we have authorization on it.
-    const tracks = await gateway.getTracks(currentProjectId).catch(() => setCurrentProjectId(null));
-    if (tracks === undefined) return;
+    const tracksResp = await gateway
+      .getTracks(currentProjectId)
+      .catch(() => setCurrentProjectId(null));
+    if (tracksResp === undefined) return;
 
+    const tracks = tracksResp.tracks;
     if (currentTrackId === null || !tracks.map((track) => track.id).includes(currentTrackId)) {
       setCurrentTrackId(tracks[0].id);
     }

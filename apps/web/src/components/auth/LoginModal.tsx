@@ -58,7 +58,6 @@ const LoginModal: React.FC<Props> = () => {
       .then((loginResult) => {
         const currentUser = loginResult.user;
       })
-      .then(() => close())
       .catch((error) => {
         if (error.code === 'auth/credential-already-in-use') {
           // User had already been linked with a different account, so sign-in to it instead.
@@ -81,6 +80,9 @@ const LoginModal: React.FC<Props> = () => {
         } else {
           console.error(error);
         }
+      })
+      .finally(() => {
+        close();
       });
   };
 
