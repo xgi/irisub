@@ -4,9 +4,10 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { currentProjectState } from '../store/states';
 import styles from '../styles/components/Header.module.scss';
 import Button from './Button';
-import { IconCloud, IconInvite, IconPencil } from './Icons';
+import { IconCloud, IconGroup, IconInvite, IconPencil } from './Icons';
 import UserProfileButton from './UserProfileButton';
 import { inviteModalOpenState, loginModalOpenState } from '../store/modals';
+import { Link } from 'wouter';
 
 type Props = unknown;
 
@@ -72,22 +73,31 @@ const Header: React.FC<Props> = (props: Props) => {
           {renderProjectTitle()}
         </div>
         <div className={styles.group}>
-          <span>{currentProject?.team_id}</span>
-          <Button
-            onClick={() => {
-              const user = getAuth().currentUser;
-              if (!user || user.isAnonymous) {
-                setLoginModalOpen(true);
-              } else {
-                setInviteModalOpen(true);
-              }
-            }}
-          >
-            <span>
-              <IconInvite />
-              Invite Members
-            </span>
-          </Button>
+          {!currentProject?.team_id ? (
+            <Button
+              onClick={() => {
+                const user = getAuth().currentUser;
+                if (!user || user.isAnonymous) {
+                  setLoginModalOpen(true);
+                } else {
+                  setInviteModalOpen(true);
+                }
+              }}
+            >
+              <span>
+                <IconInvite />
+                Invite Members
+              </span>
+            </Button>
+          ) : (
+            <Link href="/teams">
+              <Button>
+                <span>
+                  <IconGroup /> Teams
+                </span>
+              </Button>
+            </Link>
+          )}
           {!getAuth().currentUser || getAuth().currentUser?.isAnonymous ? (
             <Button accent={true} onClick={() => setLoginModalOpen(true)}>
               <span>
