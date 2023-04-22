@@ -72,6 +72,7 @@ const Header: React.FC<Props> = (props: Props) => {
           {renderProjectTitle()}
         </div>
         <div className={styles.group}>
+          <span>{currentProject?.team_id}</span>
           <Button
             onClick={() => {
               const user = getAuth().currentUser;

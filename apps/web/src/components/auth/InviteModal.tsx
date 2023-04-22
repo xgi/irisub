@@ -5,6 +5,7 @@ import { IconX } from '../Icons';
 import InviteModalCreateTeam from './InviteModalCreateTeam';
 import { useRecoilState } from 'recoil';
 import { inviteModalOpenState } from '../../store/modals';
+import InviteModalExistingTeam from './InviteModalExistingTeam';
 
 type Props = unknown;
 
@@ -36,7 +37,7 @@ const InviteModal: React.FC<Props> = (props: Props) => {
             <InviteModalCreateTeam close={close} />
           </Tabs.Content>
           <Tabs.Content className={styles.tabsContent} value="tabExistingTeam">
-            <p>Change your password here. After saving, you'll be logged out.</p>
+            <InviteModalExistingTeam close={close} />
           </Tabs.Content>
         </Tabs.Root>
       </div>

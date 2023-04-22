@@ -103,11 +103,13 @@ const Teams: React.FC<Props> = () => {
                 </div>
               ))
             ) : (
-              <p>You haven't joined any teams.</p>
+              <>
+                <p>You haven't joined any teams.</p>
+                <Button accent className={styles.newTeam} onClick={() => setInviteModalOpen(true)}>
+                  Create Team
+                </Button>
+              </>
             )}
-            <Button accent className={styles.newTeam} onClick={() => setInviteModalOpen(true)}>
-              Create Team
-            </Button>
           </div>
         </section>
       )}

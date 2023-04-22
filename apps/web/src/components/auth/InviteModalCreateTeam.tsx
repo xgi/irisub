@@ -8,7 +8,7 @@ import { randomProjectName } from '../../util/random';
 import React from 'react';
 import { gateway } from '../../services/gateway';
 import { nanoid } from 'nanoid';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { currentProjectState } from '../../store/states';
 import { Irisub } from '@irisub/shared';
 
@@ -27,7 +27,7 @@ const InviteModalCreateTeam: React.FC<Props> = (props: Props) => {
   const [newTeamName, setNewTeamName] = useState('');
   const [members, setMembers] = useState<Member[]>([{ email: '', role: 'editor' }]);
   const [shareProject, setShareProject] = useState(true);
-  const currentProject = useRecoilValue(currentProjectState);
+  const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [loading, setLoading] = useState(false);
 
   const createTeam = () => {
@@ -38,7 +38,8 @@ const InviteModalCreateTeam: React.FC<Props> = (props: Props) => {
     gateway
       .upsertTeam(newTeam)
       .then(() => {
-        if (currentProject && shareProject) gateway.upsertProject(currentProject, newTeam.id);
+        if (currentProject && shareProject)
+          setCurrentProject({ ...currentProject, team_id: newTeam.id });
       })
       .finally(() => {
         setLoading(false);
@@ -75,7 +76,7 @@ const InviteModalCreateTeam: React.FC<Props> = (props: Props) => {
             updateMember(index, { email: member.email, role: value as 'editor' | 'owner' })
           }
         >
-          <Select.Trigger className={styles.selectTrigger} aria-label="Food">
+          <Select.Trigger className={styles.selectTrigger}>
             <Select.Value>{member.role}</Select.Value>
             <Select.Icon className={styles.selectIcon}>
               <IconChevronDown />

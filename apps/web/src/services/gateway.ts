@@ -203,7 +203,7 @@ class GatewayConn {
     });
   }
 
-  upsertProject(project: Irisub.Project, teamId?: string) {
+  upsertProject(project: Irisub.Project) {
     return fetch(`${BASE_URL}/projects/${project.id}`, {
       method: 'POST',
       credentials: 'include',
@@ -213,7 +213,6 @@ class GatewayConn {
       },
       body: JSON.stringify({
         project: project,
-        teamId: teamId,
       }),
     }).then((res) => {
       if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);

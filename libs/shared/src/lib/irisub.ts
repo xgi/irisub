@@ -3,6 +3,7 @@ export namespace Irisub {
   export type Project = {
     id: string;
     title: string;
+    team_id?: string;
   };
 
   export type Track = {

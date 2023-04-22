@@ -365,18 +365,18 @@ app.post('/projects/:projectId', async (req, res) => {
     return;
   }
 
-  const { permission } = await checkProjectPermission(projectId, res.locals.uid);
+  const { permission, project } = await checkProjectPermission(projectId, res.locals.uid);
   if (permission === 'unauthorized') {
     res.status(401).send('Unauthorized');
     return;
   }
 
-  const newValues = { ...newProject, creator_user_id: res.locals.uid };
-
-  if (permission === 'owner' && req.body.teamId) {
-    newValues['team_id'] = req.body.teamId;
+  if (project && project.team_id !== newProject.team_id && permission !== 'owner') {
+    res.status(401).send('Unauthorized');
+    return;
   }
 
+  const newValues = { ...newProject, creator_user_id: res.locals.uid };
   const insertResult = await db
     .insertInto('project')
     .values(newValues)
