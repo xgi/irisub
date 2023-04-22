@@ -10,9 +10,8 @@ import {
   currentProjectState,
   currentTrackIdState,
 } from '../../store/states';
-import { IconBars3 } from '../Icons';
-import { Tooltip } from 'react-tooltip';
 import { formatDate } from '../../util/layout';
+import ProjectActionsDropdown from './ProjectActionsDropdown';
 
 type Props = {
   hidden?: boolean;
@@ -53,10 +52,6 @@ const Projects: React.FC<Props> = (props: Props) => {
       .finally(() => setCreatingNewProject(false));
   };
 
-  const handleClickProjectMenu = (project: Irisub.Project) => {
-    console.log(`menu for project ${project.id}`);
-  };
-
   const handleClickProject = (project: Irisub.Project) => {
     setCurrentProjectId(project.id);
   };
@@ -84,20 +79,7 @@ const Projects: React.FC<Props> = (props: Props) => {
               </td>
               <td>{formatDate(new Date(project.created_at))}</td>
               <td style={{ textAlign: 'right' }}>
-                <button
-                  data-tooltip-id={`tt-project-actions-${project.id}`}
-                  data-tooltip-content={'Project Actions'}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClickProjectMenu(project);
-                  }}
-                >
-                  <span>
-                    <IconBars3 width={24} height={24} />
-                  </span>
-                </button>
-
-                <Tooltip id={`tt-project-actions-${project.id}`} className="tooltip" place="left" />
+                <ProjectActionsDropdown project={project} />
               </td>
             </tr>
           ))}
