@@ -1,6 +1,13 @@
 import { Pool } from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
-import { ProjectTable, TrackTable, CueTable, CollaboratorTable, TeamTable } from './tables';
+import {
+  ProjectTable,
+  TrackTable,
+  CueTable,
+  CollaboratorTable,
+  TeamTable,
+  InvitationTable,
+} from './tables';
 
 interface Database {
   project: ProjectTable;
@@ -8,6 +15,7 @@ interface Database {
   cue: CueTable;
   team: TeamTable;
   collaborator: CollaboratorTable;
+  invitation: InvitationTable;
 }
 
 const dbConnStr = process.env.DB_CONNECTION_STRING;

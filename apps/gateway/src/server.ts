@@ -1,5 +1,6 @@
 import express, { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import admin from 'firebase-admin';
@@ -8,8 +9,9 @@ import { Gateway, Irisub } from '@irisub/shared';
 import { db } from './db/database.server';
 import { initializeFirebase } from './firebase';
 import { ProjectTable } from './db/tables';
-import { Selectable } from 'kysely';
+import { InsertResult, Selectable } from 'kysely';
 import { logger } from './logger';
+import { sendUserInvitationEmail } from './mail/mailer';
 
 const app = express();
 const port = 3123;
@@ -93,6 +95,10 @@ const checkProjectPermission = async (
   }
 
   return { permission: 'unauthorized', project: project };
+};
+
+const sumInsertedOrUpdatedRows = (insertResults: InsertResult[]) => {
+  return insertResults.reduce((total, cur) => total + Number(cur.numInsertedOrUpdatedRows), 0);
 };
 
 /** Event source */
@@ -355,6 +361,57 @@ app.get(
   }
 );
 
+app.post('/sendInvitations', async (req, res) => {
+  const { teamId, invitees } = req.body;
+
+  if (!invitees || invitees.length === 0 || invitees.length > 10) {
+    res.status(401).send('Invalid number of invitees');
+    return;
+  }
+
+  const team = await db.selectFrom('team').where('id', '=', teamId).selectAll().executeTakeFirst();
+  if (!team) {
+    res.status(404).send('Not Found');
+    return;
+  }
+
+  const collaborator = await db
+    .selectFrom('collaborator')
+    .where('team_id', '=', teamId)
+    .where('user_id', '=', res.locals.uid)
+    .select('role')
+    .executeTakeFirst();
+
+  if (!collaborator || collaborator.role !== 'owner') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+
+  const invitations = invitees.map((invitee) => ({
+    id: nanoid(),
+    sender_user_id: res.locals.uid,
+    invitee_email: invitee.email,
+    invitee_role: invitee.role,
+    team_id: teamId,
+  }));
+
+  const insertResult = await db.insertInto('invitation').values(invitations).execute();
+  res.locals.modified_rows = sumInsertedOrUpdatedRows(insertResult);
+
+  await Promise.all(
+    invitations.map(async (invitation) => {
+      await sendUserInvitationEmail(
+        invitation.email,
+        res.locals.user_email,
+        team.name,
+        invitation.id
+      );
+    })
+  );
+
+  res.send({ invitations: invitations });
+});
+
 app.post('/projects/:projectId', async (req, res) => {
   const eventSourceClientId = req.headers['gateway-event-source-client-id'] as string;
   const { projectId } = req.params;
@@ -387,10 +444,7 @@ app.post('/projects/:projectId', async (req, res) => {
       }))
     )
     .execute();
-  res.locals.modified_rows = insertResult.reduce(
-    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
-    0
-  );
+  res.locals.modified_rows = sumInsertedOrUpdatedRows(insertResult);
 
   const gwEvent: Gateway.UpsertProjectEvent = {
     project: newProject,
@@ -424,10 +478,7 @@ app.post('/teams/:teamId', async (req, res) => {
       }))
     )
     .execute();
-  res.locals.modified_rows = insertTeamResult.reduce(
-    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
-    0
-  );
+  res.locals.modified_rows = sumInsertedOrUpdatedRows(insertTeamResult);
 
   const insertCollaboratorResult = await db
     .insertInto('collaborator')
@@ -438,10 +489,7 @@ app.post('/teams/:teamId', async (req, res) => {
       role: 'owner',
     })
     .execute();
-  res.locals.modified_rows = insertCollaboratorResult.reduce(
-    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
-    0
-  );
+  res.locals.modified_rows += sumInsertedOrUpdatedRows(insertCollaboratorResult);
 
   res.send({ team: newTeam });
   res.end();
@@ -477,10 +525,7 @@ app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
       }))
     )
     .execute();
-  res.locals.modified_rows = insertResult.reduce(
-    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
-    0
-  );
+  res.locals.modified_rows = sumInsertedOrUpdatedRows(insertResult);
 
   const gwEvent: Gateway.UpsertTrackEvent = {
     track: newTrack,
@@ -523,10 +568,7 @@ app.post('/projects/:projectId/tracks/:trackId/cues', async (req, res) => {
       }))
     )
     .execute();
-  res.locals.modified_rows = insertResult.reduce(
-    (total, cur) => total + Number(cur.numInsertedOrUpdatedRows),
-    0
-  );
+  res.locals.modified_rows = sumInsertedOrUpdatedRows(insertResult);
 
   const gwEvent: Gateway.UpsertCuesEvent = {
     cues: req.body.cues,

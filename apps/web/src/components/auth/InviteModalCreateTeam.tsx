@@ -30,21 +30,23 @@ const InviteModalCreateTeam: React.FC<Props> = (props: Props) => {
   const [currentProject, setCurrentProject] = useRecoilState(currentProjectState);
   const [loading, setLoading] = useState(false);
 
-  const createTeam = () => {
+  const createTeam = async () => {
     setLoading(true);
 
     const newTeam: Irisub.Team = { id: nanoid(), name: newTeamName };
 
-    gateway
-      .upsertTeam(newTeam)
-      .then(() => {
-        if (currentProject && shareProject)
-          setCurrentProject({ ...currentProject, team_id: newTeam.id });
-      })
-      .finally(() => {
-        setLoading(false);
-        props.close();
-      });
+    await gateway.upsertTeam(newTeam);
+
+    if (currentProject && shareProject) {
+      setCurrentProject({ ...currentProject, team_id: newTeam.id });
+
+      if (currentProject && members.length > 0) {
+        await gateway.sendInvitations(newTeam.id, members);
+      }
+    }
+
+    setLoading(false);
+    props.close();
   };
 
   const updateMember = (index: number, newMember: Member) => {

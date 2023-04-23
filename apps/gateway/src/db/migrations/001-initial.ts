@@ -15,6 +15,24 @@ export async function up(db: Kysely<any>): Promise<void> {
   );
 
   await db.schema
+    .createTable('team')
+    .addColumn('id', 'varchar', (col) => col.primaryKey())
+    .addColumn('name', 'varchar', (col) => col.notNull())
+    .addColumn('created_at', 'timestamptz', (col) =>
+      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
+    )
+    .addColumn('updated_at', 'timestamptz', (col) =>
+      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
+    )
+    .execute();
+  await db.executeQuery(
+    sql`
+          CREATE TRIGGER update_team_updated_at BEFORE UPDATE
+          ON team FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+    `.compile(db)
+  );
+
+  await db.schema
     .createTable('project')
     .addColumn('id', 'varchar', (col) => col.primaryKey())
     .addColumn('title', 'varchar', (col) => col.notNull())
@@ -83,24 +101,6 @@ export async function up(db: Kysely<any>): Promise<void> {
   );
 
   await db.schema
-    .createTable('team')
-    .addColumn('id', 'varchar', (col) => col.primaryKey())
-    .addColumn('name', 'varchar', (col) => col.notNull())
-    .addColumn('created_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
-    )
-    .addColumn('updated_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
-    )
-    .execute();
-  await db.executeQuery(
-    sql`
-          CREATE TRIGGER update_team_updated_at BEFORE UPDATE
-          ON team FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-    `.compile(db)
-  );
-
-  await db.schema
     .createTable('collaborator')
     .addColumn('user_id', 'varchar', (col) => col.notNull())
     .addColumn('team_id', 'varchar', (col) =>
@@ -122,6 +122,20 @@ export async function up(db: Kysely<any>): Promise<void> {
     `.compile(db)
   );
 
+  await db.schema
+    .createTable('invitation')
+    .addColumn('id', 'varchar', (col) => col.primaryKey())
+    .addColumn('sender_user_id', 'varchar', (col) => col.notNull())
+    .addColumn('team_id', 'varchar', (col) =>
+      col.references('team.id').onDelete('cascade').notNull()
+    )
+    .addColumn('invitee_email', 'varchar', (col) => col.notNull())
+    .addColumn('invitee_role', 'varchar', (col) => col.notNull())
+    .addColumn('created_at', 'timestamptz', (col) =>
+      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
+    )
+    .execute();
+
   await db.schema.createIndex('track_project_id_index').on('track').column('project_id').execute();
   await db.schema.createIndex('cue_project_id_index').on('cue').column('project_id').execute();
   await db.schema.createIndex('cue_track_id_index').on('cue').column('track_id').execute();
@@ -138,4 +152,6 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable('track').execute();
   await db.schema.dropTable('cue').execute();
   await db.schema.dropTable('collaborator').execute();
+  await db.schema.dropTable('team').execute();
+  await db.schema.dropTable('invitation').execute();
 }

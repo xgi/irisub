@@ -103,6 +103,25 @@ class GatewayConn {
     return { project: newProject, track: newTrack };
   }
 
+  async sendInvitations(
+    teamId: string,
+    invitees: { email: string; role: 'owner' | 'editor' }[]
+  ): Promise<void> {
+    const resp = await fetch(`${BASE_URL}/sendInvitations`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        teamId: teamId,
+        invitees: invitees,
+      }),
+    });
+
+    if (!resp.ok) throw new GatewayResponseError(resp.statusText, resp.status);
+  }
+
   async getProjects(): Promise<Gateway.GetProjectsResponseBody> {
     const resp = await fetch(`${BASE_URL}/projects`, {
       credentials: 'include',

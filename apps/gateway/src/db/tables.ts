@@ -51,3 +51,14 @@ export interface CollaboratorTable {
   created_at: string;
   updated_at: string;
 }
+
+export interface InvitationTable {
+  id: string;
+
+  sender_user_id: string;
+  team_id: string;
+  invitee_email: string;
+  invitee_role: 'owner' | 'editor';
+
+  created_at: string;
+}
