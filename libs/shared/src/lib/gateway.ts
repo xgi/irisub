@@ -75,4 +75,14 @@ export namespace Gateway {
       }[];
     } & Timestamps)[];
   }
+
+  export interface GetInvitationResponseBody {
+    invitation: {
+      id: string;
+      team_id: string;
+      invitee_email: string;
+      invitee_role: string;
+    };
+    teamName: string;
+  }
 }

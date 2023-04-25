@@ -131,10 +131,20 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn('invitee_email', 'varchar', (col) => col.notNull())
     .addColumn('invitee_role', 'varchar', (col) => col.notNull())
+    .addColumn('accepted', 'boolean', (col) => col.defaultTo(false).notNull())
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
     )
+    .addColumn('updated_at', 'timestamptz', (col) =>
+      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
+    )
     .execute();
+  await db.executeQuery(
+    sql`
+          CREATE TRIGGER update_invitation_updated_at BEFORE UPDATE
+          ON invitation FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+      `.compile(db)
+  );
 
   await db.schema.createIndex('track_project_id_index').on('track').column('project_id').execute();
   await db.schema.createIndex('cue_project_id_index').on('cue').column('project_id').execute();

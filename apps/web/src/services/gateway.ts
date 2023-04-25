@@ -122,6 +122,21 @@ class GatewayConn {
     if (!resp.ok) throw new GatewayResponseError(resp.statusText, resp.status);
   }
 
+  async acceptInvitation(invitationId: string): Promise<void> {
+    const resp = await fetch(`${BASE_URL}/invitations/${invitationId}`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        accepted: true,
+      }),
+    });
+
+    if (!resp.ok) throw new GatewayResponseError(resp.statusText, resp.status);
+  }
+
   async getProjects(): Promise<Gateway.GetProjectsResponseBody> {
     const resp = await fetch(`${BASE_URL}/projects`, {
       credentials: 'include',
@@ -202,6 +217,18 @@ class GatewayConn {
         return res.json();
       })
       .then((data) => data.track);
+  }
+
+  getInvitation(invitationId: string): Promise<Gateway.GetInvitationResponseBody> {
+    return fetch(`${BASE_URL}/invitations/${invitationId}`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((res) => {
+      if (!res.ok) throw new GatewayResponseError(res.statusText, res.status);
+      return res.json();
+    });
   }
 
   upsertTeam(team: Irisub.Team) {

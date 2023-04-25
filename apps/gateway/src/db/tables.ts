@@ -59,6 +59,7 @@ export interface InvitationTable {
   team_id: string;
   invitee_email: string;
   invitee_role: 'owner' | 'editor';
+  accepted: boolean;
 
   created_at: string;
 }

@@ -8,7 +8,7 @@ import { handleSessionCookieAuth } from './middleware/auth_middleware';
 import { Gateway, Irisub } from '@irisub/shared';
 import { db } from './db/database.server';
 import { initializeFirebase } from './firebase';
-import { ProjectTable } from './db/tables';
+import { InvitationTable, ProjectTable, TeamTable } from './db/tables';
 import { InsertResult, Selectable } from 'kysely';
 import { logger } from './logger';
 import { sendUserInvitationEmail } from './mail/mailer';
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
     const now = Date.now();
     const logObj = {
       method: req.method,
-      path: req.route.path,
+      path: req.route?.path || '',
       url: decodeURI(req.url),
       statusCode: res.statusCode,
       statusMessage: res.statusMessage,
@@ -95,6 +95,56 @@ const checkProjectPermission = async (
   }
 
   return { permission: 'unauthorized', project: project };
+};
+
+const checkInvitation = async (
+  invitationId: string,
+  res: Response
+): Promise<{
+  invitation?: Selectable<InvitationTable>;
+  team?: Selectable<TeamTable>;
+  success: boolean;
+}> => {
+  const invitation = await db
+    .selectFrom('invitation')
+    .where('id', '=', invitationId)
+    .selectAll()
+    .executeTakeFirst();
+
+  if (!invitation) {
+    res.status(404).send({ errorMessage: 'Invitation not found' });
+    return { success: false };
+  }
+
+  if (invitation.invitee_email !== res.locals.user_email) {
+    res.status(401).send({ errorMessage: 'Unauthorized' });
+    return { invitation, success: false };
+  }
+
+  if (invitation.accepted) {
+    res.status(429).send({ errorMessage: 'Already accepted' });
+    return { invitation, success: false };
+  }
+
+  const now = new Date().getTime();
+  const created = new Date(invitation.created_at).getTime();
+  if (now - created > 1000 * 60 * 60 * 24) {
+    res.status(410).send({ errorMessage: 'Expired' });
+    return { invitation, success: false };
+  }
+
+  const team = await db
+    .selectFrom('team')
+    .where('id', '=', invitation.team_id)
+    .selectAll()
+    .executeTakeFirst();
+
+  if (!team) {
+    res.status(404).send({ errorMessage: 'Team not found' });
+    return { invitation, team, success: false };
+  }
+
+  return { invitation, team, success: true };
 };
 
 const sumInsertedOrUpdatedRows = (insertResults: InsertResult[]) => {
@@ -261,6 +311,18 @@ app.get(
 );
 
 app.get(
+  '/invitations/:invitationId',
+  async (req, res: Response<Gateway.GetInvitationResponseBody | Gateway.ErrorResponseBody>) => {
+    const { invitationId } = req.params;
+
+    const result = await checkInvitation(invitationId, res);
+    if (result.success) {
+      res.send({ invitation: result.invitation, teamName: result.team.name });
+    }
+  }
+);
+
+app.get(
   '/projects/:projectId',
   async (req, res: Response<Gateway.GetProjectResponseBody | Gateway.ErrorResponseBody>) => {
     const { projectId } = req.params;
@@ -401,7 +463,7 @@ app.post('/sendInvitations', async (req, res) => {
   await Promise.all(
     invitations.map(async (invitation) => {
       await sendUserInvitationEmail(
-        invitation.email,
+        invitation.invitee_email,
         res.locals.user_email,
         team.name,
         invitation.id
@@ -410,6 +472,43 @@ app.post('/sendInvitations', async (req, res) => {
   );
 
   res.send({ invitations: invitations });
+});
+
+app.post('/invitations/:invitationId', async (req, res) => {
+  const { invitationId } = req.params;
+  const { accepted } = req.body;
+
+  if (!accepted) {
+    res.status(401).send('Invalid input, only use this endpoint with accepted=true in body');
+    return;
+  }
+
+  const result = await checkInvitation(invitationId, res);
+  if (!result.success) return;
+
+  const insertInvitationResult = await db
+    .insertInto('invitation')
+    .values({ ...result.invitation, accepted: true })
+    .onConflict((oc) =>
+      oc.column('id').doUpdateSet((eb) => ({
+        accepted: eb.ref('excluded.accepted'),
+      }))
+    )
+    .execute();
+  res.locals.modified_rows = sumInsertedOrUpdatedRows(insertInvitationResult);
+
+  const insertCollaboratorResult = await db
+    .insertInto('collaborator')
+    .values({
+      user_id: res.locals.uid,
+      team_id: result.team.id,
+      email: res.locals.user_email,
+      role: result.invitation.invitee_role,
+    })
+    .execute();
+  res.locals.modified_rows += sumInsertedOrUpdatedRows(insertCollaboratorResult);
+
+  res.end();
 });
 
 app.post('/projects/:projectId', async (req, res) => {

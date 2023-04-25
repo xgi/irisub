@@ -21,18 +21,21 @@ const Teams: React.FC<Props> = () => {
   const [teams, setTeams] = useState<Gateway.GetTeamsResponseBody['teams']>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const reload = () => {
     setLoading(true);
 
     gateway.getTeams().then((data) => {
       setTeams(data.teams);
       setLoading(false);
     });
-  }, []);
+  };
+
+  useEffect(() => reload(), []);
 
   useEffect(() => {
     const user = getAuth().currentUser;
     setIsAnon(!user || user.isAnonymous);
+    reload();
   }, [userId]);
 
   const renderMembers = (

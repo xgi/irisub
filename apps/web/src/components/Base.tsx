@@ -13,6 +13,7 @@ import Teams from './Teams';
 import NotFoundPage from './NotFoundPage';
 import LoginModal from './auth/LoginModal';
 import InviteModal from './auth/InviteModal';
+import Join from './Join';
 
 type Props = unknown;
 
@@ -41,6 +42,9 @@ const Base: React.FC<Props> = () => {
             </Route>
             <Route path="/settings">
               <Settings />
+            </Route>
+            <Route path="/join/:invitationId">
+              {(params) => <Join invitationId={params.invitationId || ''} />}
             </Route>
 
             <Route path="/:rest*">

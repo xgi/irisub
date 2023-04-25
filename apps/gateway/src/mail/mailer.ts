@@ -14,6 +14,8 @@ export const sendUserInvitationEmail = (
   teamName: string,
   invitationId: string
 ) => {
+  logger.info(`Sending invitation email to ${toEmail} from ${senderEmail} -- code ${invitationId}`);
+
   const msg = {
     to: toEmail,
     from: 'support@irisub.com',
@@ -21,12 +23,5 @@ export const sendUserInvitationEmail = (
     html: `Code: ${invitationId}`,
   };
 
-  return sgMail
-    .send(msg)
-    .then(() => {
-      console.log('Email sent');
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  return sgMail.send(msg);
 };
