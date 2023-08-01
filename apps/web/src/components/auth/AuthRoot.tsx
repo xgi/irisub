@@ -6,7 +6,7 @@ import {
   getAuth,
   isSignInWithEmailLink,
   linkWithCredential,
-  onAuthStateChanged,
+  onIdTokenChanged,
   signInAnonymously,
   signInWithCredential,
 } from 'firebase/auth';
@@ -59,7 +59,7 @@ const AuthRoot: React.FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
-    onAuthStateChanged(getAuth(), (user) => {
+    onIdTokenChanged(getAuth(), (user) => {
       console.log(`auth state changed, now: ${user ? user.uid : 'null'}`);
 
       setAuthenticated(false);

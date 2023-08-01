@@ -15,8 +15,10 @@ const SubtitleOverlay: React.FC<Props> = (props: Props) => {
 
     return (
       <div className={styles.subtitleGroup}>
-        {lines.map((line) => (
-          <span className={styles.subtitleLine}>{line}</span>
+        {lines.map((line, index) => (
+          <span key={index} className={styles.subtitleLine}>
+            {line}
+          </span>
         ))}
       </div>
     );
