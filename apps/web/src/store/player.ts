@@ -1,21 +1,26 @@
-import { atom } from "recoil";
+import { atom } from 'recoil';
 
 export const playerPathState = atom({
-  key: "playerPathState",
-  default: "",
+  key: 'playerPathState',
+  default: '',
 });
 
 export const playerProgressState = atom({
-  key: "playerProgressState",
+  key: 'playerProgressState',
+  default: 0,
+});
+
+export const requestedPlayerProgressState = atom({
+  key: 'requestedPlayerProgressState',
   default: 0,
 });
 
 export const playerDurationState = atom({
-  key: "playerDurationState",
+  key: 'playerDurationState',
   default: 0,
 });
 
 export const playerPlayingState = atom({
-  key: "playerPlayingState",
+  key: 'playerPlayingState',
   default: false,
 });

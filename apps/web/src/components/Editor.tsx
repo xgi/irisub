@@ -6,6 +6,7 @@ import {
   playerPathState,
   playerPlayingState,
   playerProgressState,
+  requestedPlayerProgressState,
 } from '../store/player';
 import styles from '../styles/components/Editor.module.scss';
 import Player from './Player';
@@ -43,10 +44,10 @@ const Editor: React.FC<Props> = (props: Props) => {
   const playerDuration = useRecoilValue(playerDurationState);
   const [playerPath, setPlayerPath] = useRecoilState(playerPathState);
   const showMs = useRecoilValue(editorShowMsState);
-  const playerRef = useRef<ReactPlayer | null>(null);
   const pickerRef = useRef<HTMLInputElement | null>(null);
   const setTracksModalOpen = useSetRecoilState(tracksModalOpenState);
   const setImportExportModalOpen = useSetRecoilState(importExportModalOpenState);
+  const setRequestedPlayerProgress = useSetRecoilState(requestedPlayerProgressState);
 
   const handleElementResize = (event: HandlerProps) => {
     const { name, flex } = event.component.props;
@@ -88,11 +89,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   // };
 
   const handleSeek = (value: number) => {
-    setPlayerProgress(value);
-
-    if (playerRef.current) {
-      playerRef.current.seekTo(value);
-    }
+    setRequestedPlayerProgress(value);
   };
 
   return (
@@ -171,7 +168,7 @@ const Editor: React.FC<Props> = (props: Props) => {
               onStopResize={handleElementResize}
             >
               <div className={styles.pane}>
-                {playerPath ? <Player path={playerPath} ref={playerRef} /> : <FileDrop />}
+                {playerPath ? <Player path={playerPath} /> : <FileDrop />}
               </div>
             </ReflexElement>
             <ReflexSplitter />
