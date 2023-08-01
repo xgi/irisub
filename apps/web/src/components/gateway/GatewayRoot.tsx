@@ -65,7 +65,6 @@ const GatewayRoot: React.FC<Props> = (props: Props) => {
     if (userId !== null) {
       init();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, currentProjectId]);
 
   return gatewayConnected ? (

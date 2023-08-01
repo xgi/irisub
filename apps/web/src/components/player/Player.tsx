@@ -31,7 +31,6 @@ const Player: React.FC<Props> = (props: Props) => {
       setPlayerProgress(requestedPlayerProgress);
       playerRef.current.seekTo(requestedPlayerProgress);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestedPlayerProgress]);
 
   return props.path ? (

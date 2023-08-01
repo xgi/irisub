@@ -27,7 +27,6 @@ const Header: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (editingProjectTitle && currentProject) setTempProjectTitle(currentProject.title || '');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editingProjectTitle]);
 
   const renderProjectTitle = () => {

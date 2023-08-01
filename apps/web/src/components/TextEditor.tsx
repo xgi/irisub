@@ -34,7 +34,6 @@ const TextEditor: React.FC<Props> = (props: Props) => {
         );
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounced]);
 
   useEffect(() => {
@@ -42,7 +41,6 @@ const TextEditor: React.FC<Props> = (props: Props) => {
       setEditingCue(sortedCurrentCueList[0]);
       setEditingCueId(sortedCurrentCueList[0].id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortedCurrentCueList]);
 
   return (

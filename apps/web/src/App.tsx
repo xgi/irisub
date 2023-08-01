@@ -43,8 +43,6 @@ function App() {
     setCurrentCueList(null);
 
     setPlayerPath('');
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentProjectId]);
 
   return currentProject === null || currentTrackList === null ? (
