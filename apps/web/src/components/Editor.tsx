@@ -9,7 +9,7 @@ import {
   requestedPlayerProgressState,
 } from '../store/player';
 import styles from '../styles/components/Editor.module.scss';
-import Player from './Player';
+import Player from './player/Player';
 import Timetable from './timetable/Timetable';
 import { editorElementSizesState, editorShowMsState } from '../store/states';
 import ReactSlider from 'react-slider';

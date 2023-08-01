@@ -6,8 +6,8 @@ import {
   playerPlayingState,
   playerProgressState,
   requestedPlayerProgressState,
-} from '../store/player';
-import styles from '../styles/components/Player.module.scss';
+} from '../../store/player';
+import styles from '../../styles/components/Player.module.scss';
 import SubtitleOverlay from './SubtitleOverlay';
 
 const VIDEO_ELEMENT_ID = 'myvideo';
