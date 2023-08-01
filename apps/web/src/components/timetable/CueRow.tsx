@@ -99,7 +99,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
           hasButtons
         />
       </td>
-      <td>{getCPS(editingCueId === props.cue.id && editingCue ? editingCue : value)}</td>
+      <td>{getCPS(value)}</td>
       <td>Default</td>
       <td>Steve</td>
       <td style={{ width: '100%' }}>

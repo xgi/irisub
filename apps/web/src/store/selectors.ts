@@ -28,3 +28,13 @@ export const visibleCuesSelector = selector<Irisub.Cue[]>({
     );
   },
 });
+
+export const sortedCurrentCueListSelector = selector<Irisub.Cue[] | null>({
+  key: 'sortedCurrentCueListSelector',
+  get: ({ get }) => {
+    const currentCueList = get(currentCueListState);
+
+    if (!currentCueList) return currentCueList;
+    return currentCueList.slice().sort((a: Irisub.Cue, b: Irisub.Cue) => a.start_ms - b.start_ms);
+  },
+});

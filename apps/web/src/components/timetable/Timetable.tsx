@@ -1,11 +1,12 @@
 import React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentCueListState, currentTrackIdState } from '../../store/states';
 import styles from '../../styles/components/Timetable.module.scss';
 import { nanoid } from 'nanoid';
 import { Irisub } from '@irisub/shared';
 import CueRow from './CueRow';
 import LoadingContainer from '../LoadingContainer';
+import { sortedCurrentCueListSelector } from '../../store/selectors';
 
 type Props = {
   handleSeek: (value: number) => void;
@@ -13,22 +14,23 @@ type Props = {
 
 const Timetable: React.FC<Props> = (props: Props) => {
   const currentTrackId = useRecoilValue(currentTrackIdState);
-  const [currentCueList, setCurrentCueList] = useRecoilState(currentCueListState);
+  const setCurrentCueList = useSetRecoilState(currentCueListState);
+  const sortedCurrentCueList = useRecoilValue(sortedCurrentCueListSelector);
 
   const createNewCue = (text = '') => {
-    if (currentCueList === null) return;
+    if (sortedCurrentCueList === null) return;
 
     let startMs = 0;
     let endMs = 3000;
 
-    if (currentCueList.length > 0) {
-      const lastCue = currentCueList[currentCueList.length - 1];
+    if (sortedCurrentCueList.length > 0) {
+      const lastCue = sortedCurrentCueList[sortedCurrentCueList.length - 1];
       startMs = lastCue.end_ms;
       endMs = startMs + 3000;
     }
 
     setCurrentCueList([
-      ...currentCueList,
+      ...sortedCurrentCueList,
       {
         id: nanoid(),
         text: text,
@@ -39,7 +41,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
   };
 
   const handleInputMoveFocus = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (currentCueList === null) return;
+    if (sortedCurrentCueList === null) return;
 
     let delta = 0;
 
@@ -64,9 +66,9 @@ const Timetable: React.FC<Props> = (props: Props) => {
         }
       };
 
-      if (newCueIdx >= 0 && newCueIdx < currentCueList.length) {
+      if (newCueIdx >= 0 && newCueIdx < sortedCurrentCueList.length) {
         _move();
-      } else if (newCueIdx >= currentCueList.length && e.key === 'Enter') {
+      } else if (newCueIdx >= sortedCurrentCueList.length && e.key === 'Enter') {
         createNewCue();
         setTimeout(() => _move(), 0);
       }
@@ -74,14 +76,10 @@ const Timetable: React.FC<Props> = (props: Props) => {
   };
 
   const renderRows = () => {
-    if (currentTrackId === null || currentCueList === null) return;
-
-    const sortedCueList = currentCueList
-      .slice()
-      .sort((a: Irisub.Cue, b: Irisub.Cue) => a.start_ms - b.start_ms);
+    if (currentTrackId === null || sortedCurrentCueList === null) return;
 
     // TODO: do sort as selector
-    return sortedCueList.map((cue: Irisub.Cue, index: number) => {
+    return sortedCurrentCueList.map((cue: Irisub.Cue, index: number) => {
       // TODO: avoid re-renders
       // https://alexsidorenko.com/blog/react-list-rerender/
       return (
@@ -98,7 +96,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
-      {currentCueList === null ? (
+      {sortedCurrentCueList === null ? (
         <LoadingContainer />
       ) : (
         <table className={styles.table}>

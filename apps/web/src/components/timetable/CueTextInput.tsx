@@ -1,8 +1,8 @@
-import { Irisub } from "@irisub/shared";
-import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { editingCueIdState, editingCueState } from "../../store/states";
-import styles from "../../styles/components/CueTextInput.module.scss";
+import { Irisub } from '@irisub/shared';
+import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { editingCueIdState, editingCueState } from '../../store/states';
+import styles from '../../styles/components/CueTextInput.module.scss';
 
 type Props = {
   index: number;
@@ -30,8 +30,8 @@ const CueTextInput: React.FC<Props> = (props: Props) => {
   }, [props.cue.text]);
 
   const handleTextInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.shiftKey) {
-      setValue(value + "\n");
+    if (e.key === 'Enter' && e.shiftKey) {
+      setValue(value + '\n');
       return;
     }
 
@@ -45,7 +45,7 @@ const CueTextInput: React.FC<Props> = (props: Props) => {
       autoComplete="new-password"
       tabIndex={props.index + 1}
       placeholder=""
-      value={value.replaceAll("\n", "␤")}
+      value={value.replace(/\n/g, '␤')}
       onChange={(e) => setValue(e.target.value)}
       // onChange={(changeEvent: any) =>
       //   updateEvent(props.index, {

@@ -11,8 +11,7 @@ const SubtitleOverlay: React.FC<Props> = (props: Props) => {
   const renderLines = () => {
     if (visibleCues.length === 0) return '';
 
-    const lines = visibleCues[0].text.split('␤');
-
+    const lines = visibleCues[0].text.replace(/␤/g, '\n').split('\n');
     return (
       <div className={styles.subtitleGroup}>
         {lines.map((line, index) => (
