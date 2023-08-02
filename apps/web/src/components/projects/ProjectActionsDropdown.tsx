@@ -29,14 +29,14 @@ const ProjectActionsDropdown: React.FC<Props> = (props: Props) => {
 
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
-          <button
+          <div
             data-tooltip-id={`tt-project-actions-${props.project.id}`}
             data-tooltip-content={'Project Actions'}
           >
             <span>
               <IconBars3 width={24} height={24} />
             </span>
-          </button>
+          </div>
         </DropdownMenu.Trigger>
         <Tooltip id={`tt-project-actions-${props.project.id}`} className="tooltip" place="left" />
 

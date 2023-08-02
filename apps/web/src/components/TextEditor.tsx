@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-dark.min.css'; // TODO: update style
@@ -16,7 +16,12 @@ const TextEditor: React.FC<Props> = (props: Props) => {
   const setEditingCueId = useSetRecoilState(editingCueIdState);
   const setCurrentCueList = useSetRecoilState(currentCueListState);
 
-  const [debounced] = useDebouncedValue(editingCue, 500);
+  const [value, setValue] = useState(editingCue);
+  const [debounced] = useDebouncedValue(value, 500);
+
+  useEffect(() => {
+    setValue(editingCue);
+  }, [editingCue]);
 
   useEffect(() => {
     if (debounced !== null) {
@@ -29,7 +34,7 @@ const TextEditor: React.FC<Props> = (props: Props) => {
           setCurrentCueList(newCueList);
         }
       } else {
-        console.error(
+        console.warn(
           `Attempted to modify cue, but could not find existing with ID: ${debounced.id}`
         );
       }
@@ -37,9 +42,14 @@ const TextEditor: React.FC<Props> = (props: Props) => {
   }, [debounced]);
 
   useEffect(() => {
-    if (sortedCurrentCueList && sortedCurrentCueList.length > 0 && editingCue === null) {
-      setEditingCue(sortedCurrentCueList[0]);
-      setEditingCueId(sortedCurrentCueList[0].id);
+    if (sortedCurrentCueList && sortedCurrentCueList.length > 0) {
+      if (value === null) {
+        setEditingCue(sortedCurrentCueList[0]);
+        setEditingCueId(sortedCurrentCueList[0].id);
+      }
+    } else {
+      setEditingCue(null);
+      setEditingCueId(null);
     }
   }, [sortedCurrentCueList]);
 
@@ -47,9 +57,9 @@ const TextEditor: React.FC<Props> = (props: Props) => {
     <Editor
       className={styles.editor}
       placeholder="Edit text..."
-      value={editingCue ? editingCue.text : ''}
+      value={value ? value.text : ''}
       onValueChange={(newText: string) => {
-        if (editingCue) setEditingCue({ ...editingCue, text: newText });
+        if (value) setValue({ ...value, text: newText });
       }}
       highlight={(value: string) => Prism.highlight(value || '', Prism.languages.html, 'html')}
       padding={10}
