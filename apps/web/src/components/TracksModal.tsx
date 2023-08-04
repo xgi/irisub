@@ -6,15 +6,52 @@ import {
   currentTrackIdState,
   currentTrackListState,
 } from '../store/states';
-import { IconDuplicate, IconTrash, IconX } from './Icons';
+import { IconCheck, IconPencil, IconTrash, IconX } from './Icons';
 import Button from './Button';
 import styles from '../styles/components/TracksModal.module.scss';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { tracksModalOpenState } from '../store/modals';
 import { Irisub } from '@irisub/shared';
 import { classNames } from '../util/layout';
 import { nanoid } from 'nanoid';
 import { gateway } from '../services/gateway';
+import { Tooltip } from 'react-tooltip';
+import * as Select from '@radix-ui/react-select';
+
+const TEMP_LANGUAGE_TAGS = [
+  'aa',
+  'ab',
+  'af',
+  'ak',
+  'sq',
+  'am',
+  'ar',
+  'an',
+  'hy',
+  'as',
+  'av',
+  'ae',
+  'ay',
+  'az',
+  'ba',
+  'bm',
+  'eu',
+  'be',
+  'bn',
+  'bh',
+  'bi',
+  'bs',
+  'br',
+  'bg',
+  'my',
+  'ca',
+  'ch',
+  'ce',
+  'zh',
+  'cu',
+  'cv',
+  'kw',
+];
 
 type Props = {
   onClose?: () => void;
@@ -26,6 +63,11 @@ const TracksModal: React.FC<Props> = (props: Props) => {
   const [currentTrackList, setCurrentTrackList] = useRecoilState(currentTrackListState);
   const setCurrentCueList = useSetRecoilState(currentCueListState);
   const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [renamingTrackId, setRenamingTrackId] = useState<string>();
+  const [promptDeleteTrackId, setPromptDeleteTrackId] = useState<string>();
+  const [tempTrackName, setTempTrackName] = useState<string>();
 
   useEffect(() => {
     if (currentTrackList && currentTrackList.length === 0) {
@@ -45,6 +87,29 @@ const TracksModal: React.FC<Props> = (props: Props) => {
     setCurrentCueList(null);
   };
 
+  const handleRename = () => {
+    if (!renamingTrackId) return;
+
+    updateTrack(renamingTrackId, { name: tempTrackName });
+    setRenamingTrackId(undefined);
+  };
+
+  const updateTrack = (trackId: string, data: { language?: string; name?: string }) => {
+    if (!currentTrackList) return;
+
+    const _tracks = [...currentTrackList].map((track) => {
+      if (trackId === track.id) {
+        return {
+          ...track,
+          language: data.language || track.language,
+          name: data.name || track.name,
+        };
+      }
+      return track;
+    });
+    setCurrentTrackList(_tracks);
+  };
+
   const newTrack = async () => {
     if (!currentProjectId) return;
 
@@ -53,10 +118,20 @@ const TracksModal: React.FC<Props> = (props: Props) => {
       name: 'some new track',
       language: null,
     };
-    gateway.upsertTrack(currentProjectId, newTrack).then((res) => {
-      setCurrentTrackList(currentTrackList ? [...currentTrackList, res.track] : [res.track]);
-      changeTrack(res.track.id);
-    });
+    const trackRes = await gateway.upsertTrack(currentProjectId, newTrack);
+
+    const cue = {
+      id: nanoid(),
+      text: 'This is the first subtitle in your new track.',
+      start_ms: 0,
+      end_ms: 3000,
+    };
+    await gateway.upsertCues(currentProjectId, newTrack.id, [cue]);
+
+    setCurrentTrackList(
+      currentTrackList ? [...currentTrackList, trackRes.track] : [trackRes.track]
+    );
+    changeTrack(trackRes.track.id);
   };
 
   const renderTrack = (track: Irisub.Track) => {
@@ -66,15 +141,117 @@ const TracksModal: React.FC<Props> = (props: Props) => {
         className={classNames(styles.track, track.id === currentTrackId ? styles.active : '')}
         onClick={() => changeTrack(track.id)}
       >
-        <button>
-          <span>
-            {track.id} - {track.name || 'Unnamed track'} - {track.language || 'No language'}
-          </span>
-        </button>
-        <div className={styles.actions}>
-          <IconDuplicate width={20} height={20} />
-          <IconTrash width={20} height={20} />
-        </div>
+        {promptDeleteTrackId === track.id ? (
+          <>
+            <span>
+              Delete <span className={styles.highlight}>{track.name}</span>?
+            </span>
+            <div className={styles.deleteConfirmationActions}>
+              <Button
+                className={styles.delete}
+                accent
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // TODO delete & change active track if necessary
+                  setPromptDeleteTrackId(undefined);
+                }}
+              >
+                Delete
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPromptDeleteTrackId(undefined);
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className={styles.info}>
+              <Select.Root
+                value={track.language || ''}
+                onValueChange={(value) => updateTrack(track.id, { language: value })}
+              >
+                <Select.Trigger className={styles.selectTrigger}>
+                  <Select.Value>{track.language}</Select.Value>
+                </Select.Trigger>
+
+                <Select.Portal className={styles.selectPortal}>
+                  <Select.Content className={styles.selectContent} position="popper">
+                    <Select.Viewport className={styles.selectViewport}>
+                      <Select.Group>
+                        {TEMP_LANGUAGE_TAGS.map((languageTag) => (
+                          <Select.Item
+                            key={languageTag}
+                            value={languageTag}
+                            className={styles.selectItem}
+                          >
+                            <Select.ItemText>{languageTag}</Select.ItemText>
+                            <Select.ItemIndicator className={styles.selectItemIndicator}>
+                              <IconCheck />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                        ))}
+                      </Select.Group>
+                    </Select.Viewport>
+                  </Select.Content>
+                </Select.Portal>
+              </Select.Root>
+
+              {renamingTrackId === track.id ? (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleRename();
+                  }}
+                  className={styles.project}
+                >
+                  <input
+                    value={tempTrackName}
+                    onChange={(e) => {
+                      setTempTrackName(e.target.value);
+                    }}
+                    onFocus={(e) => e.target.select()}
+                    onBlur={() => handleRename()}
+                    autoFocus
+                  />
+                </form>
+              ) : (
+                <span>{track.name || 'Unnamed track'}</span>
+              )}
+            </div>
+            <div className={styles.actions}>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRenamingTrackId(track.id);
+                  setTempTrackName(track.name || '');
+                }}
+                data-tooltip-id="tt-track-modal-rename-track"
+                data-tooltip-content="Rename Track"
+              >
+                <IconPencil width={20} height={20} />
+              </button>
+              <Tooltip id="tt-track-modal-rename-track" className="tooltip" place="right" />
+
+              <button
+                className={styles.delete}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPromptDeleteTrackId(track.id);
+                }}
+                data-tooltip-id="tt-track-modal-delete-track"
+                data-tooltip-content="Delete Track"
+              >
+                <IconTrash width={20} height={20} />
+              </button>
+              <Tooltip id="tt-track-modal-delete-track" className="tooltip" place="right" />
+            </div>
+          </>
+        )}
       </div>
     );
   };
@@ -96,7 +273,7 @@ const TracksModal: React.FC<Props> = (props: Props) => {
     <Modal isOpen={tracksModalOpen} handleClose={() => close()}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h3>Track List</h3>
+          <h3>Tracks</h3>
           <button className={styles.exit}>
             <IconX width={22} height={22} onClick={() => close()} />
           </button>
