@@ -12,46 +12,12 @@ import styles from '../styles/components/TracksModal.module.scss';
 import { useEffect, useState } from 'react';
 import { tracksModalOpenState } from '../store/modals';
 import { Irisub } from '@irisub/shared';
+import { LANGUAGES } from '@irisub/shared';
 import { classNames } from '../util/layout';
 import { nanoid } from 'nanoid';
 import { gateway } from '../services/gateway';
 import { Tooltip } from 'react-tooltip';
 import * as Select from '@radix-ui/react-select';
-
-const TEMP_LANGUAGE_TAGS = [
-  'aa',
-  'ab',
-  'af',
-  'ak',
-  'sq',
-  'am',
-  'ar',
-  'an',
-  'hy',
-  'as',
-  'av',
-  'ae',
-  'ay',
-  'az',
-  'ba',
-  'bm',
-  'eu',
-  'be',
-  'bn',
-  'bh',
-  'bi',
-  'bs',
-  'br',
-  'bg',
-  'my',
-  'ca',
-  'ch',
-  'ce',
-  'zh',
-  'cu',
-  'cv',
-  'kw',
-];
 
 type Props = {
   onClose?: () => void;
@@ -176,25 +142,29 @@ const TracksModal: React.FC<Props> = (props: Props) => {
                 onValueChange={(value) => updateTrack(track.id, { language: value })}
               >
                 <Select.Trigger className={styles.selectTrigger}>
-                  <Select.Value>{track.language}</Select.Value>
+                  <Select.Value>
+                    {track.language && track.language in LANGUAGES ? LANGUAGES[track.language] : ''}
+                  </Select.Value>
                 </Select.Trigger>
 
                 <Select.Portal className={styles.selectPortal}>
                   <Select.Content className={styles.selectContent} position="popper">
                     <Select.Viewport className={styles.selectViewport}>
                       <Select.Group>
-                        {TEMP_LANGUAGE_TAGS.map((languageTag) => (
-                          <Select.Item
-                            key={languageTag}
-                            value={languageTag}
-                            className={styles.selectItem}
-                          >
-                            <Select.ItemText>{languageTag}</Select.ItemText>
-                            <Select.ItemIndicator className={styles.selectItemIndicator}>
-                              <IconCheck />
-                            </Select.ItemIndicator>
-                          </Select.Item>
-                        ))}
+                        {Object.entries(LANGUAGES)
+                          .sort((a, b) => a[1].localeCompare(b[1]))
+                          .map((language) => (
+                            <Select.Item
+                              key={language[0]}
+                              value={language[0]}
+                              className={styles.selectItem}
+                            >
+                              <Select.ItemText>{language[1]}</Select.ItemText>
+                              <Select.ItemIndicator className={styles.selectItemIndicator}>
+                                <IconCheck />
+                              </Select.ItemIndicator>
+                            </Select.Item>
+                          ))}
                       </Select.Group>
                     </Select.Viewport>
                   </Select.Content>
