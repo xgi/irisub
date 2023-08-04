@@ -515,6 +515,7 @@ app.post('/projects/:projectId', async (req, res) => {
   const eventSourceClientId = req.headers['gateway-event-source-client-id'] as string;
   const { projectId } = req.params;
 
+  // TODO: validate req.body.project keys match Irisub.Project
   const newProject: Irisub.Project = req.body.project;
   if (newProject.id !== projectId) {
     res.status(400).send('Project ID in body does not match URL parameter');
@@ -598,6 +599,7 @@ app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
   const eventSourceClientId = req.headers['gateway-event-source-client-id'] as string;
   const { projectId, trackId } = req.params;
 
+  // TODO: validate req.body.track keys match Irisub.Track
   const newTrack: Irisub.Track = req.body.track;
   if (newTrack.id !== trackId) {
     res.status(400).send('Track ID in body does not match URL parameter');
@@ -620,7 +622,7 @@ app.post('/projects/:projectId/tracks/:trackId', async (req, res) => {
     .onConflict((oc) =>
       oc.column('id').doUpdateSet((eb) => ({
         name: eb.ref('excluded.name'),
-        language: eb.ref('excluded.language'),
+        languageCode: eb.ref('excluded.languageCode'),
       }))
     )
     .execute();

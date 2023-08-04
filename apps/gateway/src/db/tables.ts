@@ -11,8 +11,8 @@ export interface ProjectTable {
 
 export interface TrackTable {
   id: string;
-  name: string | null;
-  language: string | null;
+  name: string;
+  languageCode: string;
 
   project_id: string;
 

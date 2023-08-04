@@ -8,8 +8,8 @@ export namespace Irisub {
 
   export type Track = {
     id: string;
-    name: string | null;
-    language: string | null;
+    name: string;
+    languageCode: string;
   };
 
   export type Cue = {

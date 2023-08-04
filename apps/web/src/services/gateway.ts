@@ -80,8 +80,8 @@ class GatewayConn {
 
     const newTrack: Irisub.Track = {
       id: nanoid(),
-      name: 'English',
-      language: null,
+      name: 'Unnamed Track',
+      languageCode: 'en',
     };
     await gateway.upsertTrack(newProject.id, newTrack);
 

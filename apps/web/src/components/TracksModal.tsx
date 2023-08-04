@@ -9,7 +9,7 @@ import {
 import { IconCheck, IconPencil, IconTrash, IconX } from './Icons';
 import Button from './Button';
 import styles from '../styles/components/TracksModal.module.scss';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { tracksModalOpenState } from '../store/modals';
 import { Irisub } from '@irisub/shared';
 import { LANGUAGES } from '@irisub/shared';
@@ -30,16 +30,9 @@ const TracksModal: React.FC<Props> = (props: Props) => {
   const setCurrentCueList = useSetRecoilState(currentCueListState);
   const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
 
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [renamingTrackId, setRenamingTrackId] = useState<string>();
   const [promptDeleteTrackId, setPromptDeleteTrackId] = useState<string>();
   const [tempTrackName, setTempTrackName] = useState<string>();
-
-  useEffect(() => {
-    if (currentTrackList && currentTrackList.length === 0) {
-      // setCurrentTrackList([DEFAULT_TRACK]);
-    }
-  }, [currentTrackList]);
 
   const close = () => {
     setTracksModalOpen(false);
@@ -60,14 +53,14 @@ const TracksModal: React.FC<Props> = (props: Props) => {
     setRenamingTrackId(undefined);
   };
 
-  const updateTrack = (trackId: string, data: { language?: string; name?: string }) => {
+  const updateTrack = (trackId: string, data: { languageCode?: string; name?: string }) => {
     if (!currentTrackList) return;
 
-    const _tracks = [...currentTrackList].map((track) => {
+    const _tracks: Irisub.Track[] = [...currentTrackList].map((track) => {
       if (trackId === track.id) {
         return {
           ...track,
-          language: data.language || track.language,
+          languageCode: data.languageCode || track.languageCode,
           name: data.name || track.name,
         };
       }
@@ -81,8 +74,8 @@ const TracksModal: React.FC<Props> = (props: Props) => {
 
     const newTrack: Irisub.Track = {
       id: nanoid(),
-      name: 'some new track',
-      language: null,
+      name: 'Unnamed Track',
+      languageCode: 'en',
     };
     const trackRes = await gateway.upsertTrack(currentProjectId, newTrack);
 
@@ -138,12 +131,14 @@ const TracksModal: React.FC<Props> = (props: Props) => {
           <>
             <div className={styles.info}>
               <Select.Root
-                value={track.language || ''}
-                onValueChange={(value) => updateTrack(track.id, { language: value })}
+                value={track.languageCode || ''}
+                onValueChange={(value) => updateTrack(track.id, { languageCode: value })}
               >
                 <Select.Trigger className={styles.selectTrigger}>
                   <Select.Value>
-                    {track.language && track.language in LANGUAGES ? LANGUAGES[track.language] : ''}
+                    {track.languageCode && track.languageCode in LANGUAGES
+                      ? LANGUAGES[track.languageCode]
+                      : ''}
                   </Select.Value>
                 </Select.Trigger>
 

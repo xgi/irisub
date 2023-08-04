@@ -55,8 +55,8 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable('track')
     .addColumn('id', 'varchar', (col) => col.primaryKey())
-    .addColumn('name', 'varchar')
-    .addColumn('language', 'varchar')
+    .addColumn('name', 'varchar', (col) => col.notNull())
+    .addColumn('languageCode', 'varchar', (col) => col.notNull())
     .addColumn('project_id', 'varchar', (col) =>
       col.references('project.id').onDelete('cascade').notNull()
     )
