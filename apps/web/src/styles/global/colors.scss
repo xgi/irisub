@@ -60,67 +60,87 @@
   --color-orange: #f97316;
   --color-red: #ef4444;
   --color-pink: #ec4899;
+
+  --color-green-light: #34d399;
+  --color-teal-light: #2dd4bf;
+  --color-blue-light: #60a5fa;
+  --color-indigo-light: #818cf8;
+  --color-purple-light: #a78bfa;
+  --color-yellow-light: #fbbf24;
+  --color-orange-light: #fb923c;
+  --color-red-light: #f87171;
+  --color-pink-light: #f472b6;
+
+  --color-green-dark: #059669;
+  --color-teal-dark: #0d9488;
+  --color-blue-dark: #2563eb;
+  --color-indigo-dark: #4f46e5;
+  --color-purple-dark: #7c3aed;
+  --color-yellow-dark: #d97706;
+  --color-orange-dark: #ea580c;
+  --color-red-dark: #dc2626;
+  --color-pink-dark: #db2777;
 }
 
 :root[data-accent='green'] {
   --accent-color: var(--color-green);
-  --accent-light-color: #34d399;
-  --accent-dark-color: #059669;
+  --accent-light-color: var(--color-green-light);
+  --accent-dark-color: var(--color-green-dark);
   --accent-contrast-color: #fff;
 }
 
 :root[data-accent='teal'] {
   --accent-color: var(--color-teal);
-  --accent-light-color: #2dd4bf;
-  --accent-dark-color: #0d9488;
+  --accent-light-color: var(--color-teal-light);
+  --accent-dark-color: var(--color-teal-dark);
   --accent-contrast-color: #fff;
 }
 
 :root[data-accent='blue'] {
   --accent-color: var(--color-blue);
-  --accent-light-color: #60a5fa;
-  --accent-dark-color: #2563eb;
+  --accent-light-color: var(--color-blue-light);
+  --accent-dark-color: var(--color-blue-dark);
   --accent-contrast-color: #fff;
 }
 
 :root[data-accent='indigo'] {
   --accent-color: var(--color-indigo);
-  --accent-light-color: #818cf8;
-  --accent-dark-color: #4f46e5;
+  --accent-light-color: var(--color-indigo-light);
+  --accent-dark-color: var(--color-indigo-dark);
   --accent-contrast-color: #fff;
 }
 
 :root[data-accent='purple'] {
   --accent-color: var(--color-purple);
-  --accent-light-color: #a78bfa;
-  --accent-dark-color: #7c3aed;
+  --accent-light-color: var(--color-purple-light);
+  --accent-dark-color: var(--color-purple-dark);
   --accent-contrast-color: #fff;
 }
 
 :root[data-accent='yellow'] {
   --accent-color: var(--color-yellow);
-  --accent-light-color: #fbbf24;
-  --accent-dark-color: #d97706;
+  --accent-light-color: var(--color-yellow-light);
+  --accent-dark-color: var(--color-yellow-dark);
   --accent-contrast-color: #fff;
 }
 
 :root[data-accent='orange'] {
   --accent-color: var(--color-orange);
-  --accent-light-color: #fb923c;
-  --accent-dark-color: #ea580c;
+  --accent-light-color: var(--color-orange-light);
+  --accent-dark-color: var(--color-orange-dark);
   --accent-contrast-color: #fff;
 }
 
 :root[data-accent='red'] {
   --accent-color: var(--color-red);
-  --accent-light-color: #f87171;
-  --accent-dark-color: #dc2626;
+  --accent-light-color: var(--color-red-light);
+  --accent-dark-color: var(--color-red-dark);
   --accent-contrast-color: #fff;
 }
 
 :root[data-accent='pink'] {
   --accent-color: var(--color-pink);
-  --accent-light-color: #f472b6;
-  --accent-dark-color: #db2777;
+  --accent-light-color: var(--color-pink-light);
+  --accent-dark-color: var(--color-pink-dark);
   --accent-contrast-color: #fff;
 }
