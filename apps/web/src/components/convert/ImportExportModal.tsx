@@ -1,9 +1,10 @@
-import Modal from './Modal';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import styles from '../styles/components/ImportExportModal.module.scss';
-import { importExportModalOpenState } from '../store/modals';
-import { IconX } from './Icons';
+import Modal from '../Modal';
+import { useRecoilState } from 'recoil';
+import styles from '../../styles/components/ImportExportModal.module.scss';
+import { importExportModalOpenState } from '../../store/modals';
+import { IconX } from '../Icons';
 import { useState } from 'react';
+import ExportMenu from './ExportMenu';
 
 type Props = {
   onClose?: () => void;
@@ -45,12 +46,7 @@ const ImportExportModal: React.FC<Props> = (props: Props) => {
           </button>
         </div>
 
-        <div className={styles.inner}>
-          <p>some content goes here</p>
-          <p>some content goes here</p>
-          <p>some content goes here</p>
-          <p>some content goes here</p>
-        </div>
+        <div className={styles.inner}>{mode === 'export' ? <ExportMenu /> : ''}</div>
 
         <div className={styles.footer}>Some message here.</div>
       </div>

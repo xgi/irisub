@@ -1,0 +1,108 @@
+.container {
+  width: 100%;
+  padding: 1rem 1rem;
+
+  label {
+    color: var(--secondary-dark-color);
+    font-size: var(--font-size-small);
+    font-weight: 600;
+    padding: 0 0.5rem 0.5rem;
+  }
+
+  .format {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+
+    > div {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      > input {
+        flex: 1;
+        padding: 0.5rem 1rem;
+        background-color: transparent;
+
+        color: var(--secondary-dark-color);
+        border: 1px solid var(--divider-color);
+        outline: none;
+
+        &:focus {
+          border: 1px solid var(--secondary-light-color);
+        }
+      }
+    }
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    width: 100%;
+
+    padding-top: 1rem;
+    gap: 0.5rem;
+  }
+}
+
+.selectTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 10rem;
+
+  cursor: pointer;
+  border: 1px solid var(--divider-color);
+  color: var(--secondary-dark-color);
+  background-color: transparent;
+  padding: 0.5rem 0.5rem;
+
+  &:hover {
+    background-color: var(--primary-dark-color);
+  }
+}
+
+.selectPortal {
+  z-index: 1200;
+}
+
+.selectContent {
+  overflow: hidden;
+  background-color: var(--divider-dark-color);
+}
+
+.selectViewport {
+  padding: 1px;
+  width: 11rem;
+}
+
+.selectItem {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-small);
+  height: 1.6rem;
+  padding: 0 2rem 0 1.6rem;
+  position: relative;
+
+  color: var(--secondary-color);
+  background-color: var(--popover-color);
+}
+.selectItem[data-highlighted] {
+  outline: none;
+  color: var(--secondary-dark-color);
+  background-color: var(--primary-dark-color);
+}
+
+.selectItemIndicator {
+  position: absolute;
+  left: 0;
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

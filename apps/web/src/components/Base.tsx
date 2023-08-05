@@ -7,7 +7,7 @@ import Editor from './Editor';
 import { Route, Switch } from 'wouter';
 import TracksModal from './TracksModal';
 import Settings from './settings/Settings';
-import ImportExportModal from './ImportExportModal';
+import ImportExportModal from './convert/ImportExportModal';
 import Projects from './projects/Projects';
 import Teams from './Teams';
 import NotFoundPage from './NotFoundPage';
