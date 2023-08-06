@@ -4,7 +4,7 @@ import styles from '../../styles/components/Settings.module.scss';
 import { IconCircle, IconComputer, IconMoon, IconSun } from '../Icons';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { accentState, themeState } from '../../store/theme';
-import { editorShowMsState, userIdState } from '../../store/states';
+import { editorShowMsState, editorShowTimelineState, userIdState } from '../../store/states';
 import Toggle from './Toggle';
 import Button from '../Button';
 import { getAuth } from 'firebase/auth';
@@ -17,6 +17,7 @@ const Settings: React.FC<Props> = (props: Props) => {
   const [theme, setTheme] = useRecoilState(themeState);
   const [accent, setAccent] = useRecoilState(accentState);
   const [showMs, setShowMs] = useRecoilState(editorShowMsState);
+  const [showTimeline, setShowTimeline] = useRecoilState(editorShowTimelineState);
   const setUserId = useSetRecoilState(userIdState);
 
   const getThemeText = () => {
@@ -61,7 +62,6 @@ const Settings: React.FC<Props> = (props: Props) => {
       <section>
         <div className={styles.left}>
           <h3>Theme</h3>
-          {/* <p>Customize the application theme.</p> */}
         </div>
         <div className={styles.right}>
           <h4>Background</h4>
@@ -128,7 +128,6 @@ const Settings: React.FC<Props> = (props: Props) => {
       <section>
         <div className={styles.left}>
           <h3>Editor</h3>
-          {/* <p>Configure the editor behavior.</p> */}
         </div>
         <div className={styles.right}>
           <h4>Timetable</h4>
@@ -137,16 +136,20 @@ const Settings: React.FC<Props> = (props: Props) => {
             label={'Show milliseconds in timestamps'}
             onChange={(value) => setShowMs(value)}
           />
+          <h4>Timeline</h4>
+          <Toggle
+            value={showTimeline}
+            label={'Show timeline'}
+            onChange={(value) => setShowTimeline(value)}
+          />
         </div>
       </section>
 
       <section>
         <div className={styles.left}>
           <h3>Account</h3>
-          {/* <p>Manage your account.</p> */}
         </div>
         <div className={styles.right}>
-          <h4>Actions</h4>
           <Button
             style={{ marginTop: '0.5rem' }}
             onClick={() => {

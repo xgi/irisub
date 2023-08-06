@@ -78,6 +78,12 @@ export const editorShowMsState = atom<boolean>({
   effects: [localStorageEffect(storeKeys.WORKSPACE.EDITOR_SHOW_MS)],
 });
 
+export const editorShowTimelineState = atom<boolean>({
+  key: 'editorShowTimelineState',
+  default: true,
+  effects: [localStorageEffect(storeKeys.WORKSPACE.EDITOR_SHOW_TIMELINE)],
+});
+
 export const gatewayConnectedState = atom<boolean>({
   key: 'gatewayConnectedState',
   default: false,

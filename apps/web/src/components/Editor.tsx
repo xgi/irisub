@@ -11,9 +11,12 @@ import {
 import styles from '../styles/components/Editor.module.scss';
 import Player from './player/Player';
 import Timetable from './timetable/Timetable';
-import { editorElementSizesState, editorShowMsState } from '../store/states';
+import {
+  editorElementSizesState,
+  editorShowMsState,
+  editorShowTimelineState,
+} from '../store/states';
 import ReactSlider from 'react-slider';
-import ReactPlayer from 'react-player';
 import FileDrop from './FileDrop';
 import {
   Icon10Left,
@@ -44,6 +47,7 @@ const Editor: React.FC<Props> = (props: Props) => {
   const playerDuration = useRecoilValue(playerDurationState);
   const [playerPath, setPlayerPath] = useRecoilState(playerPathState);
   const showMs = useRecoilValue(editorShowMsState);
+  const showTimeline = useRecoilValue(editorShowTimelineState);
   const pickerRef = useRef<HTMLInputElement | null>(null);
   const setTracksModalOpen = useSetRecoilState(tracksModalOpenState);
   const setImportExportModalOpen = useSetRecoilState(importExportModalOpenState);
@@ -179,16 +183,20 @@ const Editor: React.FC<Props> = (props: Props) => {
             </ReflexElement>
           </ReflexContainer>
         </ReflexElement>
-        <ReflexSplitter />
-        <ReflexElement
-          name={EditorElementKeys.Timeline}
-          flex={editorElementSizes[EditorElementKeys.Timeline]}
-          onStopResize={handleElementResize}
-        >
-          <div className={styles.pane}>
-            <p style={{ textAlign: 'center' }}>Timeline</p>
-          </div>
-        </ReflexElement>
+        {showTimeline ? <ReflexSplitter /> : ''}
+        {showTimeline ? (
+          <ReflexElement
+            name={EditorElementKeys.Timeline}
+            flex={editorElementSizes[EditorElementKeys.Timeline]}
+            onStopResize={handleElementResize}
+          >
+            <div className={styles.pane}>
+              <p style={{ textAlign: 'center' }}>Timeline</p>
+            </div>
+          </ReflexElement>
+        ) : (
+          ''
+        )}
         <ReflexSplitter />
         <ReflexElement
           name={EditorElementKeys.Timetable}

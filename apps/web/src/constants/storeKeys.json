@@ -6,6 +6,7 @@
     "CURRENT_PROJECT_ID": "workspace-current-project-id",
     "CURRENT_TRACK_ID": "workspace-current-track-id",
     "EDITOR_ELEMENT_SIZES": "workspace-editor-element-sizes",
-    "EDITOR_SHOW_MS": "workspace-editor-element-sizes"
+    "EDITOR_SHOW_MS": "workspace-editor-show-ms",
+    "EDITOR_SHOW_TIMELINE": "workspace-editor-show-timeline"
   }
 }
