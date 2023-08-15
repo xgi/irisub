@@ -76,6 +76,14 @@
         border: none;
         color: var(--secondary-dark-color);
         background: none;
+
+        input {
+          color: var(--secondary-dark-color);
+          background-color: var(--primary-dark-color);
+          outline: none;
+          border: 1px solid var(--secondary-dark-color);
+          padding: 0.25rem;
+        }
       }
 
       .actions {
@@ -126,4 +134,66 @@
       margin: 0.5rem;
     }
   }
+}
+
+.selectTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 120px;
+  text-transform: capitalize;
+  padding: 0.25rem;
+
+  background-color: var(--primary-light-color);
+  color: var(--secondary-color);
+  border: 1px solid var(--divider-light-color);
+
+  &:hover {
+    cursor: pointer;
+    color: var(--secondary-dark-color);
+    background-color: var(--primary-dark-color);
+    border-color: var(--divider-dark-color);
+  }
+}
+
+.selectPortal {
+  z-index: 1200;
+}
+
+.selectContent {
+  overflow: hidden;
+  background-color: var(--divider-dark-color);
+}
+
+.selectViewport {
+  padding: 1px;
+}
+
+.selectItem {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-small);
+  height: 1.6rem;
+  padding: 0 2rem 0 1.6rem;
+  position: relative;
+
+  color: var(--secondary-color);
+  background-color: var(--popover-color);
+}
+.selectItem[data-highlighted] {
+  outline: none;
+  color: var(--secondary-dark-color);
+  background-color: var(--primary-dark-color);
+}
+
+.selectItemIndicator {
+  position: absolute;
+  left: 0;
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

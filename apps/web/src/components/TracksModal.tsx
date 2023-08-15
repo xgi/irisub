@@ -172,7 +172,6 @@ const TracksModal: React.FC<Props> = (props: Props) => {
                     e.preventDefault();
                     handleRename();
                   }}
-                  className={styles.project}
                 >
                   <input
                     value={tempTrackName}
