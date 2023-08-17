@@ -1,16 +1,15 @@
-name: Push gateway image
+name: Deploy gateway
 
 on:
   push:
     branches:
       - main
-    tags:
-      - v*
 
 jobs:
   push:
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       packages: write
       contents: read
 
