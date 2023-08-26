@@ -14,7 +14,7 @@ import { logger } from './logger';
 import { sendUserInvitationEmail } from './mail/mailer';
 
 const app = express();
-const port = 3123;
+const port = process.env.GATEWAY_PORT;
 
 app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());

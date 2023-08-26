@@ -2,8 +2,11 @@ import { Gateway, Irisub } from '@irisub/shared';
 import { nanoid } from 'nanoid';
 import { randomProjectName } from '../util/random';
 
-// const BASE_URL = '//gateway.irisub.com';
-const BASE_URL = '//localhost:3123';
+const BASE_URL = `//${
+  import.meta.env.PROD
+    ? import.meta.env.VITE_GATEWAY_PROD_HOSTNAME
+    : import.meta.env.VITE_GATEWAY_DEV_HOSTNAME
+}:${import.meta.env.VITE_GATEWAY_PORT}`;
 
 type EventHandler = (event: Gateway.Event) => void;
 
