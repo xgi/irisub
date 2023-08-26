@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { currentCueListState, currentTrackIdState } from '../../store/states';
-import styles from '../../styles/components/Timetable.module.scss';
+import { currentCueListState, currentTrackIdState, editingCueIdState } from '../../store/states';
 import { nanoid } from 'nanoid';
 import { Irisub } from '@irisub/shared';
 import CueRow from './CueRow';
@@ -16,6 +15,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
   const currentTrackId = useRecoilValue(currentTrackIdState);
   const setCurrentCueList = useSetRecoilState(currentCueListState);
   const sortedCurrentCueList = useRecoilValue(sortedCurrentCueListSelector);
+  const editingCueId = useRecoilValue(editingCueIdState);
 
   const createNewCue = (text = '') => {
     if (sortedCurrentCueList === null) return;
@@ -99,9 +99,9 @@ const Timetable: React.FC<Props> = (props: Props) => {
       {sortedCurrentCueList === null ? (
         <LoadingContainer />
       ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
+        <table className="w-full border-collapse">
+          <thead className="bg-slate-1 text-slate-12 sticky top-0">
+            <tr className="leading-loose flex-1 [&>th]:px-2 [&>th]:border-slate-6 [&>th]:border [&>th]:border-t-0">
               <th />
               <th>#</th>
               <th style={{ whiteSpace: 'nowrap' }}>Start</th>
@@ -109,14 +109,19 @@ const Timetable: React.FC<Props> = (props: Props) => {
               <th title="Characters Per Second">CPS</th>
               <th>Style</th>
               <th>Actor</th>
-              <th style={{ textAlign: 'left', paddingLeft: '6px' }}>Text</th>
+              <th className="text-left">Text</th>
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="text-slate-12 [&>tr>td]:border-slate-6 [&>tr>td]:border [&>tr>td]:px-2 text-center">
             {renderRows()}
-            <tr className={styles.add} onClick={() => createNewCue()}>
-              <td colSpan={8}>+++</td>
+            <tr
+              className="bg-slate-3 hover:bg-slate-4 leading-loose flex-1 text-center cursor-pointer select-none"
+              onClick={() => createNewCue()}
+            >
+              <td className="text-center" colSpan={8}>
+                +++
+              </td>
             </tr>
           </tbody>
         </table>

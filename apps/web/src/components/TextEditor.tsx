@@ -6,7 +6,6 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentCueListState, editingCueIdState, editingCueState } from '../store/states';
 import { useDebouncedValue } from '../util/hooks';
 import { shallowEqual } from '../util/comparison';
-import styles from '../styles/components/TextEditor.module.scss';
 import { sortedCurrentCueListSelector } from '../store/selectors';
 
 type Props = unknown;
@@ -55,7 +54,7 @@ const TextEditor: React.FC<Props> = (props: Props) => {
 
   return (
     <Editor
-      className={styles.editor}
+      className="bg-slate-2 h-full border-none leading-6 [&>*]:outline-none"
       placeholder="Edit text..."
       value={value ? value.text : ''}
       onValueChange={(newText: string) => {

@@ -2,7 +2,6 @@ import { Irisub } from '@irisub/shared';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { editingCueIdState, editingCueState } from '../../store/states';
-import styles from '../../styles/components/CueTextInput.module.scss';
 
 type Props = {
   index: number;
@@ -41,7 +40,7 @@ const CueTextInput: React.FC<Props> = (props: Props) => {
   return (
     <input
       id={`timetable-input-text-${props.index}`}
-      className={styles.input}
+      className="bg-transparent text-slate-12 w-full border-none outline-none flex-1 py-px px-0"
       autoComplete="new-password"
       tabIndex={props.index + 1}
       placeholder=""

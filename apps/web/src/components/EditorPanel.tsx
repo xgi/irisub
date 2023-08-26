@@ -1,6 +1,5 @@
 import { useRecoilValue } from 'recoil';
 import { currentCueListState, currentEditorPanelTabState } from '../store/states';
-import styles from '../styles/components/EditorPanel.module.scss';
 import { EditorPanelTab } from '../util/constants';
 import EditorPanelSidebar from './EditorPanelSidebar';
 import TextEditor from './TextEditor';
@@ -23,9 +22,9 @@ const EditorPanel: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="h-full flex flex-row flex-1 overflow-hidden">
       <EditorPanelSidebar />
-      <div className={styles.content}>
+      <div className="w-full overflow-auto">
         {currentCueList === null ? <LoadingContainer /> : renderContent()}
       </div>
     </div>

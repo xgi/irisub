@@ -1,7 +1,6 @@
 import { useRecoilValue } from 'recoil';
 import { editorShowMsState } from '../store/states';
 import { MAX_TIMESTAMP_MS } from '../util/constants';
-import styles from '../styles/components/TimeInput.module.scss';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   inputRef?: React.LegacyRef<HTMLInputElement> | undefined;
@@ -13,9 +12,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 const TimeInput: React.FC<Props> = (props: Props) => {
   const showMs = useRecoilValue(editorShowMsState);
 
-  const handleKeyDown = (
-    keyboardEvent: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  const handleKeyDown = (keyboardEvent: React.KeyboardEvent<HTMLInputElement>) => {
     if (props.onKeyDown) props.onKeyDown(keyboardEvent);
 
     const target = keyboardEvent.target as HTMLInputElement;
@@ -25,19 +22,14 @@ const TimeInput: React.FC<Props> = (props: Props) => {
       keyboardEvent.shiftKey &&
       (keyboardEvent.key === 'ArrowUp' || keyboardEvent.key === 'ArrowDown')
     ) {
-      props.callback(
-        props.valueMs + (keyboardEvent.key === 'ArrowUp' ? 1 : -1) * 1000
-      );
+      props.callback(props.valueMs + (keyboardEvent.key === 'ArrowUp' ? 1 : -1) * 1000);
       window.requestAnimationFrame(() => {
         target.setSelectionRange(pointer, pointer);
       });
       return;
     }
 
-    if (
-      keyboardEvent.key === 'ArrowLeft' ||
-      keyboardEvent.key === 'ArrowRight'
-    ) {
+    if (keyboardEvent.key === 'ArrowLeft' || keyboardEvent.key === 'ArrowRight') {
       const delta = keyboardEvent.key === 'ArrowLeft' ? -1 : 1;
       const newPointer = pointer + delta > 0 ? pointer + delta : 0;
       window.requestAnimationFrame(() => {
@@ -95,9 +87,7 @@ const TimeInput: React.FC<Props> = (props: Props) => {
         ms = Math.floor(ms / 10) * 10 + digit;
     }
 
-    let newValue = Math.floor(
-      ms + seconds * 1000 + minutes * 60 * 1000 + hours * 60 * 60 * 1000
-    );
+    let newValue = Math.floor(ms + seconds * 1000 + minutes * 60 * 1000 + hours * 60 * 60 * 1000);
     if (newValue > MAX_TIMESTAMP_MS) {
       newValue = MAX_TIMESTAMP_MS;
     }
@@ -122,20 +112,28 @@ const TimeInput: React.FC<Props> = (props: Props) => {
   // rome-ignore lint/performance/noDelete: <explanation>
   delete otherProps.hasButtons;
   return (
-    <div className={styles.container}>
+    <div className="flex">
       <input
         {...otherProps}
         ref={props.inputRef}
-        value={new Date(props.valueMs)
-          .toISOString()
-          .substring(12, showMs ? 23 : 19)}
+        value={new Date(props.valueMs).toISOString().substring(12, showMs ? 23 : 19)}
         onKeyDown={handleKeyDown}
         onChange={() => true}
       />
       {props.hasButtons ? (
-        <div className={styles.buttons}>
-          <button onClick={() => handleUnary(1)}>▲</button>
-          <button onClick={() => handleUnary(-1)}>▼</button>
+        <div className="flex flex-col content-between text-slate-11">
+          <button
+            className="leading-4 cursor-pointer text-xs px-1.5 border-none hover:text-slate-12 hover:bg-slate-4"
+            onClick={() => handleUnary(1)}
+          >
+            ▲
+          </button>
+          <button
+            className="leading-4 cursor-pointer text-xs px-1.5 border-none hover:text-slate-12 hover:bg-slate-4"
+            onClick={() => handleUnary(-1)}
+          >
+            ▼
+          </button>
         </div>
       ) : undefined}
     </div>

@@ -2,7 +2,6 @@ import { getAuth } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { currentProjectState } from '../store/states';
-import styles from '../styles/components/Header.module.scss';
 import Button from './Button';
 import { IconCloud, IconGroup, IconInvite, IconPencil } from './Icons';
 import UserProfileButton from './UserProfileButton';
@@ -39,9 +38,10 @@ const Header: React.FC<Props> = (props: Props) => {
             e.preventDefault();
             updateProjectTitle();
           }}
-          className={styles.project}
+          className="text-lg"
         >
           <input
+            className="w-80 py-0.5 px-1 inline bg-slate-3 text-slate-12 outline outline-slate-7 rounded-sm border-none"
             value={tempProjectTitle}
             placeholder="Untitled project"
             onChange={(e) => setTempProjectTitle(e.target.value)}
@@ -54,8 +54,13 @@ const Header: React.FC<Props> = (props: Props) => {
       );
     } else {
       return (
-        <span onClick={() => setEditingProjectTitle(true)} className={styles.project}>
-          <span>{currentProject?.title || 'Untitled project'}</span>
+        <span
+          onClick={() => setEditingProjectTitle(true)}
+          className="text-lg inline-flex justify-center items-center cursor-pointer gap-2 leading-5 text-slate-11 hover:text-slate-12"
+        >
+          <span className="font-bold max-w-xs whitespace-nowrap overflow-x-hidden overflow-ellipsis">
+            {currentProject?.title || 'Untitled project'}
+          </span>
           <IconPencil />
         </span>
       );
@@ -63,17 +68,21 @@ const Header: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.group}>
-          <a href="/" className={styles.brand}>
+    <div className="h-auto w-full overflow-hidden bg-slate-1 border-b border-slate-6">
+      <header className="flex flex-1 p-2 justify-between items-center">
+        <div className="flex items-center gap-2">
+          <a
+            href="/"
+            className="py-2 px-4 tracking-widest text-slate-12 font-bold justify-center items-center inline-flex"
+          >
             <span>IRISUB</span>
           </a>
           {renderProjectTitle()}
         </div>
-        <div className={styles.group}>
+        <div className="flex items-center gap-2">
           {!currentProject?.team_id ? (
             <Button
+              className="text-sm"
               onClick={() => {
                 const user = getAuth().currentUser;
                 if (!user || user.isAnonymous) {
@@ -98,7 +107,7 @@ const Header: React.FC<Props> = (props: Props) => {
             </Link>
           )}
           {!getAuth().currentUser || getAuth().currentUser?.isAnonymous ? (
-            <Button accent={true} onClick={() => setLoginModalOpen(true)}>
+            <Button className="text-sm" accent={true} onClick={() => setLoginModalOpen(true)}>
               <span>
                 <IconCloud />
                 Save Workspace

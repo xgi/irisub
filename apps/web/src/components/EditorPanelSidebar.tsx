@@ -1,7 +1,7 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { Tooltip } from 'react-tooltip';
 import { useRecoilState } from 'recoil';
 import { currentEditorPanelTabState } from '../store/states';
-import styles from '../styles/components/EditorPanelSidebar.module.scss';
 import { EditorPanelTab } from '../util/constants';
 import { classNames } from '../util/layout';
 
@@ -13,12 +13,15 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
   );
 
   return (
-    <div className={styles.container}>
-      <aside className={styles.aside}>
-        <nav>
+    <div className="w-auto h-full text-slate-12 bg-slate-1 border-r border-slate-6">
+      <aside className="flex flex-col justify-between h-100 select-none">
+        <nav className="flex flex-1 flex-nowrap flex-col text-slate-11">
           <a
             className={classNames(
-              currentEditorPanelTab === EditorPanelTab.Text ? styles.active : ''
+              'relative p-2 flex flex-col flex-1 items-center justify-center cursor-pointer',
+              currentEditorPanelTab === EditorPanelTab.Text
+                ? 'text-emerald-500'
+                : 'hover:text-slate-12'
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Text)}
             data-tooltip-id="tt-editor-panel-text"
@@ -43,7 +46,10 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
           <Tooltip id="tt-editor-panel-text" className="tooltip" place="right" />
           <a
             className={classNames(
-              currentEditorPanelTab === EditorPanelTab.Styles ? styles.active : ''
+              'relative p-2 flex flex-col flex-1 items-center justify-center cursor-pointer',
+              currentEditorPanelTab === EditorPanelTab.Styles
+                ? 'text-emerald-500'
+                : 'hover:text-slate-12'
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Styles)}
             data-tooltip-id="tt-editor-panel-styles"

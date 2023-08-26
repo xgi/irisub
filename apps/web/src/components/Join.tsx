@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
-import styles from '../styles/components/Join.module.scss';
 import { Gateway } from '@irisub/shared';
 import LoadingContainer from './LoadingContainer';
 import { gateway } from '../services/gateway';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userIdState } from '../store/states';
-import { IconBars3 } from './Icons';
-import { Tooltip } from 'react-tooltip';
 import { getAuth } from 'firebase/auth';
-import { inviteModalOpenState, loginModalOpenState } from '../store/modals';
+import { loginModalOpenState } from '../store/modals';
 import Button from './Button';
 import { Link, useLocation } from 'wouter';
 
@@ -59,20 +56,20 @@ const Join: React.FC<Props> = (props: Props) => {
     switch (getInvitationCode) {
       case 401:
         return (
-          <div className={styles.info}>
-            <h1>Invitation Unauthorized</h1>
+          <div className="text-center max-w-lg leading-6">
+            <h1 className="font-bold text-lg">Invitation Unauthorized</h1>
             <p>This invitation was sent to a different email address.</p>
             <p>
               Please sign in with the address you received the invitation from, or ask the team
-              owner to send an invitation to{' '}
-              <span className={styles.highlight}>{getAuth().currentUser?.email}</span>
+              owner to send an invitation to {/* TODO: accent color */}
+              <span className="font-bold text-emerald-700">{getAuth().currentUser?.email}</span>
             </p>
           </div>
         );
       case 404:
         return (
-          <div className={styles.info}>
-            <h1>Invitation Not Found</h1>
+          <div className="text-center max-w-lg leading-6">
+            <h1 className="font-bold text-lg">Invitation Not Found</h1>
             <p>
               This is not a valid invitation link. Please ask the team owner to send a new
               invitation.
@@ -81,21 +78,25 @@ const Join: React.FC<Props> = (props: Props) => {
         );
       case 410:
         return (
-          <div className={styles.info}>
-            <h1>Invitation Expired</h1>
+          <div className="text-center max-w-lg leading-6">
+            <h1 className="font-bold text-lg">Invitation Expired</h1>
             <p>This invitation has expired. Please ask the team owner to send a new invitation.</p>
           </div>
         );
       case 200:
         return (
-          <div className={styles.info}>
-            <h1>Join Team</h1>
+          <div className="text-center max-w-lg leading-6">
+            <h1 className="font-bold text-lg">Join Team</h1>
             <p>
-              You are joining <span className={styles.highlight}>{invitation?.teamName}</span> with
-              the <span className={styles.highlight}>{invitation?.invitation.invitee_role}</span>{' '}
+              {/* TODO: accent color */}
+              You are joining{' '}
+              <span className="font-bold text-emerald-700">{invitation?.teamName}</span> with the{' '}
+              <span className="font-bold text-emerald-700">
+                {invitation?.invitation.invitee_role}
+              </span>{' '}
               role.
             </p>
-            <div className={styles.buttons}>
+            <div className="flex justify-center gap-2">
               <Link href="/">
                 <Button>Cancel</Button>
               </Link>
@@ -109,15 +110,22 @@ const Join: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className="w-full h-full flex flex-col items-center overflow-y-scroll text-slate-12 bg-slate-1">
       {loading ? (
         <LoadingContainer />
       ) : (
-        <div className={styles.container}>
+        <div className="h-full flex items-center">
           {isAnon ? (
-            <span className={styles.anonMessage}>
-              Please <a onClick={() => setLoginModalOpen(true)}>sign in</a> to accept this
-              invitation.
+            <span className="font-bold">
+              {/* TODO: accent color for link */}
+              Please{' '}
+              <a
+                className="cursor-pointer text-blue-500 hover:text-blue-700"
+                onClick={() => setLoginModalOpen(true)}
+              >
+                sign in
+              </a>{' '}
+              to accept this invitation.
             </span>
           ) : (
             renderInvitation()

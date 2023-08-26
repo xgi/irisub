@@ -2,9 +2,7 @@ import { Irisub } from '@irisub/shared';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { currentCueListState, editingCueIdState, editingCueState } from '../../store/states';
-import styles from '../../styles/components/CueTextInput.module.scss';
 import { useDebouncedValue } from '../../util/hooks';
-import { classNames } from '../../util/layout';
 import TimeInput from '../TimeInput';
 import CueTextInput from './CueTextInput';
 import CueStatusCell from './CueStatusCell';
@@ -60,15 +58,15 @@ const CueRow: React.FC<Props> = (props: Props) => {
   return (
     <tr
       key={props.cue.id}
-      className={classNames(editingCueId === props.cue.id ? styles.editing : '')}
       onClick={() => setEditingCueId(props.cue.id)}
+      className={editingCueId === props.cue.id ? 'bg-slate-2' : ''}
     >
       <CueStatusCell cue={props.cue} handleSeek={props.handleSeek} />
       <td style={{ textAlign: 'right' }}>{props.index + 1}</td>
       <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
         <TimeInput
           id={`timetable-input-starttime-${props.cue.id}`}
-          className={styles.input}
+          className="w-full border-none outline-none bg-transparent flex-1 py-px px-2"
           tabIndex={props.index + 1}
           data-index={props.index}
           style={{ minWidth: '8em', textAlign: 'center' }}
@@ -85,7 +83,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
       <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
         <TimeInput
           id={`timetable-input-endtime-${props.cue.id}`}
-          className={styles.input}
+          className="w-full border-none outline-none bg-transparent flex-1 py-px px-2"
           tabIndex={props.index + 1}
           data-index={props.index}
           style={{ minWidth: '8em', textAlign: 'center' }}

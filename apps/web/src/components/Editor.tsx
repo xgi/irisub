@@ -8,7 +8,6 @@ import {
   playerProgressState,
   requestedPlayerProgressState,
 } from '../store/player';
-import styles from '../styles/components/Editor.module.scss';
 import Player from './player/Player';
 import Timetable from './timetable/Timetable';
 import {
@@ -34,12 +33,14 @@ import { EditorElementKeys } from '../util/constants';
 import Button from './Button';
 import { importExportModalOpenState, tracksModalOpenState } from '../store/modals';
 import { currentTrackSelector } from '../store/selectors';
+import { accentState } from '../store/theme';
 
 type Props = {
   hidden?: boolean;
 };
 
 const Editor: React.FC<Props> = (props: Props) => {
+  const accent = useRecoilValue(accentState);
   const currentTrack = useRecoilValue(currentTrackSelector);
   const [editorElementSizes, setEditorElementSizes] = useRecoilState(editorElementSizesState);
   const [playerProgress, setPlayerProgress] = useRecoilState(playerProgressState);
@@ -97,52 +98,66 @@ const Editor: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className={styles.container} style={props.hidden ? { display: 'none' } : {}}>
-      <div className={styles.controlBar}>
+    <div className="w-full h-full flex flex-col">
+      <div className="flex bg-slate-1 border-b border-slate-6 px-2">
         {/* TODO: move to ControlBar.tsx */}
-        <div className={styles.controlsGroup}>
-          <a onClick={() => setPlayerPlaying(!playerPlaying)}>
+        <div className="flex flex-1 items-center gap-1 py-2 text-slate-11">
+          <a
+            className="cursor-pointer hover:text-slate-12"
+            onClick={() => setPlayerPlaying(!playerPlaying)}
+          >
             {playerPlaying ? (
               <IconPause width={22} height={22} />
             ) : (
               <IconPlay width={22} height={22} />
             )}
           </a>
-          <a onClick={() => handleSeek(playerProgress - 10)}>
+          <a
+            className="cursor-pointer hover:text-slate-12"
+            onClick={() => handleSeek(playerProgress - 10)}
+          >
             <Icon10Left width={22} height={22} />
           </a>
-          <a onClick={() => handleSeek(playerProgress + 10)}>
+          <a
+            className="cursor-pointer hover:text-slate-12"
+            onClick={() => handleSeek(playerProgress + 10)}
+          >
             <Icon10Right width={22} height={22} />
           </a>
           <ReactSlider
-            className={classNames(styles.horizontalSlider, playerPath ? '' : styles.disabled)}
-            thumbClassName={styles.thumb}
-            trackClassName={styles.track}
+            className={classNames(
+              `w-full max-w-lg h-6 mx-2 [&>.thumb]:bg-slate-9 [&>.thumb]:hover:bg-slate-10 [&>.thumb]:outline-none [&>.thumb]:top-1 [&>.thumb]:h-4 [&>.thumb]:w-3 [&>.track]:top-1.5 [&>.track]:h-3 [&>.track]:bg-slate-3 [&>_.track-0]:bg-emerald-500`,
+              playerPath ? '' : '[&>.thumb]:hidden [&>.track]:bg-slate-2'
+            )}
+            thumbClassName="thumb"
+            trackClassName="track"
             min={0}
             max={playerDuration}
             value={playerProgress}
             onChange={handleSeek}
           />
           <TimeInput
+            className="text-center w-24 outline-none py-0.5 border border-slate-7 text-slate-12 bg-slate-2 disabled:bg-slate-5 disabled:cursor-not-allowed"
             disabled={playerPath ? false : true}
             valueMs={playerProgress * 1000}
             callback={(value: number) => handleSeek(value / 1000)}
           />
-          <span className={styles.timeDivider}>/</span>
+          <span className="px-2">/</span>
           <input
+            className="text-center w-24 outline-none py-0.5 border border-slate-7 text-slate-12 bg-slate-5 cursor-not-allowed"
             disabled
             value={new Date(playerDuration * 1000).toISOString().substring(12, showMs ? 23 : 19)}
           />
         </div>
-        <div className={styles.optionsGroup}>
-          <Button onClick={() => setTracksModalOpen(true)}>
+        <div className="flex items-center gap-2">
+          <Button className="text-sm" onClick={() => setTracksModalOpen(true)}>
             <span>
               <IconSubtitle />
               {currentTrack ? `Track: ${currentTrack.name}` : 'Tracks'}
             </span>
           </Button>
 
-          <Button onClick={handlePickerClick}>
+          <Button className="text-sm" onClick={handlePickerClick}>
             <span>
               <IconFileUpload />
               Select Video
@@ -155,7 +170,7 @@ const Editor: React.FC<Props> = (props: Props) => {
             />
           </Button>
 
-          <Button onClick={() => setImportExportModalOpen(true)}>
+          <Button className="text-sm" onClick={() => setImportExportModalOpen(true)}>
             <span>
               <IconArrowsRightLeft />
               Import / Export
@@ -163,47 +178,66 @@ const Editor: React.FC<Props> = (props: Props) => {
           </Button>
         </div>
       </div>
-      <ReflexContainer orientation="horizontal">
-        <ReflexElement>
-          <ReflexContainer orientation="vertical">
+      <ReflexContainer
+        orientation="horizontal"
+        className="justify-start items-stretch content-stretch flex relative w-full h-full flex-col min-h-[1px]"
+      >
+        <ReflexElement className="relative overflow-auto h-full w-full">
+          <ReflexContainer
+            orientation="vertical"
+            className="justify-start items-stretch content-stretch flex relative w-full h-full flex-row min-w-[1px]"
+          >
             <ReflexElement
+              className="relative overflow-auto h-full w-full"
               name={EditorElementKeys.Player}
               flex={editorElementSizes[EditorElementKeys.Player]}
               onStopResize={handleElementResize}
             >
-              <div className={styles.pane}>
+              <div className="h-full w-full overflow-hidden bg-slate-1 text-slate-12">
                 {playerPath ? <Player path={playerPath} /> : <FileDrop />}
               </div>
             </ReflexElement>
-            <ReflexSplitter />
-            <ReflexElement>
-              <div className={styles.pane}>
+            <ReflexSplitter className="h-full w-2 relative bg-slate-3 before:bg-emerald-500 cursor-col-resize before:absolute before:top-0 before:left-0 before:z-30 before:h-full hover:before:-left-0.5 hover:before:-right-0.5 active:before:-left-0.5 active:before:-right-0.5" />
+            <ReflexElement
+              name={EditorElementKeys.EditorPanel}
+              className="relative overflow-auto h-full w-full"
+            >
+              <div className="h-full w-full overflow-hidden bg-slate-1 text-slate-12">
                 <EditorPanel />
               </div>
             </ReflexElement>
           </ReflexContainer>
         </ReflexElement>
-        {showTimeline ? <ReflexSplitter /> : ''}
+        {showTimeline ? (
+          <ReflexSplitter className="w-full h-2 relative bg-slate-3 before:bg-emerald-500 cursor-row-resize before:absolute before:top-0 before:left-0 before:z-30 before:w-full hover:before:-top-0.5 hover:before:-bottom-0.5 active:before:-top-0.5 active:before:-bottom-0.5" />
+        ) : (
+          ''
+        )}
         {showTimeline ? (
           <ReflexElement
             name={EditorElementKeys.Timeline}
             flex={editorElementSizes[EditorElementKeys.Timeline]}
             onStopResize={handleElementResize}
+            className="relative overflow-auto h-full w-full"
           >
-            <div className={styles.pane}>
+            <div className="h-full w-full overflow-hidden bg-slate-1 text-slate-12">
               <p style={{ textAlign: 'center' }}>Timeline</p>
             </div>
           </ReflexElement>
         ) : (
           ''
         )}
-        <ReflexSplitter />
+        <ReflexSplitter className="w-full h-2 relative bg-slate-3 before:bg-emerald-500 cursor-row-resize before:absolute before:top-0 before:left-0 before:z-30 before:w-full hover:before:-top-0.5 hover:before:-bottom-0.5 active:before:-top-0.5 active:before:-bottom-0.5" />
         <ReflexElement
           name={EditorElementKeys.Timetable}
           flex={editorElementSizes[EditorElementKeys.Timetable]}
           onStopResize={handleElementResize}
+          className="relative overflow-auto h-full w-full"
         >
-          <div className={styles.pane} style={{ overflowY: 'auto' }}>
+          <div
+            className="h-full w-full overflow-hidden bg-slate-1 text-slate-12"
+            style={{ overflowY: 'auto' }}
+          >
             <Timetable handleSeek={handleSeek} />
           </div>
         </ReflexElement>
