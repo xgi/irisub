@@ -4,9 +4,9 @@ import { randomProjectName } from '../util/random';
 
 const BASE_URL = `//${
   import.meta.env.PROD
-    ? import.meta.env.VITE_GATEWAY_PROD_HOSTNAME
-    : import.meta.env.VITE_GATEWAY_DEV_HOSTNAME
-}:${import.meta.env.VITE_GATEWAY_PORT}`;
+    ? `${import.meta.env.VITE_GATEWAY_PROD_HOSTNAME}:${import.meta.env.VITE_GATEWAY_PROD_PORT}`
+    : `${import.meta.env.VITE_GATEWAY_DEV_HOSTNAME}:${import.meta.env.VITE_GATEWAY_DEV_PORT}`
+}`;
 
 type EventHandler = (event: Gateway.Event) => void;
 
