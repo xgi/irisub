@@ -116,7 +116,7 @@ const Timetable: React.FC<Props> = (props: Props) => {
           <tbody className="text-slate-12 [&>tr>td]:border-slate-6 [&>tr>td]:border [&>tr>td]:px-2 text-center">
             {renderRows()}
             <tr
-              className="bg-slate-3 hover:bg-slate-4 leading-loose flex-1 text-center cursor-pointer select-none"
+              className="hover:bg-slate-4 leading-loose flex-1 text-center cursor-pointer select-none"
               onClick={() => createNewCue()}
             >
               <td className="text-center" colSpan={8}>

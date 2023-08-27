@@ -1,5 +1,4 @@
 import { useRecoilValue } from 'recoil';
-import styles from '../../styles/components/SubtitleOverlay.module.scss';
 import { visibleCuesSelector } from '../../store/selectors';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -13,9 +12,9 @@ const SubtitleOverlay: React.FC<Props> = (props: Props) => {
 
     const lines = visibleCues[0].text.replace(/␤/g, '\n').split('\n');
     return (
-      <div className={styles.subtitleGroup}>
+      <div className="break-normal mb-4 flex flex-col items-center">
         {lines.map((line, index) => (
-          <span key={index} className={styles.subtitleLine}>
+          <span key={index} className="bg-black bg-opacity-75 text-white fill-white py-0.5 px-1">
             {line}
           </span>
         ))}
@@ -23,7 +22,9 @@ const SubtitleOverlay: React.FC<Props> = (props: Props) => {
     );
   };
 
-  return <div className={styles.container}>{renderLines()}</div>;
+  return (
+    <div className="w-full h-full z-30 absolute flex items-end justify-center">{renderLines()}</div>
+  );
 };
 
 export default SubtitleOverlay;

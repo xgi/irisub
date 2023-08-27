@@ -8,6 +8,7 @@ import { getAuth } from 'firebase/auth';
 import { loginModalOpenState } from '../store/modals';
 import Button from './Button';
 import { Link, useLocation } from 'wouter';
+import { accentState } from '../store/theme';
 
 type Props = {
   invitationId: string;
@@ -15,6 +16,7 @@ type Props = {
 
 const Join: React.FC<Props> = (props: Props) => {
   const [, navigate] = useLocation();
+  const accent = useRecoilValue(accentState);
   const userId = useRecoilValue(userIdState);
   const setLoginModalOpen = useSetRecoilState(loginModalOpenState);
   const [isAnon, setIsAnon] = useState(true);
@@ -61,8 +63,8 @@ const Join: React.FC<Props> = (props: Props) => {
             <p>This invitation was sent to a different email address.</p>
             <p>
               Please sign in with the address you received the invitation from, or ask the team
-              owner to send an invitation to {/* TODO: accent color */}
-              <span className="font-bold text-emerald-700">{getAuth().currentUser?.email}</span>
+              owner to send an invitation to
+              <span className={`font-bold text-${accent}-500`}>{getAuth().currentUser?.email}</span>
             </p>
           </div>
         );
@@ -88,10 +90,10 @@ const Join: React.FC<Props> = (props: Props) => {
           <div className="text-center max-w-lg leading-6">
             <h1 className="font-bold text-lg">Join Team</h1>
             <p>
-              {/* TODO: accent color */}
               You are joining{' '}
-              <span className="font-bold text-emerald-700">{invitation?.teamName}</span> with the{' '}
-              <span className="font-bold text-emerald-700">
+              <span className={`font-bold text-${accent}-500`}>{invitation?.teamName}</span> with
+              the{' '}
+              <span className={`font-bold text-${accent}-500`}>
                 {invitation?.invitation.invitee_role}
               </span>{' '}
               role.
@@ -117,10 +119,9 @@ const Join: React.FC<Props> = (props: Props) => {
         <div className="h-full flex items-center">
           {isAnon ? (
             <span className="font-bold">
-              {/* TODO: accent color for link */}
               Please{' '}
               <a
-                className="cursor-pointer text-blue-500 hover:text-blue-700"
+                className={`cursor-pointer text-${accent}-500 hover:text-${accent}-600`}
                 onClick={() => setLoginModalOpen(true)}
               >
                 sign in

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import styles from '../../styles/components/ProjectActionsDropdown.module.scss';
 import { Irisub } from '@irisub/shared';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
@@ -41,8 +40,14 @@ const ProjectActionsDropdown: React.FC<Props> = (props: Props) => {
         <Tooltip id={`tt-project-actions-${props.project.id}`} className="tooltip" place="left" />
 
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className={styles.DropdownMenuContent} sideOffset={5}>
-            <DropdownMenu.Item className={styles.DropdownMenuItem} onClick={handleDelete}>
+          <DropdownMenu.Content
+            className="w-40 bg-slate-1 border border-slate-6 text-slate-12 rounded-md p-[5px]"
+            sideOffset={5}
+          >
+            <DropdownMenu.Item
+              className="group text-sm leading-none rounded-md cursor-pointer flex items-center h-6 relative px-3 select-none outline-none text-slate-11 bg-slate-1 data-[highlighted]:outline-none data-[highlighted]:text-slate-12 data-[highlighted]:bg-slate-4"
+              onClick={handleDelete}
+            >
               Delete Project
             </DropdownMenu.Item>
           </DropdownMenu.Content>

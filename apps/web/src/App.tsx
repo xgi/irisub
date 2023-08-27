@@ -1,9 +1,5 @@
 import './index.css';
 import 'react-tooltip/dist/react-tooltip.css';
-import './styles/global/colors.scss';
-import './styles/global/general.scss';
-import './styles/global/scrollbar.scss';
-import './styles/global/player.scss';
 import './styles/global/tooltip.scss';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import Base from './components/Base';

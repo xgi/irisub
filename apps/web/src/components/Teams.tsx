@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import styles from '../styles/components/Teams.module.scss';
 import { Gateway } from '@irisub/shared';
 import LoadingContainer from './LoadingContainer';
 import { gateway } from '../services/gateway';
@@ -10,10 +9,12 @@ import { Tooltip } from 'react-tooltip';
 import { getAuth } from 'firebase/auth';
 import { inviteModalOpenState, loginModalOpenState } from '../store/modals';
 import Button from './Button';
+import { accentState } from '../store/theme';
 
 type Props = unknown;
 
 const Teams: React.FC<Props> = () => {
+  const accent = useRecoilValue(accentState);
   const userId = useRecoilValue(userIdState);
   const setLoginModalOpen = useSetRecoilState(loginModalOpenState);
   const setInviteModalOpen = useSetRecoilState(inviteModalOpenState);
@@ -43,9 +44,9 @@ const Teams: React.FC<Props> = () => {
     members: { id: string; email: string; role: 'owner' | 'editor' }[]
   ) => {
     return (
-      <table style={{ tableLayout: 'fixed', width: '100%' }}>
+      <table className="table-fixed w-full text-left border border-slate-6">
         <thead>
-          <tr>
+          <tr className="[&>th]:px-4 h-7 text-slate-11">
             <th style={{ width: '100%' }}>Email</th>
             <th style={{ width: '300px' }}>Role</th>
             <th style={{ width: '80px' }} />
@@ -53,10 +54,13 @@ const Teams: React.FC<Props> = () => {
         </thead>
         <tbody>
           {members.map((member) => (
-            <tr key={member.id}>
+            <tr
+              key={member.id}
+              className="hover:cursor-pointer hover:bg-slate-4 [&>td]:px-4 h-10 border-t border-slate-6"
+            >
               <td>
                 {member.email}{' '}
-                {member.id === userId ? <span className={styles.sub}>(you)</span> : ''}
+                {member.id === userId ? <span className="text-slate-11 text-sm">(you)</span> : ''}
               </td>
               <td style={{ textTransform: 'capitalize' }}>{member.role}</td>
               <td style={{ textAlign: 'right' }}>
@@ -83,32 +87,39 @@ const Teams: React.FC<Props> = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="w-full h-full flex flex-col items-center overflow-y-scroll text-slate-12 bg-slate-1">
       {loading ? (
         <LoadingContainer />
       ) : isAnon ? (
-        <div className={styles.anonMessage}>
+        <div className="h-full flex items-center font-semibold">
           <span>
-            Please <a onClick={() => setLoginModalOpen(true)}>sign in</a> to join or create a team.
+            Please{' '}
+            <a
+              className={`cursor-pointer text-${accent}-500 hover:text-${accent}-600`}
+              onClick={() => setLoginModalOpen(true)}
+            >
+              sign in
+            </a>{' '}
+            to join or create a team.
           </span>
         </div>
       ) : (
-        <section>
-          <div className={styles.left}>
-            <h3>Your Teams</h3>
+        <section className="w-full max-w-screen-2xl m-4 grid grid-cols-3">
+          <div className="col-span-1 select-none">
+            <h3 className="text-2xl mb-0 font-semibold">Your Teams</h3>
           </div>
-          <div className={styles.right}>
+          <div className="col-span-2 mt-3">
             {teams.length > 0 ? (
               teams.map((team) => (
-                <div key={team.id} className={styles.team}>
-                  <p>{team.name}</p>
+                <div key={team.id} className="mb-2">
+                  <p className="font-bold mb-2">{team.name}</p>
                   {renderMembers(team.id, team.members)}
                 </div>
               ))
             ) : (
               <>
-                <p>You haven't joined any teams.</p>
-                <Button accent className={styles.newTeam} onClick={() => setInviteModalOpen(true)}>
+                <p className="font-semibold">You haven't joined any teams.</p>
+                <Button accent className="mt-4" onClick={() => setInviteModalOpen(true)}>
                   Create Team
                 </Button>
               </>

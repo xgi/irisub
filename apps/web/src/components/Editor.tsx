@@ -126,7 +126,7 @@ const Editor: React.FC<Props> = (props: Props) => {
           </a>
           <ReactSlider
             className={classNames(
-              `w-full max-w-lg h-6 mx-2 [&>.thumb]:bg-slate-9 [&>.thumb]:hover:bg-slate-10 [&>.thumb]:outline-none [&>.thumb]:top-1 [&>.thumb]:h-4 [&>.thumb]:w-3 [&>.track]:top-1.5 [&>.track]:h-3 [&>.track]:bg-slate-3 [&>_.track-0]:bg-emerald-500`,
+              `w-full max-w-lg h-6 mx-2 [&>.thumb]:bg-slate-9 [&>.thumb]:hover:bg-slate-10 [&>.thumb]:outline-none [&>.thumb]:top-1 [&>.thumb]:h-4 [&>.thumb]:w-3 [&>.track]:top-1.5 [&>.track]:h-3 [&>.track]:bg-slate-3 [&>_.track-0]:bg-${accent}-500`,
               playerPath ? '' : '[&>.thumb]:hidden [&>.track]:bg-slate-2'
             )}
             thumbClassName="thumb"
@@ -137,14 +137,14 @@ const Editor: React.FC<Props> = (props: Props) => {
             onChange={handleSeek}
           />
           <TimeInput
-            className="text-center w-24 outline-none py-0.5 border border-slate-7 text-slate-12 bg-slate-2 disabled:bg-slate-5 disabled:cursor-not-allowed"
+            className="text-center w-32 font-mono outline-none py-0.5 border border-slate-7 text-slate-12 bg-slate-2 disabled:bg-slate-5 disabled:cursor-not-allowed"
             disabled={playerPath ? false : true}
             valueMs={playerProgress * 1000}
             callback={(value: number) => handleSeek(value / 1000)}
           />
           <span className="px-2">/</span>
           <input
-            className="text-center w-24 outline-none py-0.5 border border-slate-7 text-slate-12 bg-slate-5 cursor-not-allowed"
+            className="text-center w-32 font-mono outline-none py-0.5 border border-slate-7 text-slate-12 bg-slate-5 cursor-not-allowed"
             disabled
             value={new Date(playerDuration * 1000).toISOString().substring(12, showMs ? 23 : 19)}
           />
@@ -197,7 +197,9 @@ const Editor: React.FC<Props> = (props: Props) => {
                 {playerPath ? <Player path={playerPath} /> : <FileDrop />}
               </div>
             </ReflexElement>
-            <ReflexSplitter className="h-full w-2 relative bg-slate-3 before:bg-emerald-500 cursor-col-resize before:absolute before:top-0 before:left-0 before:z-30 before:h-full hover:before:-left-0.5 hover:before:-right-0.5 active:before:-left-0.5 active:before:-right-0.5" />
+            <ReflexSplitter
+              className={`h-full w-2 relative bg-slate-3 before:bg-${accent}-500 cursor-col-resize before:absolute before:top-0 before:left-0 before:z-30 before:h-full hover:before:-left-0.5 hover:before:-right-0.5 active:before:-left-0.5 active:before:-right-0.5`}
+            />
             <ReflexElement
               name={EditorElementKeys.EditorPanel}
               className="relative overflow-auto h-full w-full"
@@ -209,7 +211,9 @@ const Editor: React.FC<Props> = (props: Props) => {
           </ReflexContainer>
         </ReflexElement>
         {showTimeline ? (
-          <ReflexSplitter className="w-full h-2 relative bg-slate-3 before:bg-emerald-500 cursor-row-resize before:absolute before:top-0 before:left-0 before:z-30 before:w-full hover:before:-top-0.5 hover:before:-bottom-0.5 active:before:-top-0.5 active:before:-bottom-0.5" />
+          <ReflexSplitter
+            className={`w-full h-2 relative bg-slate-3 before:bg-${accent}-500 cursor-row-resize before:absolute before:top-0 before:left-0 before:z-30 before:w-full hover:before:-top-0.5 hover:before:-bottom-0.5 active:before:-top-0.5 active:before:-bottom-0.5`}
+          />
         ) : (
           ''
         )}
@@ -227,7 +231,9 @@ const Editor: React.FC<Props> = (props: Props) => {
         ) : (
           ''
         )}
-        <ReflexSplitter className="w-full h-2 relative bg-slate-3 before:bg-emerald-500 cursor-row-resize before:absolute before:top-0 before:left-0 before:z-30 before:w-full hover:before:-top-0.5 hover:before:-bottom-0.5 active:before:-top-0.5 active:before:-bottom-0.5" />
+        <ReflexSplitter
+          className={`w-full h-2 relative bg-slate-3 before:bg-${accent}-500 cursor-row-resize before:absolute before:top-0 before:left-0 before:z-30 before:w-full hover:before:-top-0.5 hover:before:-bottom-0.5 active:before:-top-0.5 active:before:-bottom-0.5`}
+        />
         <ReflexElement
           name={EditorElementKeys.Timetable}
           flex={editorElementSizes[EditorElementKeys.Timetable]}

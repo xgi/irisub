@@ -8,11 +8,12 @@ import {
   sendSignInLinkToEmail,
   signInWithCredential,
 } from 'firebase/auth';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { IconArrowLeft, IconEmail, IconGitHub, IconGoogle, IconMicrosoft, IconX } from '../Icons';
-import styles from '../../styles/components/LoginModal.module.scss';
 import { useState } from 'react';
 import { loginModalOpenState } from '../../store/modals';
+import { accentState } from '../../store/theme';
+import Button from '../Button';
 
 enum ProviderName {
   GOOGLE = 'GOOGLE',
@@ -23,6 +24,7 @@ enum ProviderName {
 type Props = unknown;
 
 const LoginModal: React.FC<Props> = () => {
+  const accent = useRecoilValue(accentState);
   const [loginModalOpen, setLoginModalOpen] = useRecoilState(loginModalOpenState);
   const [showingEmailForm, setShowingEmailForm] = useState(false);
   const [email, setEmail] = useState('');
@@ -104,7 +106,6 @@ const LoginModal: React.FC<Props> = () => {
         console.error(error);
       })
       .finally(() => {
-        setLoginModalOpen(false);
         setLoading(false);
       });
   };
@@ -112,22 +113,31 @@ const LoginModal: React.FC<Props> = () => {
   const renderOptionButtons = () => {
     return (
       <>
-        <button className={styles.providerButton} onClick={() => handleLogin(ProviderName.GOOGLE)}>
+        <button
+          className="w-full cursor-pointer text-sm font-semibold flex items-center text-left gap-4 text-slate-11 hover:text-slate-12 border border-slate-7 hover:border-slate-8 hover:bg-slate-4  mx-0 my-1 px-4 py-3"
+          onClick={() => handleLogin(ProviderName.GOOGLE)}
+        >
           <IconGoogle width={18} height={18} />
           <span>Continue with Google</span>
         </button>
         <button
-          className={styles.providerButton}
+          className="w-full cursor-pointer text-sm font-semibold flex items-center text-left gap-4 text-slate-11 hover:text-slate-12 border border-slate-7 hover:border-slate-8 hover:bg-slate-4  mx-0 my-1 px-4 py-3"
           onClick={() => handleLogin(ProviderName.MICROSOFT)}
         >
           <IconMicrosoft width={18} height={18} />
           <span>Continue with Microsoft</span>
         </button>
-        <button className={styles.providerButton} onClick={() => handleLogin(ProviderName.GITHUB)}>
+        <button
+          className="w-full cursor-pointer text-sm font-semibold flex items-center text-left gap-4 text-slate-11 hover:text-slate-12 border border-slate-7 hover:border-slate-8 hover:bg-slate-4  mx-0 my-1 px-4 py-3"
+          onClick={() => handleLogin(ProviderName.GITHUB)}
+        >
           <IconGitHub width={18} height={18} />
           <span>Continue with GitHub</span>
         </button>
-        <button className={styles.providerButton} onClick={() => setShowingEmailForm(true)}>
+        <button
+          className="w-full cursor-pointer text-sm font-semibold flex items-center text-left gap-4 text-slate-11 hover:text-slate-12 border border-slate-7 hover:border-slate-8 hover:bg-slate-4  mx-0 my-1 px-4 py-3"
+          onClick={() => setShowingEmailForm(true)}
+        >
           <IconEmail width={18} height={18} />
           <span>Continue with email</span>
         </button>
@@ -138,11 +148,12 @@ const LoginModal: React.FC<Props> = () => {
   const renderEmailForm = () => {
     if (magicLinkSent) {
       return (
-        <div className={styles.sentContainer}>
-          <h2>Email sent!</h2>
-          <p>
-            We sent a verification email to <b>{email}</b>. Please check your inbox and click the
-            link to finish signing in.
+        <div className="py-0 px-4 text-slate-12">
+          <h2 className="flex items-center justify-center text-xl mb-2 font-bold">Email sent!</h2>
+          <p className="text-slate-12 text-base">
+            We sent a verification email to{' '}
+            <span className={`text-${accent}-500 font-semibold`}>{email}</span>. Please check your
+            inbox and click the link to finish signing in.
           </p>
         </div>
       );
@@ -151,7 +162,8 @@ const LoginModal: React.FC<Props> = () => {
     return (
       <>
         <input
-          placeholder="Email"
+          className="w-full px-2 py-1.5 inline bg-slate-3 text-slate-12 rounded-sm outline-none border border-slate-7 focus:border-slate-8"
+          placeholder="Your email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => {
@@ -159,14 +171,17 @@ const LoginModal: React.FC<Props> = () => {
           }}
           autoFocus
         />
-        <div className={styles.buttonRow}>
-          <a className={styles.backLink} onClick={() => setShowingEmailForm(false)}>
+        <div className="w-full flex gap-2 mt-2">
+          <a
+            className="flex flex-1 items-center text-left cursor-pointer text-slate-11 hover:text-slate-12"
+            onClick={() => setShowingEmailForm(false)}
+          >
             <IconArrowLeft />
             All login options
           </a>
-          <button className={styles.actionButton} onClick={handleEmailPasswordless}>
+          <Button accent onClick={handleEmailPasswordless}>
             Send sign-in link
-          </button>
+          </Button>
         </div>
       </>
     );
@@ -174,31 +189,36 @@ const LoginModal: React.FC<Props> = () => {
 
   const renderLoader = () => {
     return (
-      <div className={styles.loading}>
-        <div className={styles.spin} />
+      <div>
+        <div className="w-6 h-6 border-4 rounded-full border-slate-11 border-b-transparent inline-block box-border animate-spin" />
       </div>
     );
   };
 
   return (
     <Modal isOpen={loginModalOpen} handleClose={() => close(false)}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <h3>Login to Irisub</h3>
-          <button className={styles.exit}>
+      <div className="w-full text-center">
+        <div className="bg-slate-2 border-b border-slate-6 px-5 py-3 flex items-center justify-between">
+          <h3 className="text-slate-12 text-lg m-0 font-bold">Login to Irisub</h3>
+          <button className="text-slate-11 hover:text-slate-12 bg-transparent h-6 w-6 border-none cursor-pointer">
             <IconX width={22} height={22} onClick={() => close(false)} />
           </button>
         </div>
 
-        <div className={styles.inner}>
+        <div className="flex flex-col items-center justify-center mx-4 my-1 px-2 py-3">
           {loading ? renderLoader() : showingEmailForm ? renderEmailForm() : renderOptionButtons()}
         </div>
 
-        <div className={styles.footer}>
-          <span>
-            By signing in, you agree to our <a href="#">Terms of Service</a> and{' '}
-            <a href="#">Privacy Policy</a>.
-          </span>
+        <div className="text-slate-11 bg-slate-2 px-4 py-2 font-medium text-xs border-t border-slate-6">
+          By signing in, you agree to our{' '}
+          <a className={`cursor-pointer text-${accent}-500 hover:text-${accent}-600`} href="#">
+            Terms of Service
+          </a>{' '}
+          and{' '}
+          <a className={`cursor-pointer text-${accent}-500 hover:text-${accent}-600`} href="#">
+            Privacy Policy
+          </a>
+          .
         </div>
       </div>
     </Modal>

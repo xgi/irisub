@@ -66,7 +66,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
       <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
         <TimeInput
           id={`timetable-input-starttime-${props.cue.id}`}
-          className="w-full border-none outline-none bg-transparent flex-1 py-px px-2"
+          className="w-full font-mono border-none outline-none bg-transparent flex-1 py-px px-2"
           tabIndex={props.index + 1}
           data-index={props.index}
           style={{ minWidth: '8em', textAlign: 'center' }}
@@ -83,7 +83,7 @@ const CueRow: React.FC<Props> = (props: Props) => {
       <td style={{ paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
         <TimeInput
           id={`timetable-input-endtime-${props.cue.id}`}
-          className="w-full border-none outline-none bg-transparent flex-1 py-px px-2"
+          className="w-full font-mono border-none outline-none bg-transparent flex-1 py-px px-2"
           tabIndex={props.index + 1}
           data-index={props.index}
           style={{ minWidth: '8em', textAlign: 'center' }}

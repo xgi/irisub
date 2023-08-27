@@ -1,13 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Tooltip } from 'react-tooltip';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentEditorPanelTabState } from '../store/states';
 import { EditorPanelTab } from '../util/constants';
 import { classNames } from '../util/layout';
+import { accentState } from '../store/theme';
 
 type Props = unknown;
 
 const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
+  const accent = useRecoilValue(accentState);
   const [currentEditorPanelTab, setCurrentEditorPanelTab] = useRecoilState(
     currentEditorPanelTabState
   );
@@ -20,7 +22,7 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
             className={classNames(
               'relative p-2 flex flex-col flex-1 items-center justify-center cursor-pointer',
               currentEditorPanelTab === EditorPanelTab.Text
-                ? 'text-emerald-500'
+                ? `text-${accent}-500`
                 : 'hover:text-slate-12'
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Text)}
@@ -48,7 +50,7 @@ const EditorPanelSidebar: React.FC<Props> = (props: Props) => {
             className={classNames(
               'relative p-2 flex flex-col flex-1 items-center justify-center cursor-pointer',
               currentEditorPanelTab === EditorPanelTab.Styles
-                ? 'text-emerald-500'
+                ? `text-${accent}-500`
                 : 'hover:text-slate-12'
             )}
             onClick={() => setCurrentEditorPanelTab(EditorPanelTab.Styles)}

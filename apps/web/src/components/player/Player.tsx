@@ -7,7 +7,6 @@ import {
   playerProgressState,
   requestedPlayerProgressState,
 } from '../../store/player';
-import styles from '../../styles/components/Player.module.scss';
 import SubtitleOverlay from './SubtitleOverlay';
 
 const VIDEO_ELEMENT_ID = 'myvideo';
@@ -35,7 +34,7 @@ const Player: React.FC<Props> = (props: Props) => {
 
   return props.path ? (
     <div>
-      <div className={styles.wrapper} ref={playerWrapperRef}>
+      <div className="w-full h-full relative" ref={playerWrapperRef}>
         <SubtitleOverlay />
         <ReactPlayer
           ref={playerRef}

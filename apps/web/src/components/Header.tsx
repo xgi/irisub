@@ -75,7 +75,7 @@ const Header: React.FC<Props> = (props: Props) => {
             href="/"
             className="py-2 px-4 tracking-widest text-slate-12 font-bold justify-center items-center inline-flex"
           >
-            <span>IRISUB</span>
+            <span className="leading-none">IRISUB</span>
           </a>
           {renderProjectTitle()}
         </div>

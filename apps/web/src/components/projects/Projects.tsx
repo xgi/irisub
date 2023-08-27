@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import styles from '../../styles/components/Projects.module.scss';
 import { Gateway, Irisub } from '@irisub/shared';
 import LoadingContainer from '../LoadingContainer';
 import { gateway } from '../../services/gateway';
@@ -58,9 +57,9 @@ const Projects: React.FC<Props> = (props: Props) => {
 
   const renderProjects = (projects: GetProjectsResponseBodyProjects) => {
     return (
-      <table style={{ tableLayout: 'fixed', width: '100%' }}>
+      <table className="table-fixed w-full text-left border border-slate-6">
         <thead>
-          <tr>
+          <tr className="[&>th]:px-4 h-7 text-slate-11">
             <th style={{ width: '100%' }}>Name</th>
             <th style={{ width: '300px' }}>Created</th>
             <th style={{ width: '80px' }} />
@@ -68,11 +67,15 @@ const Projects: React.FC<Props> = (props: Props) => {
         </thead>
         <tbody>
           {projects.map((project) => (
-            <tr key={project.id} onClick={() => handleClickProject(project)}>
+            <tr
+              key={project.id}
+              className="hover:cursor-pointer hover:bg-slate-4 [&>td]:px-4 h-10 border-t border-slate-6"
+              onClick={() => handleClickProject(project)}
+            >
               <td>
                 {project.title}{' '}
                 {project.id === currentProject?.id ? (
-                  <span className={styles.sub}>(current)</span>
+                  <span className="text-slate-11 text-sm">(current)</span>
                 ) : (
                   ''
                 )}
@@ -89,25 +92,24 @@ const Projects: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className={styles.container} style={props.hidden ? { display: 'none' } : {}}>
+    <div className="w-full h-full flex flex-col items-center overflow-y-scroll text-slate-12 bg-slate-1">
       {loading ? (
         <LoadingContainer />
       ) : (
         <>
-          {' '}
-          <section>
-            <div className={styles.left}>
-              <h3>Your Projects</h3>
+          <section className="w-full max-w-screen-2xl m-4 grid grid-cols-3">
+            <div className="col-span-1 select-none">
+              <h3 className="text-2xl mb-0 font-semibold">Your Projects</h3>
             </div>
-            <div className={styles.right}>
+            <div className="col-span-2 mt-3">
               {ownedProjects.length > 0 ? (
                 renderProjects(ownedProjects)
               ) : (
-                <p>You haven't created any projects.</p>
+                <p className="font-semibold">You haven't created any projects.</p>
               )}
               <Button
                 accent
-                className={styles.newProject}
+                className="mt-4"
                 onClick={handleNewProject}
                 disabled={creatingNewProject}
               >
@@ -115,20 +117,20 @@ const Projects: React.FC<Props> = (props: Props) => {
               </Button>
             </div>
           </section>
-          <section>
-            <div className={styles.left}>
-              <h3>Team Projects</h3>
+          <section className="w-full max-w-screen-2xl m-4 grid grid-cols-3 border-t border-slate-6">
+            <div className="col-span-1 select-none mt-3">
+              <h3 className="text-2xl mb-0 font-semibold">Team Projects</h3>
             </div>
-            <div className={styles.right}>
+            <div className="col-span-2 mt-3">
               {teams.length > 0 ? (
                 teams.map((team) => (
-                  <div key={team.teamName} className={styles.team}>
-                    <p>{team.teamName}</p>
+                  <div key={team.teamName} className="mb-2">
+                    <p className="font-bold mb-2">{team.teamName}</p>
                     {renderProjects(team.projects)}
                   </div>
                 ))
               ) : (
-                <p>You haven't joined any teams.</p>
+                <p className="font-semibold">You haven't joined any teams.</p>
               )}
             </div>
           </section>

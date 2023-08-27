@@ -1,5 +1,4 @@
 /* eslint-disable no-restricted-globals */
-import styles from '../styles/components/Base.module.scss';
 import Footer from './Footer';
 import Header from './Header';
 import Sidebar from './sidebar/Sidebar';
@@ -14,20 +13,26 @@ import NotFoundPage from './NotFoundPage';
 import LoginModal from './auth/LoginModal';
 import InviteModal from './auth/InviteModal';
 import Join from './Join';
+import { useRecoilValue } from 'recoil';
+import { accentState } from '../store/theme';
 
 type Props = unknown;
 
 const Base: React.FC<Props> = () => {
+  const accent = useRecoilValue(accentState);
+
   return (
-    <div className={styles.container}>
+    <div
+      className={`bg-slate-1 w-screen h-screen flex selection:bg-${accent}-600 selection:text-slate-12`}
+    >
       <TracksModal />
       <ImportExportModal />
       <LoginModal />
       <InviteModal />
 
-      <div className={styles.column}>
+      <div className="flex flex-col w-full h-full">
         <Header />
-        <div className={styles.middle}>
+        <div className="flex flex-row flex-1 overflow-auto">
           <Sidebar />
 
           <Switch>
